@@ -781,13 +781,19 @@ body:not(.gh-debug-visible) .page {padding-bottom:0}
   padding:0;margin:0;opacity:0;background:transparent!important;
   color:transparent!important;border:0!important;border-radius:0;
   box-shadow:none!important;text-shadow:none;outline-offset:-5px;cursor:pointer;
+  appearance:none;-webkit-appearance:none;-webkit-tap-highlight-color:transparent;
+  -webkit-touch-callout:none;user-select:none;touch-action:manipulation;
+}
+.gh-ui-bottom button:active,.gh-ui-bottom button:focus,.gh-ui-bottom button:hover,
+.gh-ui-bottom button[aria-selected="true"]:active,.gh-ui-bottom button[aria-selected="true"]:focus,.gh-ui-bottom button[aria-selected="true"]:hover{
+  background:transparent!important;box-shadow:none!important;outline:none;filter:none;
 }
 .gh-ui-bottom button::before,.gh-ui-bottom button::after,
 .gh-ui-bottom button[aria-selected="true"]::before,.gh-ui-bottom button[aria-selected="true"]::after{
   display:none!important;content:none!important;
 }
 .gh-ui-bottom button:focus-visible{
-  opacity:1;outline:2px solid #fff2c0;outline-offset:-9px;border-radius:12px;
+  opacity:0;outline:2px solid transparent;outline-offset:-9px;border-radius:12px;
 }
 @media(max-width:390px){.gh-ui-bottom{height:clamp(76px,20vw,132px)}}
 
