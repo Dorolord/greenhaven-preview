@@ -823,11 +823,11 @@ body:not(.gh-debug-visible) .page {padding-bottom:0}
 .gh-ui-bottom .gh-ui-full-panel {object-fit:contain!important;}
 .gh-ui-screen {padding-bottom:calc(clamp(72px,22.97vw,120px) + 18px + env(safe-area-inset-bottom,0px));}
 
-/* GreenHaven v270: enlarge XP panel another 10% over v269; preserve v269 mask and v267 farm layout. */
+/* GreenHaven v271: enlarge the XP panel another 10% vs v270; keep approved farm layout and v269 white-matte fix. */
 .gh-ui-topbar #gh-ui-open-profile.gh-xp-illustrated {
   position:relative; display:block; padding:0!important; margin:0; border:0!important;
   background:transparent!important; box-shadow:none!important; text-shadow:none;
-  width:clamp(137.2866px,34.8843vw,244.1901px); flex:0 0 clamp(137.2866px,34.8843vw,244.1901px);
+  width:clamp(151.01526px,38.37273vw,268.60911px); flex:0 0 clamp(151.01526px,38.37273vw,268.60911px);
   min-width:0; max-width:none; min-height:0; height:auto;
   aspect-ratio:2123/650; overflow:visible; border-radius:0; cursor:pointer; isolation:isolate;
 }
@@ -839,12 +839,12 @@ body:not(.gh-debug-visible) .page {padding-bottom:0}
   -webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;
   -webkit-mask-position:center;mask-position:center;
 }
-.gh-xp-illustrated .gh-xp-painted-level {position:absolute;left:18.2%;top:51.5%;transform:translate(-50%,-50%);font-family:Georgia,serif;font-weight:900;font-size:clamp(13.5036px,2.36313vw,24.7566px);line-height:1;color:#fff8d6;text-shadow:0 1px 1px #264308,-1px -1px 0 #244b16,1px 2px 2px #1d340e;pointer-events:none}
+.gh-xp-illustrated .gh-xp-painted-level {position:absolute;left:18.2%;top:51.5%;transform:translate(-50%,-50%);font-family:Georgia,serif;font-weight:900;font-size:clamp(14.85396px,2.599443vw,27.23226px);line-height:1;color:#fff8d6;text-shadow:0 1px 1px #264308,-1px -1px 0 #244b16,1px 2px 2px #1d340e;pointer-events:none}
 .gh-xp-illustrated .gh-xp-painted-fill-clip {position:absolute;left:30.9%;top:46.7%;width:55.4%;height:18.5%;overflow:hidden;border-radius:999px;pointer-events:none;}
 .gh-xp-illustrated .gh-xp-painted-fill {display:block;height:100%;border-radius:999px;transition:width .28s ease;background:repeating-linear-gradient(125deg, transparent 0 13px,#bafc3b26 13px 23px),linear-gradient(180deg,#d4ff57 0%,#92df08 36%,#62bd0a 74%,#338308 100%);box-shadow:inset 0 1px 1px #ecffb6,inset 0 -1px 2px #1a500a,0 0 3px #baf928a8;}
-.gh-xp-illustrated .gh-xp-painted-count {position:absolute;left:60%;top:55%;transform:translate(-50%,-50%);white-space:nowrap;pointer-events:none;font:900 clamp(7.8771px,1.23783vw,13.5036px)/1 system-ui,-apple-system,'Segoe UI',sans-serif;letter-spacing:-.1px;color:#fff4cc;text-shadow:-1px -1px 0 #4a260e,1px -1px 0 #4a260e,-1px 1px 0 #4a260e,1px 1px 0 #4a260e,0 2px 2px #2d1a08;}
-@media (max-width:390px){.gh-ui-topbar #gh-ui-open-profile.gh-xp-illustrated{width:135.036px;flex-basis:135.036px}.gh-xp-illustrated .gh-xp-painted-count{font-size:7.8771px}.gh-xp-illustrated .gh-xp-painted-level{font-size:13.5036px}}
-@media (max-width:340px){.gh-ui-topbar #gh-ui-open-profile.gh-xp-illustrated{width:117.0312px;flex-basis:117.0312px}.gh-xp-illustrated .gh-xp-painted-count{font-size:6.7518px}.gh-xp-illustrated .gh-xp-painted-level{font-size:11.253px}}
+.gh-xp-illustrated .gh-xp-painted-count {position:absolute;left:60%;top:55%;transform:translate(-50%,-50%);white-space:nowrap;pointer-events:none;font:900 clamp(8.66481px,1.361613vw,14.85396px)/1 system-ui,-apple-system,'Segoe UI',sans-serif;letter-spacing:-.1px;color:#fff4cc;text-shadow:-1px -1px 0 #4a260e,1px -1px 0 #4a260e,-1px 1px 0 #4a260e,1px 1px 0 #4a260e,0 2px 2px #2d1a08;}
+@media (max-width:390px){.gh-ui-topbar #gh-ui-open-profile.gh-xp-illustrated{width:148.5396px;flex-basis:148.5396px}.gh-xp-illustrated .gh-xp-painted-count{font-size:8.66481px}.gh-xp-illustrated .gh-xp-painted-level{font-size:14.85396px}}
+@media (max-width:340px){.gh-ui-topbar #gh-ui-open-profile.gh-xp-illustrated{width:128.73432px;flex-basis:128.73432px}.gh-xp-illustrated .gh-xp-painted-count{font-size:7.42698px}.gh-xp-illustrated .gh-xp-painted-level{font-size:12.3783px}}
 </style><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"></head><body><main class="page"><section class="stage" id="stage" aria-label="Інтерактивний макет ферми">
 <button id="gh-cowshed-toggle" class="gh-cowshed-toggle" type="button" aria-pressed="false" title="Тест: спершу ремонт, потім окрема покупка корови">🛠 Відновити корівник</button>
 <button id="gh-cow-toggle" class="gh-cow-toggle" type="button" aria-pressed="true" title="Купити першу корову (лише тест, без оплати)" hidden>🐄 Купити корову</button>
