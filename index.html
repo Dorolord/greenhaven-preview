@@ -845,6 +845,27 @@ body:not(.gh-debug-visible) .page {padding-bottom:0}
 .gh-xp-illustrated .gh-xp-painted-count {position:absolute;left:60%;top:55%;transform:translate(-50%,-50%);white-space:nowrap;pointer-events:none;font:900 clamp(8.66481px,1.361613vw,14.85396px)/1 system-ui,-apple-system,'Segoe UI',sans-serif;letter-spacing:-.1px;color:#fff4cc;text-shadow:-1px -1px 0 #4a260e,1px -1px 0 #4a260e,-1px 1px 0 #4a260e,1px 1px 0 #4a260e,0 2px 2px #2d1a08;}
 @media (max-width:390px){.gh-ui-topbar #gh-ui-open-profile.gh-xp-illustrated{width:148.5396px;flex-basis:148.5396px}.gh-xp-illustrated .gh-xp-painted-count{font-size:8.66481px}.gh-xp-illustrated .gh-xp-painted-level{font-size:14.85396px}}
 @media (max-width:340px){.gh-ui-topbar #gh-ui-open-profile.gh-xp-illustrated{width:128.73432px;flex-basis:128.73432px}.gh-xp-illustrated .gh-xp-painted-count{font-size:7.42698px}.gh-xp-illustrated .gh-xp-painted-level{font-size:12.3783px}}
+
+/* v272: approved three-resource artwork; waits for exact uploaded sprite before replacing legacy counters. */
+.stage.gh-resources-ready .gh-ui-topbar .gh-ui-money {display:none!important}
+.gh-resource-strip[hidden] {display:none!important}
+.gh-resource-strip {
+ position:absolute;left:8px;right:8px;top:calc(clamp(58px,14vw,78px) + env(safe-area-inset-top,0px));
+ z-index:449;aspect-ratio:2144 / 380;overflow:visible;pointer-events:auto;
+}
+.gh-resource-strip img {display:block;width:100%;height:100%;object-fit:contain;pointer-events:none;user-select:none;-webkit-user-drag:none}
+.gh-resource-hit {
+ position:absolute;top:0;height:100%;width:33.333333%;display:block;
+ padding:0;margin:0;border:0;background:transparent!important;opacity:0;
+ -webkit-tap-highlight-color:transparent;appearance:none;-webkit-appearance:none;
+ cursor:pointer;touch-action:manipulation;
+}
+.gh-resource-hit:nth-of-type(1){left:0}
+.gh-resource-hit:nth-of-type(2){left:33.333333%}
+.gh-resource-hit:nth-of-type(3){left:66.666666%}
+.gh-resource-hit:focus-visible {opacity:1;outline:2px solid #f6d36b;outline-offset:0}
+body:not(.gh-debug-visible) .gh-ui-screen {padding-top:calc(clamp(145px,29vw,190px) + env(safe-area-inset-top,0px))}
+
 </style><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"></head><body><main class="page"><section class="stage" id="stage" aria-label="Інтерактивний макет ферми">
 <button id="gh-cowshed-toggle" class="gh-cowshed-toggle" type="button" aria-pressed="false" title="Тест: спершу ремонт, потім окрема покупка корови">🛠 Відновити корівник</button>
 <button id="gh-cow-toggle" class="gh-cow-toggle" type="button" aria-pressed="true" title="Купити першу корову (лише тест, без оплати)" hidden>🐄 Купити корову</button>
@@ -897,6 +918,14 @@ body:not(.gh-debug-visible) .page {padding-bottom:0}
   <button type="button" data-gh-tab="market" aria-label="Ринок" aria-selected="false" title="Ринок"></button>
   <button type="button" data-gh-tab="profile" aria-label="Профіль" aria-selected="false" title="Профіль"></button>
 </nav>
+<!-- v272: Approved farm-style gold, diamonds and Green Token sprites. Values are demo artwork, not server balances. -->
+<div class="gh-resource-strip" id="gh-resource-strip" hidden role="group" aria-label="Ігрові ресурси: золото, діаманти, Green Token">
+ <img src="assets/gh-resources-approved-v272.webp" alt="" aria-hidden="true" draggable="false">
+ <button type="button" class="gh-resource-hit" data-gh-top-market="true" title="Золото — 1250 (демонстраційне значення)" aria-label="Золото: 1250, демонстраційне значення; відкрити ринок"></button>
+ <button type="button" class="gh-resource-hit" data-gh-top-market="true" title="Діаманти — 25 (демонстраційне значення)" aria-label="Діаманти: 25, демонстраційне значення; відкрити ринок"></button>
+ <button type="button" class="gh-resource-hit" data-gh-top-market="true" title="Green Token — 0 (демонстраційне значення)" aria-label="Green Token: 0, демонстраційне значення; відкрити ринок"></button>
+</div>
+
 </section></main><div class="bottom-tools"><span class="hint">Тест розташування · 6 окремих грядок</span><button id="import" type="button">Імпорт JSON</button><button id="copy" type="button">Скопіювати план</button><button id="download" type="button">Зберегти план</button><input id="json-import" type="file" accept=".json,application/json" hidden></div>
 
 <div id="gh-bed-dialog" hidden role="presentation">
@@ -2437,4 +2466,22 @@ window.GreenHavenSetXP=function(level,earned,required){
  btn.setAttribute('aria-label','Рівень '+n+', '+xp+' зі '+total+' XP. Показати профіль');
 };
 </script>
+
+<script id="gh-resources-v272-ready">
+/* Activate the new approved artwork only when its image exists on GitHub Pages.
+   Keep the current counters available in the meantime. */
+(()=>{
+ const row=document.getElementById('gh-resource-strip');
+ const image=row?.querySelector('img');
+ const stage=document.getElementById('stage');
+ if(!image||!stage)return;
+ const show=()=>{
+   row.hidden=false;
+   stage.classList.add('gh-resources-ready');
+ };
+ image.addEventListener('load',show,{once:true});
+ if(image.complete && image.naturalWidth>0)show();
+})();
+</script>
+
 </body></html>
