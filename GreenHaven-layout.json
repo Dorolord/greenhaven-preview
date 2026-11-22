@@ -1,0 +1,193 @@
+{
+  "project": "GreenHaven",
+  "type": "farm-layout",
+  "version": 2,
+  "objects": [
+    {
+      "id": "house",
+      "name": "Будинок",
+      "x": 23.47,
+      "y": 25.65,
+      "w": 35.8,
+      "h": 17.3
+    },
+    {
+      "id": "mill",
+      "name": "Млин",
+      "x": 79.81,
+      "y": 27.17,
+      "w": 27,
+      "h": 15
+    },
+    {
+      "id": "apiary",
+      "name": "Пасіка",
+      "x": 86.32,
+      "y": 46.51,
+      "w": 22.0875,
+      "h": 9.7185
+    },
+    {
+      "id": "chicken",
+      "name": "Ангар 1 · кури",
+      "x": 54.72,
+      "y": 37,
+      "w": 22.57128,
+      "h": 7.7832
+    },
+    {
+      "id": "cow",
+      "name": "Ангар 2 · корови",
+      "x": 21.11,
+      "y": 43.78,
+      "w": 31.32,
+      "h": 10.8
+    },
+    {
+      "id": "garden",
+      "name": "Город",
+      "x": 50,
+      "y": 68.05,
+      "w": 128.7,
+      "h": 35.1
+    },
+    {
+      "id": "plot-1",
+      "name": "Грядка 1",
+      "x": 26.67,
+      "y": 63.77,
+      "w": 33.91025,
+      "h": 15.18385
+    },
+    {
+      "id": "plot-2",
+      "name": "Грядка 2",
+      "x": 51.14,
+      "y": 63.6,
+      "w": 33.91025,
+      "h": 15.18385
+    },
+    {
+      "id": "plot-3",
+      "name": "Грядка 3",
+      "x": 74.96,
+      "y": 63.7,
+      "w": 33.91025,
+      "h": 15.18385
+    },
+    {
+      "id": "plot-4",
+      "name": "Грядка 4",
+      "x": 51.24,
+      "y": 74.14,
+      "w": 33.91025,
+      "h": 15.18385
+    },
+    {
+      "id": "plot-5",
+      "name": "Грядка 5",
+      "x": 26.69,
+      "y": 74.11,
+      "w": 33.91025,
+      "h": 15.18385
+    },
+    {
+      "id": "plot-6",
+      "name": "Грядка 6",
+      "x": 74.95,
+      "y": 74.07,
+      "w": 33.91025,
+      "h": 15.18385
+    }
+  ],
+  "cowPosition": {
+    "left": 42.51,
+    "top": 38.75
+  },
+  "apiaryHivePositions": [
+    {
+      "left": 34.37,
+      "top": 66,
+      "size": 19
+    },
+    {
+      "left": 45.39,
+      "top": 66,
+      "size": 19
+    },
+    {
+      "left": 56.4,
+      "top": 66,
+      "size": 19
+    }
+  ],
+  "apiaryMapHives": [
+    {
+      "x": 78.676,
+      "y": 44.686,
+      "width": 8.896
+    },
+    {
+      "x": 83.721,
+      "y": 44.713,
+      "width": 8.896
+    },
+    {
+      "x": 88.477,
+      "y": 44.731,
+      "width": 8.896
+    }
+  ],
+  "apiaryHivesSizeVersion": 78,
+  "apiaryOwnedHives": 3,
+  "bedTilledStates": {
+    "1": true,
+    "2": true,
+    "3": true,
+    "4": true,
+    "5": true,
+    "6": true
+  },
+  "carrotGrowthStages": {
+    "1": 1,
+    "2": 0,
+    "3": 0,
+    "4": 0,
+    "5": 0,
+    "6": 0
+  },
+  "cowshedRepaired": true,
+  "cowPurchased": true,
+  "chickenCoopRepaired": true,
+  "chickenCount": 3,
+  "orangeHenPosition": {
+    "x": 37.616,
+    "y": 43.837,
+    "width": 6.93
+  },
+  "orangeHenSizeVersion": 95,
+  "familyHenPosition": {
+    "x": 64.386,
+    "y": 49.06,
+    "width": 9.765
+  },
+  "familyHenSizeVersion": 94,
+  "roosterPosition": {
+    "x": 55.312,
+    "y": 42.568,
+    "width": 7.08768
+  },
+  "roosterSizeVersion": 99,
+  "dogPosition": {
+    "x": 22.879,
+    "y": 33.136,
+    "width": 10.971
+  },
+  "dogSizeVersion": 3,
+  "smokePosition": {
+    "x": 32.953,
+    "y": 11.671,
+    "width": 16
+  },
+  "smokeAnimationVersion": 1
+}
