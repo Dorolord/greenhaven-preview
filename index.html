@@ -849,8 +849,16 @@ body:not(.gh-debug-visible) .page {padding-bottom:0}
 /* v272: approved three-resource artwork; waits for exact uploaded sprite before replacing legacy counters. */
 .stage.gh-resources-ready .gh-ui-topbar .gh-ui-money {display:none!important}
 .gh-resource-strip[hidden] {display:none!important}
+/* v273: One compact header row—approved XP panel on the left, three approved resources on the right.
+   Keep the artwork in its original aspect ratio; reserve exact XP width on each phone. */
+.stage { --gh-header-xp-width:clamp(151.01526px,38.37273vw,268.60911px); }
+@media (max-width:390px){ .stage{--gh-header-xp-width:148.5396px;} }
+@media (max-width:340px){ .stage{--gh-header-xp-width:128.73432px;} }
 .gh-resource-strip {
- position:absolute;left:8px;right:8px;top:calc(clamp(58px,14vw,78px) + env(safe-area-inset-top,0px));
+ position:absolute;
+ left:calc(9px + var(--gh-header-xp-width) + 7px);
+ right:8px;
+ top:calc(9px + env(safe-area-inset-top,0px));
  z-index:449;aspect-ratio:2144 / 380;overflow:visible;pointer-events:auto;
 }
 .gh-resource-strip img {display:block;width:100%;height:100%;object-fit:contain;pointer-events:none;user-select:none;-webkit-user-drag:none}
@@ -864,7 +872,7 @@ body:not(.gh-debug-visible) .page {padding-bottom:0}
 .gh-resource-hit:nth-of-type(2){left:33.333333%}
 .gh-resource-hit:nth-of-type(3){left:66.666666%}
 .gh-resource-hit:focus-visible {opacity:1;outline:2px solid #f6d36b;outline-offset:0}
-body:not(.gh-debug-visible) .gh-ui-screen {padding-top:calc(clamp(145px,29vw,190px) + env(safe-area-inset-top,0px))}
+body:not(.gh-debug-visible) .gh-ui-screen {padding-top:calc(clamp(90px,21vw,116px) + env(safe-area-inset-top,0px))}
 
 </style><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"></head><body><main class="page"><section class="stage" id="stage" aria-label="Інтерактивний макет ферми">
 <button id="gh-cowshed-toggle" class="gh-cowshed-toggle" type="button" aria-pressed="false" title="Тест: спершу ремонт, потім окрема покупка корови">🛠 Відновити корівник</button>
@@ -908,7 +916,6 @@ body:not(.gh-debug-visible) .gh-ui-screen {padding-top:calc(clamp(145px,29vw,190
   </button>
   <button class="gh-ui-money" type="button" data-gh-top-market="true" aria-label="Відкрити магазин, монети">🪙 <span>0</span></button>
   <button class="gh-ui-money" type="button" data-gh-top-market="true" aria-label="Відкрити магазин, зірки">⭐ <span>0</span></button>
-  <button class="gh-ui-settings" id="gh-ui-open-settings" type="button" aria-label="Профіль і налаштування">⚙️</button>
 </div>
 <div class="gh-ui-screen" id="gh-ui-screen" role="region" aria-label="Екран гри" hidden></div>
 <nav class="gh-ui-bottom" id="gh-ui-bottom" aria-label="Нижнє меню GreenHaven">
@@ -2440,7 +2447,6 @@ render();
  }
  navButtons.forEach(b=>b.addEventListener('click',()=>showTab(b.dataset.ghTab)));
  document.getElementById('gh-ui-open-profile').addEventListener('click',()=>showTab('profile'));
- document.getElementById('gh-ui-open-settings').addEventListener('click',()=>showTab('profile'));
  document.querySelectorAll('[data-gh-top-market]').forEach(b=>b.addEventListener('click',()=>showTab('market')));
  screen.addEventListener('click',e=>{
   const category=e.target.closest('[data-gh-shop-cat]');
