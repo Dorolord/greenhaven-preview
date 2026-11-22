@@ -874,6 +874,28 @@ body:not(.gh-debug-visible) .page {padding-bottom:0}
 .gh-resource-hit:nth-of-type(3){left:66.666666%}
 .gh-resource-hit:focus-visible {opacity:1;outline:2px solid #f6d36b;outline-offset:0}
 body:not(.gh-debug-visible) .gh-ui-screen {padding-top:calc(clamp(90px,21vw,116px) + env(safe-area-inset-top,0px))}
+/* v275: dynamic values over the approved resource artwork; artwork and layout unchanged. */
+.gh-econ-number {
+  position:absolute;z-index:1;top:50.5%;height:28%;transform:translate(-50%,-50%);
+  display:flex;align-items:center;justify-content:center;white-space:nowrap;
+  border-radius:999px;pointer-events:none;user-select:none;
+  background:linear-gradient(180deg,#543118 0%,#59351c 48%,#4f2a15 100%);
+  color:#fff1c9;font:900 clamp(9px,2.65vw,15px)/1.05 Georgia,serif;
+  text-shadow:0 1px 1px #2a170c,0 0 1px #2a170c;
+}
+.gh-econ-number[data-gh-balance="gold"] {left:20.2%;width:12.4%}
+.gh-econ-number[data-gh-balance="diamonds"] {left:51.25%;width:8.8%}
+.gh-econ-number[data-gh-balance="greenToken"] {left:83%;width:8.8%}
+.gh-econ-grid {display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:12px}
+.gh-econ-grid button {border:1px solid #c6a46c;border-radius:11px;background:#fff9e7;
+ color:#3c4d2c;padding:10px 7px;min-height:42px;cursor:pointer;
+ font:800 12px/1.25 system-ui,-apple-system,"Segoe UI",sans-serif;
+ touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+.gh-econ-grid button:active {background:#e3f0cd}
+.gh-econ-grid .gh-econ-reset {background:#e8ddc6;grid-column:span 2}
+.gh-econ-summary {margin-top:10px;font-size:12px;font-weight:750;color:#435b2a;line-height:1.45}
+.gh-econ-status {min-height:2.4em;margin:8px 0 0;font-size:11px;line-height:1.4;color:#486134}
+.gh-econ-note {font-size:11px;color:#5b7147;line-height:1.4;margin:8px 0 0}
 
 </style><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"></head><body><main class="page"><section class="stage" id="stage" aria-label="Інтерактивний макет ферми">
 <button id="gh-cowshed-toggle" class="gh-cowshed-toggle" type="button" aria-pressed="false" title="Тест: спершу ремонт, потім окрема покупка корови">🛠 Відновити корівник</button>
@@ -929,6 +951,9 @@ body:not(.gh-debug-visible) .gh-ui-screen {padding-top:calc(clamp(90px,21vw,116p
 <!-- v272: Approved farm-style gold, diamonds and Green Token sprites. Values are demo artwork, not server balances. -->
 <div class="gh-resource-strip" id="gh-resource-strip" hidden role="group" aria-label="Ігрові ресурси: золото, діаманти, Green Token">
  <img src="assets/gh-resources-approved-v272.webp" alt="" aria-hidden="true" draggable="false">
+ <div class="gh-econ-number" data-gh-balance="gold" aria-hidden="true">1 250</div>
+ <div class="gh-econ-number" data-gh-balance="diamonds" aria-hidden="true">25</div>
+ <div class="gh-econ-number" data-gh-balance="greenToken" aria-hidden="true">0</div>
  <button type="button" class="gh-resource-hit" data-gh-top-market="true" title="Золото — 1250 (демонстраційне значення)" aria-label="Золото: 1250, демонстраційне значення; відкрити ринок"></button>
  <button type="button" class="gh-resource-hit" data-gh-top-market="true" title="Діаманти — 25 (демонстраційне значення)" aria-label="Діаманти: 25, демонстраційне значення; відкрити ринок"></button>
  <button type="button" class="gh-resource-hit" data-gh-top-market="true" title="Green Token — 0 (демонстраційне значення)" aria-label="Green Token: 0, демонстраційне значення; відкрити ринок"></button>
@@ -2392,6 +2417,109 @@ render();
   window.requestAnimationFrame(draw);
 })();
 </script>
+<script id="gh-economy-v275">
+/* Local-only, test-only economy. No real currency or external payments. */
+(() => {
+ "use strict";
+ const KEY="greenhaven-preview-economy-v275";
+ const MAX_BALANCE=1000000000;
+ const initial=()=>({level:1,xp:0,gold:1250,diamonds:25,greenToken:0,claimed:[]});
+ const requirement=level=>100+50*(Math.max(1,level)-1);
+ const integer=(x,min,max,fallback)=>Number.isSafeInteger(x)&&x>=min&&x<=max?x:fallback;
+ function hydrate(){
+   let raw;
+   try{raw=JSON.parse(localStorage.getItem(KEY));}catch(_){return initial();}
+   if(!raw||typeof raw!=="object")return initial();
+   const level=integer(raw.level,1,10000,1);
+   const need=requirement(level);
+   return {level,
+      xp:integer(raw.xp,0,need-1,0),
+      gold:integer(raw.gold,0,MAX_BALANCE,1250),
+      diamonds:integer(raw.diamonds,0,MAX_BALANCE,25),
+      greenToken:integer(raw.greenToken,0,MAX_BALANCE,0),
+      claimed:Array.isArray(raw.claimed)?raw.claimed.filter(x=>typeof x==="string").slice(-50):[]};
+ }
+ let state=hydrate();
+ let message="Натисни кнопку, щоб перевірити нарахування. Дані збережуться на цьому пристрої.";
+ const format=n=>Math.floor(n).toLocaleString("uk-UA");
+ function render(){
+   if(typeof window.GreenHavenSetXP==="function")
+     window.GreenHavenSetXP(state.level,state.xp,requirement(state.level));
+   document.querySelectorAll("[data-gh-balance]").forEach(el=>{
+      const k=el.getAttribute("data-gh-balance");
+      if(Object.prototype.hasOwnProperty.call(state,k))el.textContent=format(state[k]);
+   });
+   const descriptions=[
+     ["Золото",state.gold],["Діаманти",state.diamonds],["Green Token",state.greenToken]
+   ];
+   document.querySelectorAll("#gh-resource-strip .gh-resource-hit").forEach((btn,i)=>{
+     const entry=descriptions[i];if(!entry)return;
+     btn.setAttribute("aria-label",entry[0]+": "+format(entry[1])+"; відкрити ринок");
+     btn.title=entry[0]+": "+format(entry[1]);
+   });
+   const fallback=document.querySelectorAll(".gh-ui-topbar .gh-ui-money span");
+   if(fallback[0])fallback[0].textContent=format(state.gold);
+   if(fallback[1])fallback[1].textContent=format(state.diamonds);
+ }
+ function persist(){
+   try{localStorage.setItem(KEY,JSON.stringify(state));}catch(_){message+=" (Збереження в браузері недоступне)";}
+   render();
+ }
+ function change(values,uniqueId){
+   if(uniqueId&&state.claimed.includes(uniqueId)){
+     message="Цю винагороду вже нараховано. Повторного нарахування немає.";
+     return false;
+   }
+   const v={xp:0,gold:0,diamonds:0,greenToken:0,...values};
+   if(!Object.values(v).every(n=>Number.isSafeInteger(n)&&Math.abs(n)<=100000)){
+     message="Помилка: неправильна кількість ресурсів.";return false;
+   }
+   for(const k of ["gold","diamonds","greenToken"]){
+     if(state[k]+v[k]<0){message="Недостатньо "+(k==="gold"?"золота":k==="diamonds"?"діамантів":"Green Token")+". Списання заблоковано.";return false;}
+     if(state[k]+v[k]>MAX_BALANCE){message="Перевищено тестовий ліміт балансу.";return false;}
+   }
+   if(v.xp<0){message="XP не можна віднімати цією тестовою дією.";return false;}
+   const next={...state};
+   for(const k of ["gold","diamonds","greenToken"])next[k]+=v[k];
+   next.xp+=v.xp;
+   let levels=0;
+   while(next.xp>=requirement(next.level)&&next.level<10000){
+     next.xp-=requirement(next.level);
+     next.level++;
+     levels++;
+   }
+   if(next.level===10000)next.xp=Math.min(next.xp,requirement(next.level)-1);
+   if(uniqueId)next.claimed=[...state.claimed,uniqueId].slice(-50);
+   state=next;
+   message="Нараховано або списано успішно."+(levels?" Новий рівень: "+next.level+"!":"");
+   persist();
+   return true;
+ }
+ function action(a){
+   switch(a){
+    case "xp10":return change({xp:10});
+    case "xp100":return change({xp:100});
+    case "gold100":return change({gold:100});
+    case "diamonds10":return change({diamonds:10});
+    case "token1":return change({greenToken:1});
+    case "spendGold":return change({gold:-50});
+    case "spendDiamonds":return change({diamonds:-5});
+    case "harvestOnce":
+    case "harvestRepeat":return change({xp:20,gold:30},"demo-harvest-001");
+    case "reset":state=initial();message="Тестові XP і баланси скинуто. План ферми не змінено.";persist();return true;
+    default:message="Невідома тестова дія.";return false;
+   }
+ }
+ window.GreenHavenEconomy={
+   getState:()=>({...state,claimed:[...state.claimed]}),
+   requirement,
+   action,
+   getMessage:()=>message,
+   render
+ };
+})();
+</script>
+
 <script>
 /* v236 UI navigation prototype: read-only inventory, no purchases or currency writes. */
 (()=>{
@@ -2423,13 +2551,30 @@ render();
  <div class="gh-ui-panel"><div class="gh-ui-switcher" role="group" aria-label="Категорії магазину">${categories.map(([id,title])=>`<button type="button" data-gh-shop-cat="${id}" aria-pressed="${marketCategory===id}">${title}</button>`).join('')}</div>
  <div class="gh-ui-shop-grid">${shopData[marketCategory].map(([emoji,name])=>`<div class="gh-ui-shop-card"><span class="gh-ui-shop-icon">${ghUiCropIcon(emoji)}</span><strong>${esc(name)}</strong><small>Тестова картка</small><button type="button" disabled>Незабаром</button></div>`).join('')}</div></div>
  <p class="gh-ui-disclaimer">Ціни та реальні покупки ще не налаштовані — зараз це макет інтерфейсу.</p>`}
- function profile(){return `<h2>👤 Профіль</h2><p class="gh-ui-sub">Тут будуть розвиток ферми, досягнення та персональні налаштування.</p>
- <div class="gh-ui-panel"><div class="gh-ui-profile-head"><span class="gh-ui-profile-avatar">👨‍🌾</span><div><h3>Фермер</h3><span class="gh-ui-pill">🌱 Рівень 1</span></div></div>
- <div class="gh-ui-progress" aria-label="Прогрес досвіду: 0 зі 100"><span></span></div><p class="gh-ui-muted">0 / 100 досвіду · тестовий профіль</p></div>
+ function profile(){const eco=window.GreenHavenEconomy;const eb=eco.getState();const req=eco.requirement(eb.level);return `<h2>👤 Профіль</h2><p class="gh-ui-sub">Тут будуть розвиток ферми, досягнення та персональні налаштування.</p>
+ <div class="gh-ui-panel"><div class="gh-ui-profile-head"><span class="gh-ui-profile-avatar">👨‍🌾</span><div><h3>Фермер</h3><span class="gh-ui-pill">🌱 Рівень ${eb.level}</span></div></div>
+ <div class="gh-ui-progress" aria-label="Прогрес досвіду: ${eb.xp} зі ${req}"><span style="width:${(eb.xp/req*100).toFixed(2)}%"></span></div><p class="gh-ui-muted">${eb.xp} / ${req} досвіду · локальний тест</p></div>
  <div class="gh-ui-panel"><h3>⚙️ Налаштування</h3><div class="gh-ui-setting-lines">
  <button class="gh-ui-row-action" type="button" id="gh-ui-editor-toggle"><span>🛠 Режим редактора ферми</span><span>${document.body.classList.contains('gh-debug-visible')?'Увімк.':'Вимк.'}</span></button>
  <button class="gh-ui-row-action" type="button" id="gh-ui-how-to"><span>❓ Як користуватися прототипом</span><span>›</span></button>
- </div></div><p class="gh-ui-disclaimer">Значення рівня й валют демонстраційні; прогрес, магазин і склад будемо підключати окремо.</p>`}
+ </div>
+ <h3 style="margin-top:18px">🧪 Тест економіки</h3>
+ <p class="gh-econ-summary">🪙 ${eb.gold.toLocaleString('uk-UA')} золота · 💎 ${eb.diamonds.toLocaleString('uk-UA')} діамантів · 🍀 ${eb.greenToken.toLocaleString('uk-UA')} Green Token</p>
+ <p class="gh-econ-note">Для тесту: 1-й рівень = 100 XP, кожний наступний потребує на 50 XP більше.</p>
+ <div class="gh-econ-grid" aria-label="Тестові дії економіки">
+  <button type="button" data-gh-econ-action="xp10">⭐ +10 XP</button>
+  <button type="button" data-gh-econ-action="xp100">⭐ +100 XP</button>
+  <button type="button" data-gh-econ-action="gold100">🪙 +100 золота</button>
+  <button type="button" data-gh-econ-action="diamonds10">💎 +10 діамантів</button>
+  <button type="button" data-gh-econ-action="token1">🍀 +1 Green Token</button>
+  <button type="button" data-gh-econ-action="spendGold">🪙 −50 золота</button>
+  <button type="button" data-gh-econ-action="spendDiamonds">💎 −5 діамантів</button>
+  <button type="button" data-gh-econ-action="harvestOnce">🌾 Урожай +20 XP і +30 золота (1 раз)</button>
+  <button type="button" data-gh-econ-action="harvestRepeat">🔁 Повторити той самий урожай</button>
+  <button type="button" class="gh-econ-reset" data-gh-econ-action="reset">↺ Скинути тільки тест економіки</button>
+ </div>
+ <p class="gh-econ-status" role="status" aria-live="polite">${eco.getMessage()}</p>
+ </div><p class="gh-ui-disclaimer">Тестові баланси зберігаються лише в цьому браузері. Це не реальні виплати й не синхронізований ігровий сервер.</p>}
  function paint(){
   navButtons.forEach(b=>b.setAttribute('aria-selected',String(b.dataset.ghTab===currentTab)));
    if (ghNavArt && ghNavImages[currentTab] && ghNavArt.src!==ghNavImages[currentTab]) ghNavArt.src=ghNavImages[currentTab];
@@ -2450,6 +2595,14 @@ render();
  document.getElementById('gh-ui-open-profile').addEventListener('click',()=>showTab('profile'));
  document.querySelectorAll('[data-gh-top-market]').forEach(b=>b.addEventListener('click',()=>showTab('market')));
  screen.addEventListener('click',e=>{
+  const econButton=e.target.closest('[data-gh-econ-action]');
+  if(econButton){
+    const pos=screen.scrollTop;
+    window.GreenHavenEconomy.action(econButton.dataset.ghEconAction);
+    paint();
+    screen.scrollTop=pos;
+    return;
+  }
   const category=e.target.closest('[data-gh-shop-cat]');
   if(category){marketCategory=category.dataset.ghShopCat;paint();return;}
   if(e.target.closest('#gh-ui-editor-toggle')){document.body.classList.toggle('gh-debug-visible');paint();return;}
@@ -2490,5 +2643,6 @@ window.GreenHavenSetXP=function(level,earned,required){
  if(image.complete && image.naturalWidth>0)show();
 })();
 </script>
+<script id="gh-economy-v275-render">window.GreenHavenEconomy?.render();</script>
 
 </body></html>
