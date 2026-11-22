@@ -831,7 +831,14 @@ body:not(.gh-debug-visible) .page {padding-bottom:0}
   min-width:0; max-width:none; min-height:0; height:auto;
   aspect-ratio:2123/650; overflow:visible; border-radius:0; cursor:pointer; isolation:isolate;
 }
-.gh-xp-illustrated .gh-xp-painted-art {position:absolute;display:block;inset:0;width:100%;height:100%;object-fit:fill;pointer-events:none;user-select:none;filter:drop-shadow(0 2px 2px #1a23065c)}
+/* v269: Pixel-accurate alpha mask for the white checkerboard mistakenly baked behind the top-right plant. */
+.gh-xp-illustrated .gh-xp-painted-art {position:absolute;display:block;inset:0;width:100%;height:100%;object-fit:fill;pointer-events:none;user-select:none;filter:drop-shadow(0 2px 2px #1a23065c);
+  -webkit-mask-image:url("assets/gh_xp_white_matte_mask_v269.svg");
+  mask-image:url("assets/gh_xp_white_matte_mask_v269.svg");
+  -webkit-mask-size:100% 100%;mask-size:100% 100%;
+  -webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;
+  -webkit-mask-position:center;mask-position:center;
+}
 .gh-xp-illustrated .gh-xp-painted-level {position:absolute;left:18.2%;top:51.5%;transform:translate(-50%,-50%);font-family:Georgia,serif;font-weight:900;font-size:clamp(12.276px,2.1483vw,22.506px);line-height:1;color:#fff8d6;text-shadow:0 1px 1px #264308,-1px -1px 0 #244b16,1px 2px 2px #1d340e;pointer-events:none}
 .gh-xp-illustrated .gh-xp-painted-fill-clip {position:absolute;left:30.9%;top:46.7%;width:55.4%;height:18.5%;overflow:hidden;border-radius:999px;pointer-events:none;}
 .gh-xp-illustrated .gh-xp-painted-fill {display:block;height:100%;border-radius:999px;transition:width .28s ease;background:repeating-linear-gradient(125deg, transparent 0 13px,#bafc3b26 13px 23px),linear-gradient(180deg,#d4ff57 0%,#92df08 36%,#62bd0a 74%,#338308 100%);box-shadow:inset 0 1px 1px #ecffb6,inset 0 -1px 2px #1a500a,0 0 3px #baf928a8;}
