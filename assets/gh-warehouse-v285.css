@@ -18,7 +18,7 @@
 }
 #gh-ui-screen .gh-warehouse-scroll::-webkit-scrollbar{display:none;width:0}
 #gh-ui-screen .gh-warehouse-grid{
- display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1.7%;align-content:start;
+ display:grid;grid-template-columns:repeat(3,minmax(0,1fr));column-gap:1.7%;row-gap:clamp(5px,1.4vw,9px);align-content:start;
  padding:0 1.1% 1.5%;width:100%;min-height:100%;
 }
 #gh-ui-screen .gh-warehouse-cell{
