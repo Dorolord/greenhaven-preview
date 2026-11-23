@@ -899,7 +899,7 @@ body:not(.gh-debug-visible) .gh-ui-screen {padding-top:calc(clamp(90px,21vw,116p
 .gh-econ-status {min-height:2.4em;margin:8px 0 0;font-size:11px;line-height:1.4;color:#486134}
 .gh-econ-note {font-size:11px;color:#5b7147;line-height:1.4;margin:8px 0 0}
 
-</style><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><link rel="stylesheet" href="assets/gh-warehouse-v283.css?v=283">
+</style><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><link rel="stylesheet" href="assets/gh-warehouse-v284.css?v=284">
 </head><body><main class="page"><section class="stage" id="stage" aria-label="Інтерактивний макет ферми">
 <button id="gh-cowshed-toggle" class="gh-cowshed-toggle" type="button" aria-pressed="false" title="Тест: спершу ремонт, потім окрема покупка корови">🛠 Відновити корівник</button>
 <button id="gh-cow-toggle" class="gh-cow-toggle" type="button" aria-pressed="true" title="Купити першу корову (лише тест, без оплати)" hidden>🐄 Купити корову</button>
@@ -2562,7 +2562,7 @@ render();
   ["wood","🪵","Деревина"],["cotton","☁️","Бавовна"]
  ];
  const ghWareMeta=new Map(ghWareCatalog.map(item=>[item[0],item]));
- let ghWareStock={};let ghWarePage=0;
+ let ghWareStock={};let ghWareScrollTop=0;
  try{
   const saved=JSON.parse(localStorage.getItem(GH_WAREHOUSE_KEY)||"{}");
   if(saved && typeof saved==="object" && !Array.isArray(saved)){
@@ -2579,11 +2579,28 @@ render();
     return (ai<0?9999:ai)-(bi<0?9999:bi)||a[0].localeCompare(b[0]);
    });
  }
- function ghWarePages(){return Math.max(1,Math.ceil(ghWareEntries().length/12));}
- function ghWareChangePage(step){
-  const next=Math.max(0,Math.min(ghWarePage+step,ghWarePages()-1));
-  if(next===ghWarePage)return;
-  ghWarePage=next;if(currentTab==="warehouse")paint();
+
+ function ghWareGetScroll(){return screen.querySelector('.gh-warehouse-scroll');}
+ function ghWareUpdateScrollbar(){
+  const sc=ghWareGetScroll();if(!sc)return;
+  ghWareScrollTop=sc.scrollTop;
+  const max=Math.max(0,sc.scrollHeight-sc.clientHeight);
+  const progress=max?Math.min(1,Math.max(0,sc.scrollTop/max)):0;
+  const track=screen.querySelector('.gh-warehouse-scrollbar');
+  if(track){track.style.setProperty('--gh-wh-progress',String(progress));track.setAttribute('aria-valuenow',String(Math.round(progress*100)));}
+ }
+ function ghWareScrollBy(direction){
+  const sc=ghWareGetScroll();if(!sc)return;
+  sc.scrollBy({top:direction*sc.clientHeight*.80,behavior:'smooth'});
+ }
+ function ghWareSeek(event){
+  const sc=ghWareGetScroll(),track=screen.querySelector('.gh-warehouse-scrollbar');
+  if(!sc||!track)return;
+  const rect=track.getBoundingClientRect();
+  const pos=(event.clientY-rect.top)/Math.max(1,rect.height);
+  const progress=Math.min(1,Math.max(0,(pos-.195)/.71));
+  sc.scrollTop=progress*Math.max(0,sc.scrollHeight-sc.clientHeight);
+  ghWareUpdateScrollbar();
  }
  window.GreenHavenInventory={
   getState(){return {...ghWareStock};},
@@ -2600,21 +2617,29 @@ render();
    if(count===previous)delete ghWareStock[id];else ghWareStock[id]=previous-count;
    ghWareSave();if(currentTab==="warehouse")paint();return true;
   },
-  reset(){ghWareStock={};ghWarePage=0;ghWareSave();if(currentTab==="warehouse")paint();}
+  reset(){ghWareStock={};ghWareScrollTop=0;ghWareSave();if(currentTab==="warehouse")paint();}
  };
 
+
  function warehouse(){
-  const entries=ghWareEntries(),pages=Math.max(1,Math.ceil(entries.length/12));
-  ghWarePage=Math.min(ghWarePage,pages-1);
-  const visible=entries.slice(ghWarePage*12,(ghWarePage+1)*12);
-  const items=visible.map(([id,count])=>{
+  const entries=ghWareEntries();
+  /* 24 rows x 3 columns: actual scrollable empty card artwork, not a simulated page jump. */
+  const symbols=entries.slice(0,72).map(([id,count],index)=>{
    const meta=ghWareMeta.get(id)||[id,"📦",id];
-   return '<div class="gh-warehouse-stock-item" title="'+esc(meta[2])+'"><span class="gh-warehouse-stock-icon" aria-hidden="true">'+esc(meta[1])+'</span><span class="gh-warehouse-stock-badge">'+count+'</span></div>';
-  }).join("");
+   const row=Math.floor(index/3),col=index%3;
+   const offset=row<4?row*253:1012+(row-4)*254;
+   return '<div class="gh-warehouse-stock-item" title="'+esc(meta[2])+'" style="left:'+(col*100/3).toFixed(4)+'%;top:'+(offset*100/6092).toFixed(4)+'%;width:33.3334%;height:'+(254*100/6092).toFixed(4)+'%">'+
+    '<span class="gh-warehouse-stock-icon" aria-hidden="true">'+esc(meta[1])+'</span>'+
+    '<span class="gh-warehouse-stock-badge">'+count+'</span></div>';
+  }).join('');
   return '<div class="gh-warehouse-art" role="group" aria-label="Склад: '+(entries.length?entries.length+' видів ресурсів':'поки порожній')+'">'+
-   '<div class="gh-warehouse-stock" aria-label="Зібрані ресурси">'+items+'</div>'+
-   '<button type="button" class="gh-warehouse-arrow" data-gh-warehouse-prev aria-label="Попередні ресурси" '+(ghWarePage===0?'disabled':'')+'></button>'+
-   '<button type="button" class="gh-warehouse-arrow" data-gh-warehouse-next aria-label="Наступні ресурси" '+(ghWarePage+1>=pages?'disabled':'')+'></button>'+
+   '<div id="gh-warehouse-scroll-area" class="gh-warehouse-scroll" aria-label="Прокрутка комірок складу" tabindex="0">'+
+    '<div class="gh-warehouse-sheet"><img class="gh-warehouse-sheet-image" src="assets/gh-warehouse-scroll-v284.webp" alt="" draggable="false">'+symbols+'</div>'+
+   '</div>'+
+   '<div class="gh-warehouse-scrollbar" role="scrollbar" aria-label="Прокрутка складу" aria-controls="gh-warehouse-scroll-area" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" aria-orientation="vertical" tabindex="0" data-gh-warehouse-scrollbar>'+
+    '<div class="gh-warehouse-scrollbar-track"><div class="gh-warehouse-thumb"></div></div></div>'+
+   '<button type="button" class="gh-warehouse-arrow" data-gh-warehouse-prev aria-label="Прокрутити склад вгору"></button>'+
+   '<button type="button" class="gh-warehouse-arrow" data-gh-warehouse-next aria-label="Прокрутити склад вниз"></button>'+
    '<button type="button" class="gh-warehouse-close" data-gh-warehouse-close aria-label="Закрити склад і повернутися на ферму"></button></div>';
  }
  function market(){const categories=[['seeds','🌱 Насіння'],['animals','🐄 Тварини'],['buildings','🏡 Будівлі']];return `<h2>🛒 Ринок</h2><p class="gh-ui-sub">Майбутній магазин насіння, тварин, будівель і прикрас.</p>
@@ -2653,6 +2678,14 @@ render();
   if(screen.hidden){screen.innerHTML='';return}
   screen.innerHTML=currentTab==='warehouse'?warehouse():currentTab==='market'?market():profile();
   screen.scrollTop=0;
+  if(currentTab==='warehouse'){
+   const sc=ghWareGetScroll();
+   if(sc){
+    sc.scrollTop=ghWareScrollTop;
+    sc.addEventListener('scroll',ghWareUpdateScrollbar,{passive:true});
+    ghWareUpdateScrollbar();
+   }
+  }
  }
  function showTab(tab){if(!['farm','warehouse','market','profile'].includes(tab))return;
    currentTab=tab;
@@ -2665,27 +2698,54 @@ render();
  navButtons.forEach(b=>b.addEventListener('click',()=>showTab(b.dataset.ghTab)));
  document.getElementById('gh-ui-open-profile').addEventListener('click',()=>showTab('profile'));
  document.querySelectorAll('[data-gh-top-market]').forEach(b=>b.addEventListener('click',()=>showTab('market')));
- // Page through 12 visible slots without moving the approved background artwork.
- let ghWarehouseTouchY=null;
+ // Actual inertial finger-scrolling in the item grid; dragging elsewhere on the panel scrolls the same list.
+ let ghWarePanelTouchY=null,ghWareDragTrack=null,ghWareClosing=false;
  screen.addEventListener('touchstart',e=>{
-  if(currentTab==='warehouse'&&e.touches.length===1&&e.target.closest('.gh-warehouse-art'))ghWarehouseTouchY=e.touches[0].clientY;
+  if(currentTab!=='warehouse'||e.touches.length!==1)return;
+  const target=e.target;
+  if(target.closest('.gh-warehouse-art')&&!target.closest('.gh-warehouse-scroll,.gh-warehouse-scrollbar,.gh-warehouse-close,.gh-warehouse-arrow'))ghWarePanelTouchY=e.touches[0].clientY;
  },{passive:true});
  screen.addEventListener('touchend',e=>{
-  if(ghWarehouseTouchY===null)return;
-  const distance=ghWarehouseTouchY-(e.changedTouches[0]?.clientY??ghWarehouseTouchY);
-  ghWarehouseTouchY=null;
-  if(Math.abs(distance)>36)ghWareChangePage(distance>0?1:-1);
+  if(ghWarePanelTouchY===null)return;
+  const distance=ghWarePanelTouchY-(e.changedTouches[0]?.clientY??ghWarePanelTouchY);
+  ghWarePanelTouchY=null;
+  if(Math.abs(distance)>12)ghWareGetScroll()?.scrollBy({top:distance,behavior:'smooth'});
  },{passive:true});
  screen.addEventListener('wheel',e=>{
-  if(currentTab==='warehouse'&&e.target.closest('.gh-warehouse-art')){
-   if(e.cancelable)e.preventDefault();
-   if(Math.abs(e.deltaY)>8)ghWareChangePage(e.deltaY>0?1:-1);
+  if(currentTab==='warehouse'&&e.target.closest('.gh-warehouse-art')&&!e.target.closest('.gh-warehouse-scroll')){
+   if(e.cancelable)e.preventDefault();const sc=ghWareGetScroll();if(sc)sc.scrollTop+=e.deltaY;
   }
  },{passive:false});
+ screen.addEventListener('pointerdown',e=>{
+  if(currentTab!=='warehouse')return;
+  const btn=e.target.closest('[data-gh-warehouse-close]');if(btn)btn.classList.add('is-pressed');
+  const slider=e.target.closest('[data-gh-warehouse-scrollbar]');
+  if(slider){e.preventDefault();ghWareDragTrack=slider;try{slider.setPointerCapture(e.pointerId);}catch(err){}ghWareSeek(e);}
+ });
+ screen.addEventListener('pointermove',e=>{if(ghWareDragTrack)ghWareSeek(e);});
+ for(const kind of ['pointerup','pointercancel']){
+  screen.addEventListener(kind,e=>{
+   screen.querySelector('[data-gh-warehouse-close]')?.classList.remove('is-pressed');
+   if(ghWareDragTrack){try{ghWareDragTrack.releasePointerCapture(e.pointerId);}catch(err){}ghWareDragTrack=null;}
+  });
+ }
+ screen.addEventListener('keydown',e=>{
+  if(currentTab!=='warehouse')return;
+  if(e.target.matches('[data-gh-warehouse-scrollbar]')&&['ArrowDown','ArrowUp','PageDown','PageUp'].includes(e.key)){
+   e.preventDefault();ghWareScrollBy(['ArrowDown','PageDown'].includes(e.key)?1:-1);
+  }
+ });
  screen.addEventListener('click',e=>{
-  if(e.target.closest('[data-gh-warehouse-close]')){showTab('farm');return;}
-  if(e.target.closest('[data-gh-warehouse-prev]')){ghWareChangePage(-1);return;}
-  if(e.target.closest('[data-gh-warehouse-next]')){ghWareChangePage(1);return;}
+  if(e.target.closest('[data-gh-warehouse-close]')){
+   if(ghWareClosing)return;
+   ghWareClosing=true;
+   const close=screen.querySelector('[data-gh-warehouse-close]');
+   close?.classList.add('is-pressed');
+   window.setTimeout(()=>{ghWareScrollTop=0;ghWareClosing=false;showTab('farm');},175);
+   return;
+  }
+  if(e.target.closest('[data-gh-warehouse-prev]')){ghWareScrollBy(-1);return;}
+  if(e.target.closest('[data-gh-warehouse-next]')){ghWareScrollBy(1);return;}
   const econButton=e.target.closest('[data-gh-econ-action]');
   if(econButton){
     const pos=screen.scrollTop;
