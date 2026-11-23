@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="uk"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no"/>
-<title>GreenHaven — мобільна тестова версія v260</title>
+<title>GreenHaven — мобільна тестова версія v285</title>
 <style>
 *{box-sizing:border-box}html,body{margin:0;min-height:100%;background:#14221b;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;color:#fff}
 .page{min-height:100dvh;display:grid;place-items:center;padding:0 0 72px}.stage{position:relative;width:min(100vw,520px);height:min(100dvh,calc(min(100vw,520px)*1.91));max-height:1040px;min-height:min(780px,100dvh);overflow:hidden;isolation:isolate;background:#8ed92f;box-shadow:0 10px 35px #0005}
@@ -899,7 +899,7 @@ body:not(.gh-debug-visible) .gh-ui-screen {padding-top:calc(clamp(90px,21vw,116p
 .gh-econ-status {min-height:2.4em;margin:8px 0 0;font-size:11px;line-height:1.4;color:#486134}
 .gh-econ-note {font-size:11px;color:#5b7147;line-height:1.4;margin:8px 0 0}
 
-</style><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><link rel="stylesheet" href="assets/gh-warehouse-v284.css?v=284">
+</style><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><link rel="stylesheet" href="assets/gh-warehouse-v285.css?v=285">
 </head><body><main class="page"><section class="stage" id="stage" aria-label="Інтерактивний макет ферми">
 <button id="gh-cowshed-toggle" class="gh-cowshed-toggle" type="button" aria-pressed="false" title="Тест: спершу ремонт, потім окрема покупка корови">🛠 Відновити корівник</button>
 <button id="gh-cow-toggle" class="gh-cow-toggle" type="button" aria-pressed="true" title="Купити першу корову (лише тест, без оплати)" hidden>🐄 Купити корову</button>
@@ -2586,19 +2586,21 @@ render();
   ghWareScrollTop=sc.scrollTop;
   const max=Math.max(0,sc.scrollHeight-sc.clientHeight);
   const progress=max?Math.min(1,Math.max(0,sc.scrollTop/max)):0;
-  const track=screen.querySelector('.gh-warehouse-scrollbar');
-  if(track){track.style.setProperty('--gh-wh-progress',String(progress));track.setAttribute('aria-valuenow',String(Math.round(progress*100)));}
+  const slider=screen.querySelector('[data-gh-warehouse-scrollbar]'),
+        thumb=screen.querySelector('.gh-warehouse-thumb');
+  if(slider)slider.setAttribute('aria-valuenow',String(Math.round(progress*100)));
+  if(thumb)thumb.style.top=(progress*81)+'%';
  }
  function ghWareScrollBy(direction){
   const sc=ghWareGetScroll();if(!sc)return;
   sc.scrollBy({top:direction*sc.clientHeight*.80,behavior:'smooth'});
  }
  function ghWareSeek(event){
-  const sc=ghWareGetScroll(),track=screen.querySelector('.gh-warehouse-scrollbar');
+  const sc=ghWareGetScroll(),track=screen.querySelector('[data-gh-warehouse-scrollbar]');
   if(!sc||!track)return;
   const rect=track.getBoundingClientRect();
-  const pos=(event.clientY-rect.top)/Math.max(1,rect.height);
-  const progress=Math.min(1,Math.max(0,(pos-.195)/.71));
+  // Thumb occupies 19% of track height, so pointer seeks along the remaining 81%.
+  const progress=Math.max(0,Math.min(1,((event.clientY-rect.top)/Math.max(rect.height,1)-.095)/.81));
   sc.scrollTop=progress*Math.max(0,sc.scrollHeight-sc.clientHeight);
   ghWareUpdateScrollbar();
  }
@@ -2623,23 +2625,23 @@ render();
 
  function warehouse(){
   const entries=ghWareEntries();
-  /* 24 rows x 3 columns: actual scrollable empty card artwork, not a simulated page jump. */
-  const symbols=entries.slice(0,72).map(([id,count],index)=>{
-   const meta=ghWareMeta.get(id)||[id,"📦",id];
-   const row=Math.floor(index/3),col=index%3;
-   const offset=row<4?row*253:1012+(row-4)*254;
-   return '<div class="gh-warehouse-stock-item" title="'+esc(meta[2])+'" style="left:'+(col*100/3).toFixed(4)+'%;top:'+(offset*100/6092).toFixed(4)+'%;width:33.3334%;height:'+(254*100/6092).toFixed(4)+'%">'+
+  // Native scroll: at least 24 independently rendered cells, three per row, expandable to all owned resources.
+  const amount=Math.max(24,Math.ceil(entries.length/3)*3);
+  const cells=Array.from({length:amount},(_,i)=>{
+   const entry=entries[i];
+   if(!entry)return '<div class="gh-warehouse-cell" role="listitem" aria-hidden="true"></div>';
+   const [id,count]=entry,meta=ghWareMeta.get(id)||[id,"📦",id];
+   return '<div class="gh-warehouse-cell" role="listitem" title="'+esc(meta[2])+'" aria-label="'+esc(meta[2])+': '+count+'">'+
     '<span class="gh-warehouse-stock-icon" aria-hidden="true">'+esc(meta[1])+'</span>'+
-    '<span class="gh-warehouse-stock-badge">'+count+'</span></div>';
+    '<span class="gh-warehouse-stock-badge" aria-hidden="true">'+count+'</span></div>';
   }).join('');
   return '<div class="gh-warehouse-art" role="group" aria-label="Склад: '+(entries.length?entries.length+' видів ресурсів':'поки порожній')+'">'+
-   '<div id="gh-warehouse-scroll-area" class="gh-warehouse-scroll" aria-label="Прокрутка комірок складу" tabindex="0">'+
-    '<div class="gh-warehouse-sheet"><img class="gh-warehouse-sheet-image" src="assets/gh-warehouse-scroll-v284.webp" alt="" draggable="false">'+symbols+'</div>'+
-   '</div>'+
+   '<div id="gh-warehouse-scroll-area" class="gh-warehouse-scroll" aria-label="Комірки складу" tabindex="0">'+
+     '<div class="gh-warehouse-grid" role="list">'+cells+'</div></div>'+
    '<div class="gh-warehouse-scrollbar" role="scrollbar" aria-label="Прокрутка складу" aria-controls="gh-warehouse-scroll-area" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" aria-orientation="vertical" tabindex="0" data-gh-warehouse-scrollbar>'+
-    '<div class="gh-warehouse-scrollbar-track"><div class="gh-warehouse-thumb"></div></div></div>'+
-   '<button type="button" class="gh-warehouse-arrow" data-gh-warehouse-prev aria-label="Прокрутити склад вгору"></button>'+
-   '<button type="button" class="gh-warehouse-arrow" data-gh-warehouse-next aria-label="Прокрутити склад вниз"></button>'+
+     '<div class="gh-warehouse-scrollbar-track"><div class="gh-warehouse-thumb"></div></div></div>'+
+   '<button type="button" class="gh-warehouse-arrow" data-gh-warehouse-prev aria-label="Прокрутити вгору"></button>'+
+   '<button type="button" class="gh-warehouse-arrow" data-gh-warehouse-next aria-label="Прокрутити вниз"></button>'+
    '<button type="button" class="gh-warehouse-close" data-gh-warehouse-close aria-label="Закрити склад і повернутися на ферму"></button></div>';
  }
  function market(){const categories=[['seeds','🌱 Насіння'],['animals','🐄 Тварини'],['buildings','🏡 Будівлі']];return `<h2>🛒 Ринок</h2><p class="gh-ui-sub">Майбутній магазин насіння, тварин, будівель і прикрас.</p>
