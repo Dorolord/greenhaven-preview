@@ -899,7 +899,7 @@ body:not(.gh-debug-visible) .gh-ui-screen {padding-top:calc(clamp(90px,21vw,116p
 .gh-econ-status {min-height:2.4em;margin:8px 0 0;font-size:11px;line-height:1.4;color:#486134}
 .gh-econ-note {font-size:11px;color:#5b7147;line-height:1.4;margin:8px 0 0}
 
-</style><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><link rel="stylesheet" href="assets/gh-warehouse-v286.css?v=286">
+</style><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><link rel="stylesheet" href="assets/gh-warehouse-v287.css?v=287">
 </head><body><main class="page"><section class="stage" id="stage" aria-label="Інтерактивний макет ферми">
 <button id="gh-cowshed-toggle" class="gh-cowshed-toggle" type="button" aria-pressed="false" title="Тест: спершу ремонт, потім окрема покупка корови">🛠 Відновити корівник</button>
 <button id="gh-cow-toggle" class="gh-cow-toggle" type="button" aria-pressed="true" title="Купити першу корову (лише тест, без оплати)" hidden>🐄 Купити корову</button>
@@ -2582,25 +2582,34 @@ render();
 
  function ghWareGetScroll(){return screen.querySelector('.gh-warehouse-scroll');}
  function ghWareUpdateScrollbar(){
-  const sc=ghWareGetScroll();if(!sc)return;
-  ghWareScrollTop=sc.scrollTop;
-  const max=Math.max(0,sc.scrollHeight-sc.clientHeight);
-  const progress=max?Math.min(1,Math.max(0,sc.scrollTop/max)):0;
-  const slider=screen.querySelector('[data-gh-warehouse-scrollbar]'),
+  const sc=ghWareGetScroll(),track=screen.querySelector('[data-gh-warehouse-scrollbar]'),
         thumb=screen.querySelector('.gh-warehouse-thumb');
-  if(slider)slider.setAttribute('aria-valuenow',String(Math.round(progress*100)));
-  if(thumb)thumb.style.top=(progress*81)+'%';
+  if(!sc||!track||!thumb)return;
+  ghWareScrollTop=sc.scrollTop;
+  const maxScroll=Math.max(0,sc.scrollHeight-sc.clientHeight);
+  const progress=maxScroll?Math.max(0,Math.min(1,sc.scrollTop/maxScroll)):0;
+  // Keep the yellow thumb safely inside its wooden track at BOTH endpoints.
+  const padding=track.clientHeight*.07;
+  const minTop=padding;
+  const maxTop=Math.max(minTop,track.clientHeight-thumb.offsetHeight-padding);
+  thumb.style.top=(minTop+(maxTop-minTop)*progress)+'px';
+  track.setAttribute('aria-valuenow',String(Math.round(progress*100)));
  }
  function ghWareScrollBy(direction){
   const sc=ghWareGetScroll();if(!sc)return;
   sc.scrollBy({top:direction*sc.clientHeight*.80,behavior:'smooth'});
  }
  function ghWareSeek(event){
-  const sc=ghWareGetScroll(),track=screen.querySelector('[data-gh-warehouse-scrollbar]');
-  if(!sc||!track)return;
+  const sc=ghWareGetScroll(),track=screen.querySelector('[data-gh-warehouse-scrollbar]'),
+        thumb=screen.querySelector('.gh-warehouse-thumb');
+  if(!sc||!track||!thumb)return;
   const rect=track.getBoundingClientRect();
-  // Thumb occupies 19% of track height, so pointer seeks along the remaining 81%.
-  const progress=Math.max(0,Math.min(1,((event.clientY-rect.top)/Math.max(rect.height,1)-.095)/.81));
+  const padding=track.clientHeight*.07;
+  const minTop=padding;
+  const maxTop=Math.max(minTop,track.clientHeight-thumb.offsetHeight-padding);
+  const desiredTop=event.clientY-rect.top-thumb.offsetHeight/2;
+  const thumbTop=Math.max(minTop,Math.min(maxTop,desiredTop));
+  const progress=maxTop>minTop?(thumbTop-minTop)/(maxTop-minTop):0;
   sc.scrollTop=progress*Math.max(0,sc.scrollHeight-sc.clientHeight);
   ghWareUpdateScrollbar();
  }
