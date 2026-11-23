@@ -899,7 +899,8 @@ body:not(.gh-debug-visible) .gh-ui-screen {padding-top:calc(clamp(90px,21vw,116p
 .gh-econ-status {min-height:2.4em;margin:8px 0 0;font-size:11px;line-height:1.4;color:#486134}
 .gh-econ-note {font-size:11px;color:#5b7147;line-height:1.4;margin:8px 0 0}
 
-</style><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"></head><body><main class="page"><section class="stage" id="stage" aria-label="Інтерактивний макет ферми">
+</style><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><link rel="stylesheet" href="assets/gh-warehouse-v282.css?v=282">
+</head><body><main class="page"><section class="stage" id="stage" aria-label="Інтерактивний макет ферми">
 <button id="gh-cowshed-toggle" class="gh-cowshed-toggle" type="button" aria-pressed="false" title="Тест: спершу ремонт, потім окрема покупка корови">🛠 Відновити корівник</button>
 <button id="gh-cow-toggle" class="gh-cow-toggle" type="button" aria-pressed="true" title="Купити першу корову (лише тест, без оплати)" hidden>🐄 Купити корову</button>
 <img class="bg" src="assets/asset_002_6ab883b886fb387a.webp" alt="Чистий фон GreenHaven"/>
@@ -2545,10 +2546,7 @@ render();
   buildings:[['🌬️','Млин'],['🏡','Декорації'],['🏠','Будівлі']]
  };
  const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
- function warehouse(){return `<h2>📦 Склад</h2><p class="gh-ui-sub">Тут зберігатиметься врожай та інші ресурси, які ти збереш на фермі.</p>
- <div class="gh-ui-panel"><h3>🌿 Урожай <span class="gh-ui-pill">Поки порожньо</span></h3><div class="gh-ui-list">
- ${[['🥕','Морква'],['🌾','Пшениця'],['🎃','Гарбуз']].map(([emoji,name])=>`<div class="gh-ui-item"><span class="gh-ui-item-icon">${ghUiCropIcon(emoji)}</span><span class="gh-ui-item-desc"><strong>${name}</strong><small>Зібрано</small></span><span class="gh-ui-quantity">0</span></div>`).join('')}
- </div><p class="gh-ui-muted">Кількості поки демонстраційні: систему збору врожаю ще не підключено.</p></div>`}
+ function warehouse(){return '<div class="gh-warehouse-art" role="img" aria-label="Склад. Затверджений тестовий дизайн карток ресурсів. Зображені кількості демонстраційні."><button type="button" class="gh-warehouse-close" data-gh-warehouse-close aria-label="Закрити склад і повернутися на ферму"></button></div>';}
  function market(){const categories=[['seeds','🌱 Насіння'],['animals','🐄 Тварини'],['buildings','🏡 Будівлі']];return `<h2>🛒 Ринок</h2><p class="gh-ui-sub">Майбутній магазин насіння, тварин, будівель і прикрас.</p>
  <div class="gh-ui-panel"><div class="gh-ui-switcher" role="group" aria-label="Категорії магазину">${categories.map(([id,title])=>`<button type="button" data-gh-shop-cat="${id}" aria-pressed="${marketCategory===id}">${title}</button>`).join('')}</div>
  <div class="gh-ui-shop-grid">${shopData[marketCategory].map(([emoji,name])=>`<div class="gh-ui-shop-card"><span class="gh-ui-shop-icon">${ghUiCropIcon(emoji)}</span><strong>${esc(name)}</strong><small>Тестова картка</small><button type="button" disabled>Незабаром</button></div>`).join('')}</div></div>
@@ -2580,6 +2578,7 @@ render();
  function paint(){
   navButtons.forEach(b=>b.setAttribute('aria-selected',String(b.dataset.ghTab===currentTab)));
    if (ghNavArt && ghNavImages[currentTab] && ghNavArt.src!==ghNavImages[currentTab]) ghNavArt.src=ghNavImages[currentTab];
+  screen.classList.toggle('gh-warehouse-active',currentTab==='warehouse');
   screen.hidden=currentTab==='farm';
   if(screen.hidden){screen.innerHTML='';return}
   screen.innerHTML=currentTab==='warehouse'?warehouse():currentTab==='market'?market():profile();
@@ -2597,6 +2596,7 @@ render();
  document.getElementById('gh-ui-open-profile').addEventListener('click',()=>showTab('profile'));
  document.querySelectorAll('[data-gh-top-market]').forEach(b=>b.addEventListener('click',()=>showTab('market')));
  screen.addEventListener('click',e=>{
+  if(e.target.closest('[data-gh-warehouse-close]')){showTab('farm');return;}
   const econButton=e.target.closest('[data-gh-econ-action]');
   if(econButton){
     const pos=screen.scrollTop;
