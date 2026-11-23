@@ -2546,7 +2546,7 @@ render();
   buildings:[['🌬️','Млин'],['🏡','Декорації'],['🏠','Будівлі']]
  };
  const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
- function warehouse(){return '<div class="gh-warehouse-art" role="img" aria-label="Склад. Затверджений тестовий дизайн карток ресурсів. Зображені кількості демонстраційні."><button type="button" class="gh-warehouse-close" data-gh-warehouse-close aria-label="Закрити склад і повернутися на ферму"></button></div>';}
+ function warehouse(){return '<div class="gh-warehouse-art" role="group" aria-label="Склад. Затверджений тестовий дизайн карток ресурсів. Зображені кількості демонстраційні."><button type="button" class="gh-warehouse-close" data-gh-warehouse-close aria-label="Закрити склад і повернутися на ферму"></button></div>';}
  function market(){const categories=[['seeds','🌱 Насіння'],['animals','🐄 Тварини'],['buildings','🏡 Будівлі']];return `<h2>🛒 Ринок</h2><p class="gh-ui-sub">Майбутній магазин насіння, тварин, будівель і прикрас.</p>
  <div class="gh-ui-panel"><div class="gh-ui-switcher" role="group" aria-label="Категорії магазину">${categories.map(([id,title])=>`<button type="button" data-gh-shop-cat="${id}" aria-pressed="${marketCategory===id}">${title}</button>`).join('')}</div>
  <div class="gh-ui-shop-grid">${shopData[marketCategory].map(([emoji,name])=>`<div class="gh-ui-shop-card"><span class="gh-ui-shop-icon">${ghUiCropIcon(emoji)}</span><strong>${esc(name)}</strong><small>Тестова картка</small><button type="button" disabled>Незабаром</button></div>`).join('')}</div></div>
