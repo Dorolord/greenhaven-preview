@@ -1,0 +1,85 @@
+/* GreenHaven v286: hide scrolled cells below decorative leaves while preserving an unclipped first row. */
+/* GreenHaven v285: individually approved artwork, functional native-scroll inventory. */
+#gh-ui-screen.gh-warehouse-active{
+ background:rgba(26,34,13,.28);
+ overflow:hidden;padding:calc(68px + env(safe-area-inset-top,0px)) 10px calc(94px + env(safe-area-inset-bottom,0px));
+ display:flex;align-items:center;justify-content:center;
+}
+#gh-ui-screen .gh-warehouse-art{
+ position:relative;flex:0 0 auto;margin:auto;width:min(96%,430px,58vh);max-height:100%;aspect-ratio:1086/1448;
+ background:transparent url("gh-warehouse-frame-v285.webp") center / 100% 100% no-repeat;
+ filter:drop-shadow(0 7px 8px #243a1e65);
+ animation:ghWhOpen .18s ease-out both;-webkit-tap-highlight-color:transparent;
+}
+@keyframes ghWhOpen{from{opacity:.55;transform:scale(.985)}to{opacity:1;transform:scale(1)}}
+#gh-ui-screen .gh-warehouse-scroll{
+ position:absolute;z-index:2;left:14.35%;top:20.7%;width:66.5%;height:67.5%;
+ overflow-x:hidden;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;
+ touch-action:pan-y;scrollbar-width:none;-webkit-tap-highlight-color:transparent;
+ clip-path:inset(18px 0 0 0 round 14px);
+}
+#gh-ui-screen .gh-warehouse-scroll::-webkit-scrollbar{display:none;width:0}
+#gh-ui-screen .gh-warehouse-grid{
+ display:grid;grid-template-columns:repeat(3,minmax(0,1fr));column-gap:1.7%;row-gap:clamp(5px,1.4vw,9px);align-content:start;
+ padding:18px 1.1% 1.5%;width:100%;min-height:100%;
+}
+#gh-ui-screen .gh-warehouse-cell{
+ position:relative;aspect-ratio:1/1;min-width:0;display:flex;align-items:center;justify-content:center;
+ background:transparent url("gh-warehouse-slot-v285.webp") center/100% 100% no-repeat;
+ user-select:none;-webkit-user-select:none;
+}
+#gh-ui-screen .gh-warehouse-stock-icon{
+ font-size:clamp(22px,5vw,37px);line-height:1;
+ filter:drop-shadow(0 1px 2px #8b623f52);transform:translateY(-7%);pointer-events:none;
+}
+#gh-ui-screen .gh-warehouse-stock-badge{
+ position:absolute;bottom:9%;left:22%;right:22%;height:19%;display:flex;align-items:center;justify-content:center;
+ border-radius:999px;border:1px solid #ba8a4c9c;background:linear-gradient(#ffefc9,#f7d9a5);
+ box-shadow:0 1px 2px #9a714966;color:#593417;
+ font:900 clamp(9px,2.1vw,15px)/1 system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+#gh-ui-screen .gh-warehouse-scrollbar{
+ position:absolute;z-index:4;right:11.55%;top:23.4%;width:8.5%;height:56.5%;
+ touch-action:none;cursor:grab;-webkit-tap-highlight-color:transparent;
+}
+#gh-ui-screen .gh-warehouse-scrollbar:active{cursor:grabbing}
+#gh-ui-screen .gh-warehouse-scrollbar-track{
+ position:absolute;inset:0;background:transparent url("gh-warehouse-scroll_track-v285.webp") center/100% 100% no-repeat;
+}
+#gh-ui-screen .gh-warehouse-thumb{
+ position:absolute;left:14%;width:72%;height:19%;top:0;
+ background:transparent url("gh-warehouse-scroll_thumb-v285.webp") center/100% 100% no-repeat;
+ pointer-events:none;will-change:top;
+}
+#gh-ui-screen .gh-warehouse-arrow{
+ position:absolute;z-index:5;right:12.25%;width:7.2%;aspect-ratio:1/1;
+ border:0;padding:0;cursor:pointer;touch-action:manipulation;
+ -webkit-tap-highlight-color:transparent;background-color:transparent;background-position:center;
+ background-size:100% 100%;background-repeat:no-repeat;
+ transition:transform .09s ease,filter .09s ease;
+}
+#gh-ui-screen .gh-warehouse-arrow[data-gh-warehouse-prev]{
+ top:18.7%;background-image:url("gh-warehouse-scroll_up-v285.webp");
+}
+#gh-ui-screen .gh-warehouse-arrow[data-gh-warehouse-next]{
+ bottom:13.1%;background-image:url("gh-warehouse-scroll_down-v285.webp");
+}
+#gh-ui-screen .gh-warehouse-arrow:active{transform:scale(.9);filter:brightness(.86)}
+#gh-ui-screen .gh-warehouse-close{
+ position:absolute;z-index:8;left:78.5%;top:5.95%;width:12.65%;aspect-ratio:1/1;
+ padding:0;border:0;cursor:pointer;touch-action:manipulation;
+ background:transparent url("gh-warehouse-close-v285.webp") center/100% 100% no-repeat;
+ transition:transform .13s ease,filter .13s ease;-webkit-tap-highlight-color:transparent;
+}
+#gh-ui-screen .gh-warehouse-close:active,#gh-ui-screen .gh-warehouse-close.is-pressed{
+ transform:translateY(2px) scale(.87);filter:brightness(.72) saturate(1.12);
+}
+#gh-ui-screen .gh-warehouse-close:focus-visible,
+#gh-ui-screen .gh-warehouse-arrow:focus-visible,
+#gh-ui-screen .gh-warehouse-scrollbar:focus-visible{
+ outline:3px solid #fff3ba;outline-offset:2px;border-radius:18px
+}
+@media(prefers-reduced-motion:reduce){
+ #gh-ui-screen .gh-warehouse-art{animation:none}
+ #gh-ui-screen .gh-warehouse-close,#gh-ui-screen .gh-warehouse-arrow{transition:none}
+}
