@@ -703,6 +703,13 @@ body:not(.gh-debug-visible) .page {padding-bottom:0}
 .gh-ui-shop-card strong {font-size:13px;color:#38502b}
 .gh-ui-shop-card small {font-size:11px;color:#7e8567}
 .gh-ui-shop-card button {margin-top:5px;width:100%;border:1px solid #c7bb9d;border-radius:10px;padding:8px 5px;background:#e8e3d5;color:#8a867d;font-weight:800;font-size:11px;cursor:not-allowed}
+/* v295: market seed selection contextual to the tapped tilled empty plot. */
+.gh-plant-context{margin:0 0 13px;padding:11px 13px;border:2px solid #8da95c;border-radius:13px;background:#eef5d2;color:#344c23;font:13px/1.5 system-ui,-apple-system,sans-serif}
+.gh-plant-context strong{font-size:15px}
+.gh-plant-context [data-gh-plant-cancel]{display:block;margin-top:8px;padding:8px 11px;min-height:38px;border:1px solid #9baa70;border-radius:9px;background:#fff9e9;color:#3f5828;font-weight:750;cursor:pointer}
+.gh-ui-shop-card button.gh-plant-seed-button{cursor:pointer;background:linear-gradient(180deg,#77a44c,#487a2f);border-color:#476e35;color:#fffbe8;font-size:12px;min-height:38px;box-shadow:0 2px 0 #2d5723}
+.gh-ui-shop-card button.gh-plant-seed-button:active{transform:translateY(2px);box-shadow:none;filter:brightness(.93)}
+.gh-ui-shop-card button.gh-plant-seed-button:focus-visible,.gh-plant-context [data-gh-plant-cancel]:focus-visible{outline:3px solid #eebf54;outline-offset:2px}
 .gh-ui-profile-head {display:flex;align-items:center;gap:12px}
 .gh-ui-profile-head .gh-ui-profile-avatar {display:grid;place-items:center;width:66px;height:66px;font-size:38px;background:#dbe6aa;border:2px solid #c2ae7e;border-radius:19px}
 .gh-ui-profile-head h3 {margin:0 0 4px;font-size:18px}
@@ -1269,6 +1276,27 @@ function ghSetCarrotStage(n,stage){
  delete ghWheatStages[n];delete ghPumpkinStages[n];
  ghSavePumpkinStages();ghSaveCarrotStages();ghSaveWheatStages();ghRefreshOnePlot(n);inspectBed(n);
 }
+/* v295: Planting is selected from the Market tab, not the legacy stage-debug dialog.
+   Keep crops and plots separate, and never overwrite an existing planting. */
+const GH_PLANTABLE_CROPS=new Set(['carrot','wheat','pumpkin']);
+function ghCanPlantOnPlot(n){
+ return Number.isInteger(n)&&n>=1&&n<=6&&n<=unlockedBeds&&ghBedIsTilled(n)
+  &&!ghCarrotStages[n]&&!ghWheatStages[n]&&!ghPumpkinStages[n];
+}
+function ghPlantSeedFromMarket(n,crop){
+ if(!ghCanPlantOnPlot(n)||!GH_PLANTABLE_CROPS.has(crop))return false;
+ // Stage 1 is the already approved seeds graphic. Timers will be wired separately.
+ if(crop==='carrot')ghCarrotStages[n]=1;
+ if(crop==='wheat')ghWheatStages[n]=1;
+ if(crop==='pumpkin')ghPumpkinStages[n]=1;
+ ghSaveCarrotStages();ghSaveWheatStages();ghSavePumpkinStages();
+ ghRefreshOnePlot(n);
+ return true;
+}
+window.GreenHavenPlanting={
+ canPlant:ghCanPlantOnPlot,
+ plant:ghPlantSeedFromMarket
+};
 /* v293: connect the existing ripeness stages to the persistent warehouse.
    Yields are demo quantities until crop balance and growth timers are designed. */
 const GH_HARVEST_YIELDS={
@@ -2016,7 +2044,12 @@ let pointer=null,start=null;el.addEventListener('pointerdown',e=>{pointer=e.poin
 el.addEventListener('pointermove',e=>{if(pointer!==e.pointerId)return;const r=stage.getBoundingClientRect();item.x=+clamp(start.x+(e.clientX-start.px)/r.width*100,item.w/2,100-item.w/2).toFixed(2);item.y=+clamp(start.y+(e.clientY-start.py)/r.height*100,17+item.h/2,87-item.h/2).toFixed(2);el.style.setProperty('--x',item.x+'%');el.style.setProperty('--y',item.y+'%');
  if(start.plotOffsets){for(const sp of start.plotOffsets){const plot=items.find(o=>o.id===sp.id);if(!plot)continue;plot.x=+clamp(sp.x+item.x-start.x,plot.w/2,100-plot.w/2).toFixed(2);plot.y=+clamp(sp.y+item.y-start.y,17+plot.h/2,87-plot.h/2).toFixed(2);const pEl=world.querySelector('[data-id="'+plot.id+'"]');if(pEl){pEl.style.setProperty('--x',plot.x+'%');pEl.style.setProperty('--y',plot.y+'%');}}}
  drawRoutes()});
-el.addEventListener('pointerup',e=>{if(pointer!==e.pointerId)return;const tapped=start&&Math.hypot(e.clientX-start.px,e.clientY-start.py)<9;pointer=null;el.classList.remove('selected');save();if(tapped&&item.id==='mill')showMillDialog();if(tapped&&item.id==='apiary')showApiaryDialog();if(tapped&&item.id==='chicken')ghCoopShowDialog();if(tapped&&item.id.startsWith('plot-'))inspectBed(Number(item.id.slice(5)))});el.addEventListener('pointercancel',()=>{pointer=null;el.classList.remove('selected');save()});if(item.id==='cow')ghAttachCowDrag(el);world.appendChild(el)}drawRoutes();ghRenderMapHives();ghRenderOrangeHen();ghUpdateCowshedUI();if(typeof ghRenderHouseDog==='function')ghRenderHouseDog()}
+el.addEventListener('pointerup',e=>{if(pointer!==e.pointerId)return;const tapped=start&&Math.hypot(e.clientX-start.px,e.clientY-start.py)<9;pointer=null;el.classList.remove('selected');save();if(tapped&&item.id==='mill')showMillDialog();if(tapped&&item.id==='apiary')showApiaryDialog();if(tapped&&item.id==='chicken')ghCoopShowDialog();if(tapped&&item.id.startsWith('plot-')){
+ const plotNumber=Number(item.id.slice(5));
+ if(!document.body.classList.contains('gh-debug-visible')&&ghCanPlantOnPlot(plotNumber)){
+  window.dispatchEvent(new CustomEvent('greenhaven:open-seed-market',{detail:{plot:plotNumber}}));
+ }else inspectBed(plotNumber);
+}});el.addEventListener('pointercancel',()=>{pointer=null;el.classList.remove('selected');save()});if(item.id==='cow')ghAttachCowDrag(el);world.appendChild(el)}drawRoutes();ghRenderMapHives();ghRenderOrangeHen();ghUpdateCowshedUI();if(typeof ghRenderHouseDog==='function')ghRenderHouseDog()}
 function drawRoutes(){
  // V128 — base plan from uploaded GreenHaven-layout(4).json; apiary and hives are 5% smaller.
  // Stone drawing is below all buildings and animals. Only anchors move when a building moves.
@@ -2589,6 +2622,7 @@ render();
  
  let currentTab='farm';
  let marketCategory='seeds';
+ let pendingPlantPlot=null;
  const ghRegularPumpkinIcon='<img src="assets/asset_059_8d52a5d3b22fd8ae.webp" draggable="false" alt="Звичайний помаранчевий гарбуз">';
  const ghUiCropIcon=(emoji)=>emoji==='🎃'?ghRegularPumpkinIcon:emoji;
  const shopData={
@@ -2706,11 +2740,28 @@ render();
    '<button type="button" class="gh-warehouse-arrow" data-gh-warehouse-next aria-label="Прокрутити вниз"></button>'+
    '<button type="button" class="gh-warehouse-close" data-gh-warehouse-close aria-label="Закрити склад і повернутися на ферму"></button></div>';
  }
- function market(){const categories=[['seeds','🌱 Насіння'],['animals','🐄 Тварини'],['buildings','🏡 Будівлі']];return `<h2>🛒 Ринок</h2><p class="gh-ui-sub">Майбутній магазин насіння, тварин, будівель і прикрас.</p>
- <div class="gh-ui-panel"><div class="gh-ui-switcher" role="group" aria-label="Категорії магазину">${categories.map(([id,title])=>`<button type="button" data-gh-shop-cat="${id}" aria-pressed="${marketCategory===id}">${title}</button>`).join('')}</div>
- <div class="gh-ui-shop-grid">${shopData[marketCategory].map(([emoji,name])=>`<div class="gh-ui-shop-card"><span class="gh-ui-shop-icon">${ghUiCropIcon(emoji)}</span><strong>${esc(name)}</strong><small>Тестова картка</small><button type="button" disabled>Незабаром</button></div>`).join('')}</div></div>
- <p class="gh-ui-disclaimer">Ціни та реальні покупки ще не налаштовані — зараз це макет інтерфейсу.</p>`}
- function profile(){const eco=window.GreenHavenEconomy;const eb=eco.getState();const req=eco.requirement(eb.level);return `<h2>👤 Профіль</h2><p class="gh-ui-sub">Тут будуть розвиток ферми, досягнення та персональні налаштування.</p>
+ function market(){
+  const categories=[['seeds','🌱 Насіння'],['animals','🐄 Тварини'],['buildings','🏡 Будівлі']];
+  const planting=window.GreenHavenPlanting;
+  const pending=Number.isInteger(pendingPlantPlot)&&planting?.canPlant(pendingPlantPlot);
+  const context=pending
+    ? '<div class="gh-plant-context" role="status">🌱 <strong>Посадка на грядці №'+pendingPlantPlot+'</strong><br>Вибери насіння, яке хочеш посадити.<button type="button" data-gh-plant-cancel>← Назад на ферму</button></div>'
+    : '<p class="gh-ui-sub">Щоб посадити рослину, спочатку натисни на порожню перекопану грядку на фермі.</p>';
+  const enabled=new Map([['Морква','carrot'],['Пшениця','wheat'],['Гарбуз','pumpkin']]);
+  const cards=shopData[marketCategory].map(([emoji,name])=>{
+    const seed=marketCategory==='seeds'?enabled.get(name):null;
+    const action=seed&&pending
+      ? '<button type="button" class="gh-plant-seed-button" data-gh-plant-seed="'+seed+'">🌱 Посадити</button>'
+      : '<button type="button" disabled>'+(seed?'Обери грядку':'Незабаром')+'</button>';
+    const note=seed?(pending?'Безкоштовна тестова посадка':'Насіння доступне для посадки'):'Ще не додано';
+    return '<div class="gh-ui-shop-card"><span class="gh-ui-shop-icon">'+ghUiCropIcon(emoji)+'</span><strong>'+esc(name)+'</strong><small>'+note+'</small>'+action+'</div>';
+  }).join('');
+  return '<h2>🛒 Ринок</h2>'+context+
+    '<div class="gh-ui-panel"><div class="gh-ui-switcher" role="group" aria-label="Категорії магазину">'+
+     categories.map(([id,title])=>'<button type="button" data-gh-shop-cat="'+id+'" aria-pressed="'+(marketCategory===id)+'">'+title+'</button>').join('')+'</div>'+
+     '<div class="gh-ui-shop-grid">'+cards+'</div></div>'+
+    '<p class="gh-ui-disclaimer">Поки це тест посадки: золото не списується, інші культури з’являться пізніше. Таймери росту додамо наступним етапом.</p>';
+ } function profile(){const eco=window.GreenHavenEconomy;const eb=eco.getState();const req=eco.requirement(eb.level);return `<h2>👤 Профіль</h2><p class="gh-ui-sub">Тут будуть розвиток ферми, досягнення та персональні налаштування.</p>
  <div class="gh-ui-panel"><div class="gh-ui-profile-head"><span class="gh-ui-profile-avatar">👨‍🌾</span><div><h3>Фермер</h3><span class="gh-ui-pill">🌱 Рівень ${eb.level}</span></div></div>
  <div class="gh-ui-progress" aria-label="Прогрес досвіду: ${eb.xp} зі ${req}"><span style="width:${(eb.xp/req*100).toFixed(2)}%"></span></div><p class="gh-ui-muted">${eb.xp} / ${req} досвіду · локальний тест</p></div>
  <div class="gh-ui-panel"><h3>⚙️ Налаштування</h3><div class="gh-ui-setting-lines">
@@ -2752,6 +2803,7 @@ render();
   }
  }
  function showTab(tab){if(!['farm','warehouse','market','profile'].includes(tab))return;
+   if(tab!=='market')pendingPlantPlot=null;
    currentTab=tab;
    // Keep dialogs from the farming editor from covering navigation screens.
    if(tab!=='farm')for(const id of ['gh-bed-dialog','mill-dialog','apiary-dialog','gh-coop-dialog']){
@@ -2760,6 +2812,13 @@ render();
    paint();
  }
  navButtons.forEach(b=>b.addEventListener('click',()=>showTab(b.dataset.ghTab)));
+ window.addEventListener('greenhaven:open-seed-market',e=>{
+  const plot=e.detail?.plot;
+  if(!window.GreenHavenPlanting?.canPlant(plot))return;
+  pendingPlantPlot=plot;
+  marketCategory='seeds';
+  showTab('market');
+ });
  document.getElementById('gh-ui-open-profile').addEventListener('click',()=>showTab('profile'));
  document.querySelectorAll('[data-gh-top-market]').forEach(b=>b.addEventListener('click',()=>showTab('market')));
  // Actual inertial finger-scrolling in the item grid; dragging elsewhere on the panel scrolls the same list.
@@ -2817,6 +2876,20 @@ render();
     paint();
     screen.scrollTop=pos;
     return;
+  }
+  const cancelPlant=e.target.closest('[data-gh-plant-cancel]');
+  if(cancelPlant){pendingPlantPlot=null;showTab('farm');return;}
+  const chooseSeed=e.target.closest('[data-gh-plant-seed]');
+  if(chooseSeed){
+   const crop=chooseSeed.dataset.ghPlantSeed;
+   const selectedPlot=pendingPlantPlot;
+   if(selectedPlot&&window.GreenHavenPlanting?.plant(selectedPlot,crop)){
+    pendingPlantPlot=null;showTab('farm');
+   }else{
+    pendingPlantPlot=null;showTab('farm');
+    window.alert('Не вдалося посадити. Перевір, чи грядка порожня, перекопана та відкрита.');
+   }
+   return;
   }
   const category=e.target.closest('[data-gh-shop-cat]');
   if(category){marketCategory=category.dataset.ghShopCat;paint();return;}
