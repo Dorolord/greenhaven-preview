@@ -1,0 +1,15 @@
+/* v341: identical soft golden glow for all four ready produce badges. */
+.item[data-id="cow"] .gh-milk-ready-badge::before,
+.item[data-id="chicken"] .gh-coop-ready-badge::before,
+.item[data-id="apiary"] .gh-honey-ready-badge::before,
+.item[data-id="mill"] .gh-flour-ready-badge::before{
+ content:"";position:absolute;inset:5%;border-radius:50%;pointer-events:none;z-index:0;
+ background:radial-gradient(circle,rgba(255,249,191,.85) 0%,rgba(255,224,88,.65) 43%,rgba(255,216,94,.28) 72%,transparent 92%);
+ box-shadow:0 0 5px 1px rgba(255,213,67,.45);
+ animation:ghProduceGlow341 2.1s ease-in-out infinite;
+}
+@keyframes ghProduceGlow341{0%,100%{opacity:.85;transform:scale(.97)}50%{opacity:1;transform:scale(1.03)}}
+@media(prefers-reduced-motion:reduce){.item[data-id="cow"] .gh-milk-ready-badge::before,
+.item[data-id="chicken"] .gh-coop-ready-badge::before,
+.item[data-id="apiary"] .gh-honey-ready-badge::before,
+.item[data-id="mill"] .gh-flour-ready-badge::before{animation:none}}
