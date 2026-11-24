@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="uk"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no"/>
-<title>GreenHaven — мобільна тестова версія v312</title>
+<title>GreenHaven — мобільна тестова версія v313</title>
 <style>
 *{box-sizing:border-box}html,body{margin:0;min-height:100%;background:#14221b;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;color:#fff}
 .page{min-height:100dvh;display:grid;place-items:center;padding:0 0 72px}.stage{position:relative;width:min(100vw,520px);height:min(100dvh,calc(min(100vw,520px)*1.91));max-height:1040px;min-height:min(780px,100dvh);overflow:hidden;isolation:isolate;background:#8ed92f;box-shadow:0 10px 35px #0005}
@@ -912,7 +912,7 @@ body:not(.gh-debug-visible) .gh-ui-screen {padding-top:calc(clamp(90px,21vw,116p
 .gh-econ-status {min-height:2.4em;margin:8px 0 0;font-size:11px;line-height:1.4;color:#486134}
 .gh-econ-note {font-size:11px;color:#5b7147;line-height:1.4;margin:8px 0 0}
 
-</style><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><link rel="stylesheet" href="assets/gh-warehouse-v312.css?v=312">
+</style><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><link rel="stylesheet" href="assets/gh-warehouse-v313.css?v=313">
 </head><body><main class="page"><section class="stage" id="stage" aria-label="Інтерактивний макет ферми">
 <button id="gh-cowshed-toggle" class="gh-cowshed-toggle" type="button" aria-pressed="false" title="Тест: спершу ремонт, потім окрема покупка корови">🛠 Відновити корівник</button>
 <button id="gh-cow-toggle" class="gh-cow-toggle" type="button" aria-pressed="true" title="Купити першу корову (лише тест, без оплати)" hidden>🐄 Купити корову</button>
@@ -2529,15 +2529,18 @@ render();
  let state=hydrate();
  let message="Натисни кнопку, щоб перевірити нарахування. Дані збережуться на цьому пристрої.";
  const format=n=>Math.floor(n).toLocaleString("uk-UA");
+ /* v313: Persist credits now, display them when the flight reaches the header. */
+ let pendingFlyingGold=0;
  function render(){
+   const visibleGold=Math.max(0,state.gold-pendingFlyingGold);
    if(typeof window.GreenHavenSetXP==="function")
      window.GreenHavenSetXP(state.level,state.xp,requirement(state.level));
    document.querySelectorAll("[data-gh-balance]").forEach(el=>{
       const k=el.getAttribute("data-gh-balance");
-      if(Object.prototype.hasOwnProperty.call(state,k))el.textContent=format(state[k]);
+      if(Object.prototype.hasOwnProperty.call(state,k))el.textContent=format(k==='gold'?visibleGold:state[k]);
    });
    const descriptions=[
-     ["Золото",state.gold],["Діаманти",state.diamonds],["Green Token",state.greenToken]
+     ["Золото",visibleGold],["Діаманти",state.diamonds],["Green Token",state.greenToken]
    ];
    document.querySelectorAll("#gh-resource-strip .gh-resource-hit").forEach((btn,i)=>{
      const entry=descriptions[i];if(!entry)return;
@@ -2545,7 +2548,7 @@ render();
      btn.title=entry[0]+": "+format(entry[1]);
    });
    const fallback=document.querySelectorAll(".gh-ui-topbar .gh-ui-money span");
-   if(fallback[0])fallback[0].textContent=format(state.gold);
+   if(fallback[0])fallback[0].textContent=format(visibleGold);
    if(fallback[1])fallback[1].textContent=format(state.diamonds);
  }
  function persist(){
@@ -2603,13 +2606,20 @@ render();
    action,
    getMessage:()=>message,
    // Test-only gold settlement for selling inventory crops.
-   creditGold(amount){
+   creditGold(amount,waitForFlight=false){
     if(!Number.isSafeInteger(amount)||amount<1||amount>MAX_BALANCE||state.gold>MAX_BALANCE-amount){
      message="Досягнуто ліміт золота.";return false;
     }
     state={...state,gold:state.gold+amount};
+    if(waitForFlight===true)pendingFlyingGold+=amount;
     message="Отримано "+format(amount)+" золота за урожай.";
+    // Persist immediately: only the visible counter is deferred.
     persist();return true;
+   },
+   landGold(amount){
+    if(!Number.isSafeInteger(amount)||amount<=0)return;
+    pendingFlyingGold=Math.max(0,pendingFlyingGold-amount);
+    render();
    },
    render
  };
@@ -2780,28 +2790,76 @@ render();
  }
  /* v307: Compact gold reward popup. The coin reuses the exact gold artwork
     from the top resource panel; only the sold amount is displayed. */
+ /* v313: Any positive sale amount flies to the gold slot in the header.
+    The warehouse remains mounted and still while the reward flies. */
  function ghWareShowToast(value){
-  const panel=screen.querySelector('.gh-warehouse-art');if(!panel)return;
-  panel.querySelector('.gh-warehouse-sale-toast')?.remove();
-  const toast=document.createElement('div');
-  toast.className='gh-warehouse-sale-toast';
-  toast.setAttribute('role','status');
-  toast.setAttribute('aria-live','polite');
-  if(Number.isSafeInteger(value)&&value>0){
-   const coin=document.createElement('span');
-   coin.className='gh-warehouse-sale-toast-coin';
-   coin.setAttribute('aria-hidden','true');
-   const amount=document.createElement('span');
-   amount.className='gh-warehouse-sale-toast-amount';
-   amount.textContent='+'+value.toLocaleString('uk-UA');
-   toast.setAttribute('aria-label','Отримано '+value.toLocaleString('uk-UA')+' золота');
-   toast.append(coin,amount);
-  }else{
-   toast.classList.add('gh-warehouse-sale-toast--notice');
-   toast.textContent=String(value||'Продаж недоступний');
+  const panel=screen.querySelector('.gh-warehouse-art');
+  if(!Number.isSafeInteger(value)||value<=0){
+   if(!panel)return;
+   panel.querySelector('.gh-warehouse-sale-toast')?.remove();
+   const notice=document.createElement('div');
+   notice.className='gh-warehouse-sale-toast gh-warehouse-sale-toast--notice';
+   notice.setAttribute('role','status');
+   notice.textContent=String(value||'Продаж недоступний');
+   panel.appendChild(notice);
+   window.setTimeout(()=>notice.remove(),1750);
+   return;
   }
-  panel.appendChild(toast);
-  window.setTimeout(()=>toast.remove(),1750);
+  if(!panel){window.GreenHavenEconomy?.landGold(value);return;}
+  const strip=document.getElementById('gh-resource-strip');
+  const source=panel.getBoundingClientRect();
+  const fromX=source.left+source.width*.5,fromY=source.top+source.height*.47;
+  const target=strip&&!strip.hidden?strip.getBoundingClientRect():null;
+  const validTarget=!!(target&&target.width>0&&target.height>0);
+  const toX=validTarget?target.left+target.width*.105:fromX;
+  const toY=validTarget?target.top+target.height*.5:fromY;
+  const flyer=document.createElement('div');
+  flyer.className='gh-warehouse-sale-flight';
+  flyer.setAttribute('role','status');
+  flyer.setAttribute('aria-label','Отримано '+value.toLocaleString('uk-UA')+' золота');
+  const coin=document.createElement('span');
+  coin.className='gh-warehouse-sale-toast-coin';
+  coin.setAttribute('aria-hidden','true');
+  const amount=document.createElement('span');
+  amount.className='gh-warehouse-sale-toast-amount';
+  amount.textContent='+'+value.toLocaleString('uk-UA');
+  amount.setAttribute('aria-hidden','true');
+  flyer.append(coin,amount);
+  document.body.appendChild(flyer);
+  const transform=(x,y,scale)=>'translate3d('+x+'px,'+y+'px,0) translate(-50%,-50%) scale('+scale+')';
+  flyer.style.transform=transform(fromX,fromY,1);
+  let finished=false;
+  const finish=()=>{
+   if(finished)return;
+   finished=true;
+   flyer.remove();
+   window.GreenHavenEconomy?.landGold(value);
+   if(strip&&!strip.hidden){
+    strip.classList.remove('gh-gold-received');
+    void strip.offsetWidth;
+    strip.classList.add('gh-gold-received');
+    window.setTimeout(()=>strip.classList.remove('gh-gold-received'),430);
+   }
+  };
+  const reduced=window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+  if(reduced||!validTarget||typeof flyer.animate!=='function'){
+   window.setTimeout(finish,reduced?200:700);
+   return;
+  }
+  const dx=toX-fromX,dy=toY-fromY;
+  const arc=Math.min(65,Math.max(20,Math.abs(dy)*.22));
+  const at=(offset,t,scale,opacity)=>({
+   offset,transform:transform(fromX+dx*t,fromY+dy*t-arc*Math.sin(Math.PI*t),scale),opacity
+  });
+  const frames=[
+   at(0,0,.83,0),at(.13,0,1.08,1),at(.29,0,1,1),
+   at(.47,.18,.95,1),at(.66,.48,.74,1),
+   at(.85,.83,.43,.98),at(.96,1,.20,.9),at(1,1,.12,0)
+  ];
+  const motion=flyer.animate(frames,{duration:1280,fill:'forwards',easing:'linear'});
+  motion.addEventListener('finish',finish,{once:true});
+  motion.addEventListener('cancel',finish,{once:true});
+  window.setTimeout(finish,1950);
  }
  /* v306: Keep the warehouse frame mounted after a sale, avoiding entrance fades. */
  function ghWareRefreshAfterSale(){
@@ -2839,7 +2897,7 @@ render();
   const reward=price*qty; // Safely bounded by the gold balance cap.
   // Mutate stock silently; if gold credit is rejected, restore stock before repainting.
   if(!window.GreenHavenInventory.remove(id,qty,true))return false;
-  if(!window.GreenHavenEconomy?.creditGold(reward)){
+  if(!window.GreenHavenEconomy?.creditGold(reward,true)){
    window.GreenHavenInventory.add(id,qty,true);
    ghWareRenderSale();
    return false;
@@ -2870,7 +2928,7 @@ render();
   const previous={...ghWareStock};
   for(const [id] of quote.entries)delete ghWareStock[id];
   ghWareSave();
-  if(!window.GreenHavenEconomy?.creditGold(quote.total)){
+  if(!window.GreenHavenEconomy?.creditGold(quote.total,true)){
    ghWareStock=previous;ghWareSave();return false;
   }
   ghWareSelectedId=null;
