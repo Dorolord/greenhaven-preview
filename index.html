@@ -287,6 +287,12 @@
 .gh-bed-look-choices button{flex:1 1 125px;min-height:43px;background:#435635;color:#f4efd9;line-height:1.3}
 .gh-bed-look-choices button[aria-pressed="true"]{background:#547d32;border:2px solid #dbed9c;box-shadow:0 0 0 1px #163b1a inset}
 .gh-bed-look-note{font-size:11px;color:#bdd1b5;margin-top:9px;line-height:1.4}
+/* v293: Harvest a ripe crop into the actual local inventory, not on stage selection. */
+#gh-bed-harvest{display:block;width:100%;margin-top:13px;min-height:46px;background:linear-gradient(180deg,#67973c,#456b25);border:2px solid #d6b76a;color:#fff8dc;box-shadow:0 2px 0 #213c1a;font-size:14px}
+#gh-bed-harvest:active{transform:translateY(2px);box-shadow:none;filter:brightness(.92)}
+#gh-bed-harvest[hidden],#gh-bed-harvest-status[hidden]{display:none!important}
+#gh-bed-harvest-status{margin:9px 0 0!important;padding:9px 10px;border:1px solid #99bc79;border-radius:9px;background:#365b32;color:#fff3c6;font-size:12px}
+
 
 /* Closed-bed image occupies a larger portion of its transparent canvas than the approved open bed.
    Normalize the visible footprint only. Keep each plot box, its draggable hit area,
@@ -966,7 +972,7 @@ body:not(.gh-debug-visible) .gh-ui-screen {padding-top:calc(clamp(90px,21vw,116p
 
 <div id="gh-bed-dialog" hidden role="presentation">
  <section class="gh-bed-box" role="dialog" aria-modal="true" aria-labelledby="gh-bed-dialog-title">
-  <div class="gh-bed-header"><div><h3 id="gh-bed-dialog-title">Закрита грядка</h3><small style="display:block;color:#b9d5a9;font-size:11px;margin-top:3px">GreenHaven v205 · 4 моркви / 4 пшениці</small></div><button type="button" id="gh-bed-dialog-close" aria-label="Закрити">✕</button></div>
+  <div class="gh-bed-header"><div><h3 id="gh-bed-dialog-title">Закрита грядка</h3><small style="display:block;color:#b9d5a9;font-size:11px;margin-top:3px">Посадка · дозрівання · збір у Склад (тест)</small></div><button type="button" id="gh-bed-dialog-close" aria-label="Закрити">✕</button></div>
   <p id="gh-bed-dialog-description"></p>
   <div class="gh-bed-look-label">Вигляд ґрунту (тест):</div>
   <div class="gh-bed-look-choices" role="group" aria-label="Вигляд цієї грядки">
@@ -999,6 +1005,8 @@ body:not(.gh-debug-visible) .gh-ui-screen {padding-top:calc(clamp(90px,21vw,116p
        <button type="button" id="gh-pumpkin-ripe" aria-pressed="false">4 · Дозрілий гарбуз</button>
      </div>
      <p class="gh-bed-look-note">Одна культура на грядці. Морква (4 стадії), пшениця (4 стадії) та гарбуз (4 стадії) — окремі прозорі шари поверх незмінної грядки.</p>
+     <button type="button" id="gh-bed-harvest" hidden>🌾 Зібрати урожай → Склад</button>
+     <p id="gh-bed-harvest-status" role="status" aria-live="polite" hidden></p>
    </div>
   <button type="button" id="gh-bed-open">Розчистити ділянку · тест</button>
  </section>
@@ -1260,6 +1268,38 @@ function ghSetCarrotStage(n,stage){
  delete ghWheatStages[n];delete ghPumpkinStages[n];
  ghSavePumpkinStages();ghSaveCarrotStages();ghSaveWheatStages();ghRefreshOnePlot(n);inspectBed(n);
 }
+/* v293: connect the existing ripeness stages to the persistent warehouse.
+   Yields are demo quantities until crop balance and growth timers are designed. */
+const GH_HARVEST_YIELDS={
+ carrot:{icon:'🥕',name:'моркви',quantity:4},
+ wheat:{icon:'🌾',name:'пшениці',quantity:1},
+ pumpkin:{icon:'🎃',name:'гарбуза',quantity:1}
+};
+function ghReadyHarvest(n){
+ if(!Number.isInteger(n)||n<1||n>6||n>unlockedBeds||!ghBedIsTilled(n))return null;
+ // Same priority as plotMarkup: pumpkin, then wheat, then carrot.
+ const id=ghPumpkinStages[n]?'pumpkin':ghWheatStages[n]?'wheat':ghCarrotStages[n]?'carrot':null;
+ const stage=id==='pumpkin'?ghPumpkinStages[n]:id==='wheat'?ghWheatStages[n]:id==='carrot'?ghCarrotStages[n]:0;
+ return stage===4?{id,...GH_HARVEST_YIELDS[id]}:null;
+}
+function ghCollectRipeHarvest(n){
+ const ready=ghReadyHarvest(n);
+ if(!ready)return false;
+ const info=document.getElementById('gh-bed-harvest-status');
+ if(!window.GreenHavenInventory?.add(ready.id,ready.quantity)){
+  info.textContent='Не вдалося додати врожай до складу. Спробуй ще раз.';
+  info.hidden=false;
+  return false;
+ }
+ // Remove the harvestable plant only after inventory accepted the items.
+ delete ghCarrotStages[n];delete ghWheatStages[n];delete ghPumpkinStages[n];
+ ghSaveCarrotStages();ghSaveWheatStages();ghSavePumpkinStages();
+ ghRefreshOnePlot(n); // refresh ONLY this bed; never redraw the whole farm.
+ inspectBed(n);
+ info.textContent=ready.icon+' +'+ready.quantity+' '+ready.name+' додано до Складу! Можна садити знову.';
+ info.hidden=false;
+ return true;
+}
 function inspectBed(n){
  inspectedBed=n;
  const opened=n<=unlockedBeds;
@@ -1288,6 +1328,11 @@ function inspectBed(n){
   document.getElementById('gh-pumpkin-sprout').setAttribute('aria-pressed',String(ghPumpkinStages[n]===2));
   document.getElementById('gh-pumpkin-flower').setAttribute('aria-pressed',String(ghPumpkinStages[n]===3));
   document.getElementById('gh-pumpkin-ripe').setAttribute('aria-pressed',String(ghPumpkinStages[n]===4));
+ const ready=ghReadyHarvest(n);
+ const harvestButton=document.getElementById('gh-bed-harvest');
+ harvestButton.hidden=!ready;
+ if(ready)harvestButton.textContent=ready.icon+' Зібрати '+ready.name+' ×'+ready.quantity+' → Склад';
+ document.getElementById('gh-bed-harvest-status').hidden=true;
  document.getElementById('gh-bed-dialog').hidden=false;
 }
 function closeBedDialog(){document.getElementById('gh-bed-dialog').hidden=true;}
@@ -1300,6 +1345,7 @@ document.getElementById('gh-carrot-sprouts').addEventListener('click',()=>ghSetC
 document.getElementById('gh-carrot-bushes').addEventListener('click',()=>ghSetCarrotStage(inspectedBed,3));
 document.getElementById('gh-carrot-ripe').addEventListener('click',()=>ghSetCarrotStage(inspectedBed,4));
 document.getElementById('gh-carrot-clear').addEventListener('click',()=>ghSetCarrotStage(inspectedBed,0));
+document.getElementById('gh-bed-harvest').addEventListener('click',()=>ghCollectRipeHarvest(inspectedBed));
 document.getElementById('gh-wheat-seeds').addEventListener('click',()=>ghSetWheatStage(inspectedBed,1));
 document.getElementById('gh-wheat-sprouts').addEventListener('click',()=>ghSetWheatStage(inspectedBed,2));
 document.getElementById('gh-wheat-green').addEventListener('click',()=>ghSetWheatStage(inspectedBed,3));
