@@ -1,0 +1,87 @@
+/* GreenHaven v336: ready honey above the apiary, gentle golden light and calm 2px float.
+   Badge anchored to the apiary item (not its oversized decorative illustration). */
+.item[data-id="mill"] .gh-flour-ready-badge[hidden],
+#mill-dialog .gh-flour-production[hidden],
+#mill-dialog .gh-flour-production button[hidden]{display:none!important}
+.item[data-id="mill"] .gh-flour-ready-badge{
+ position:absolute;left:90%;top:auto;bottom:calc(100% + 42px);z-index:8;
+ width:clamp(34px,8vw,52px);height:clamp(34px,8vw,52px);
+ transform:translateX(-50%);display:grid;place-items:center;
+ pointer-events:none;filter:drop-shadow(0 1px 1px rgba(75,40,11,.12));
+ animation:ghFlourFloat 3s ease-in-out infinite;
+}
+
+.item[data-id="mill"] .gh-flour-ready-art{
+ display:block;position:relative;z-index:1;width:87%;height:87%;
+ background:transparent url("gh-warehouse-produce-v316.avif") 100% 100%/200% 200% no-repeat;
+ filter:drop-shadow(0 2px 2px rgba(88,48,13,.25));
+}
+@keyframes ghFlourFloat{
+ 0%,100%{transform:translate(-50%,0)}
+ 50%{transform:translate(-50%,-2px)}
+}
+
+/* The existing apiary popup can grow after adding production. It scrolls on smaller phones. */
+#mill-dialog .mill-dialog-box{
+ max-height:calc(100dvh - 32px);
+ overflow-y:auto;
+ overscroll-behavior:contain;
+}
+#mill-dialog .gh-flour-production{
+ display:block;margin:14px 0 10px;padding:12px;
+ border:1px solid #e4c792;border-radius:13px;
+ background:linear-gradient(180deg,#fff3d2,#f0dcb5);
+ color:#60411e;box-shadow:inset 0 2px 0 #fff9e5,0 2px 5px #130f0936;
+ font:700 13px/1.35 system-ui,sans-serif;
+}
+#mill-dialog .gh-flour-heading{
+ display:flex;align-items:center;gap:10px;margin-bottom:10px;
+}
+#mill-dialog .gh-flour-jar{
+ display:block;flex:0 0 44px;width:44px;height:44px;
+ background:transparent url("gh-warehouse-produce-v316.avif") 100% 100%/200% 200% no-repeat;
+}
+#mill-dialog .gh-flour-heading strong{
+ display:block;color:#684017;font:900 16px/1.3 Georgia,serif;
+}
+#mill-dialog .gh-flour-heading #gh-flour-status{
+ display:block;margin-top:2px;color:#5d7e2c;font:800 12px/1.25 system-ui,sans-serif;
+}
+#mill-dialog .gh-flour-meter{
+ position:relative;width:100%;height:12px;overflow:hidden;
+ border:1px solid #cba063;border-radius:999px;
+ background:linear-gradient(180deg,#dfbe82,#f6deb0);
+ box-shadow:inset 0 2px 3px #74491c44;
+}
+#mill-dialog .gh-flour-meter span{
+ display:block;width:0;height:100%;border-radius:999px;
+ background:linear-gradient(180deg,#a8d04b,#568a1b);
+ box-shadow:0 0 7px #b2df6280;
+ transition:width .45s linear;
+}
+#mill-dialog .gh-flour-countdown{
+ margin-top:7px;text-align:center;font-size:12px;color:#65451c;
+}
+#mill-dialog .gh-flour-production #gh-flour-collect{
+ display:block;width:100%;margin:10px 0 0;padding:10px 12px;
+ cursor:pointer;font:900 15px/1.2 Georgia,serif;
+ color:#fff7d9;background:linear-gradient(180deg,#88b52c,#437719);
+ border:2px solid #bcd873;border-radius:10px;
+ box-shadow:0 3px 0 #305316,0 5px 8px #0003;
+}
+#mill-dialog .gh-flour-production #gh-flour-test{
+ display:block;margin:9px auto 0;padding:6px 12px;
+ color:#71512b;background:#f6e3bd;border:1px dashed #b99767;
+ border-radius:8px;cursor:pointer;
+ font:700 11px/1.2 system-ui,sans-serif;box-shadow:none;
+}
+#mill-dialog .gh-flour-production #gh-flour-feedback{
+ margin:6px 0 0;text-align:center;color:#437822;
+ font:800 11px/1.35 system-ui,sans-serif;
+}
+#mill-dialog .gh-flour-production #gh-flour-feedback:empty{display:none}
+@media(prefers-reduced-motion:reduce){
+ .item[data-id="mill"] .gh-flour-ready-badge,
+ .item[data-id="mill"] .gh-flour-ready-badge::before{animation:none}
+ #mill-dialog .gh-flour-meter span{transition:none}
+}
