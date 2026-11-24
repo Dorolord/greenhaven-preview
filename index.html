@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="uk"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no"/>
-<title>GreenHaven — мобільна тестова версія v315</title>
+<title>GreenHaven — мобільна тестова версія v316</title>
 <style>
 *{box-sizing:border-box}html,body{margin:0;min-height:100%;background:#14221b;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;color:#fff}
 .page{min-height:100dvh;display:grid;place-items:center;padding:0 0 72px}.stage{position:relative;width:min(100vw,520px);height:min(100dvh,calc(min(100vw,520px)*1.91));max-height:1040px;min-height:min(780px,100dvh);overflow:hidden;isolation:isolate;background:#8ed92f;box-shadow:0 10px 35px #0005}
@@ -912,7 +912,7 @@ body:not(.gh-debug-visible) .gh-ui-screen {padding-top:calc(clamp(90px,21vw,116p
 .gh-econ-status {min-height:2.4em;margin:8px 0 0;font-size:11px;line-height:1.4;color:#486134}
 .gh-econ-note {font-size:11px;color:#5b7147;line-height:1.4;margin:8px 0 0}
 
-</style><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><link rel="stylesheet" href="assets/gh-warehouse-v313.css?v=313">
+</style><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><link rel="stylesheet" href="assets/gh-warehouse-v316.css?v=316">
 </head><body><main class="page"><section class="stage" id="stage" aria-label="Інтерактивний макет ферми">
 <button id="gh-cowshed-toggle" class="gh-cowshed-toggle" type="button" aria-pressed="false" title="Тест: спершу ремонт, потім окрема покупка корови">🛠 Відновити корівник</button>
 <button id="gh-cow-toggle" class="gh-cow-toggle" type="button" aria-pressed="true" title="Купити першу корову (лише тест, без оплати)" hidden>🐄 Купити корову</button>
@@ -2661,12 +2661,17 @@ render();
   ["beet","🫜","Буряк"],["cabbage","🥬","Капуста"],["onion","🧅","Цибуля"],
   ["garlic","🧄","Часник"],["pepper","🫑","Перець"],["raspberry","🫐","Малина"],
   ["blueberry","🫐","Чорниця"],["grape","🍇","Виноград"],["apple","🍎","Яблуко"],
-  ["milk","🥛","Молоко"],["eggs","🥚","Яйця"],["honey","🍯","Мед"],
+  ["milk","🥛","Молоко"],["eggs","🥚","Яйця"],["honey","🍯","Мед"],["flour","🌾","Борошно"],
   ["wool","🧶","Вовна"],["cheese","🧀","Сир"],["butter","🧈","Масло"],
   ["wood","🪵","Деревина"],["cotton","☁️","Бавовна"]
  ];
  const ghWareMeta=new Map(ghWareCatalog.map(item=>[item[0],item]));
- const ghWareArtwork={carrot:"assets/gh-warehouse-carrot-v296.webp",wheat:"assets/gh-warehouse-wheat-v296.webp",pumpkin:"assets/gh-warehouse-pumpkin-v296.webp"};
+ const ghWareArtwork={
+  carrot:"assets/gh-warehouse-carrot-v296.webp",
+  wheat:"assets/gh-warehouse-wheat-v296.webp",
+  pumpkin:"assets/gh-warehouse-pumpkin-v296.webp",
+  milk:"sprite:milk",eggs:"sprite:eggs",honey:"sprite:honey",flour:"sprite:flour"
+ };
  /* Test prices per item, paid in gold. No real tokens or external transactions. */
  const GH_WAREHOUSE_SELL_PRICES={carrot:5,wheat:4,pumpkin:25};
  let ghWareStock={};let ghWareScrollTop=0;
@@ -2952,7 +2957,11 @@ render();
    if(!entry)return '<div class="gh-warehouse-cell" role="listitem" aria-hidden="true"></div>';
    const [id,count]=entry,meta=ghWareMeta.get(id)||[id,"📦",id];
    const art=ghWareArtwork[id];
-   const icon=art?'<img class="gh-warehouse-product-art" src="'+art+'" alt="" draggable="false">':esc(meta[1]);
+   const icon=art
+    ?(art.startsWith('sprite:')
+      ?'<span class="gh-warehouse-product-art gh-warehouse-product-sprite gh-warehouse-product-sprite--'+art.slice(7)+'"></span>'
+      :'<img class="gh-warehouse-product-art" src="'+art+'" alt="" draggable="false">')
+    :esc(meta[1]);
    const selling=Object.hasOwn(GH_WAREHOUSE_SELL_PRICES,id);
    return '<div class="gh-warehouse-cell" role="listitem" title="'+esc(meta[2])+'" aria-label="'+esc(meta[2])+': '+count+'">'+
     '<span class="gh-warehouse-stock-icon'+(art?' gh-warehouse-stock-art':'')+'" aria-hidden="true">'+icon+'</span>'+
