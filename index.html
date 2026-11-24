@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="uk"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no"/>
-<title>GreenHaven — мобільна тестова версія v305</title>
+<title>GreenHaven — мобільна тестова версія v306</title>
 <style>
 *{box-sizing:border-box}html,body{margin:0;min-height:100%;background:#14221b;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;color:#fff}
 .page{min-height:100dvh;display:grid;place-items:center;padding:0 0 72px}.stage{position:relative;width:min(100vw,520px);height:min(100dvh,calc(min(100vw,520px)*1.91));max-height:1040px;min-height:min(780px,100dvh);overflow:hidden;isolation:isolate;background:#8ed92f;box-shadow:0 10px 35px #0005}
@@ -2786,6 +2786,35 @@ render();
   panel.appendChild(toast);
   window.setTimeout(()=>toast.remove(),2100);
  }
+ /* v306: Keep the warehouse frame mounted after a sale, avoiding entrance fades. */
+ function ghWareRefreshAfterSale(){
+  const panel=screen.querySelector('.gh-warehouse-art');
+  const grid=panel?.querySelector('.gh-warehouse-grid');
+  const scroll=panel?.querySelector('.gh-warehouse-scroll');
+  if(!panel||!grid||!scroll)return false;
+  const previousTop=scroll.scrollTop;
+  // Reuse the warehouse's cell rendering, but replace ONLY the contents of its grid.
+  const template=document.createElement('template');
+  template.innerHTML=warehouse();
+  const updated=template.content.querySelector('.gh-warehouse-art');
+  const freshGrid=updated?.querySelector('.gh-warehouse-grid');
+  if(!updated||!freshGrid)return false;
+  grid.replaceChildren(...Array.from(freshGrid.children));
+  panel.setAttribute('aria-label',updated.getAttribute('aria-label'));
+  const currentButton=panel.querySelector('[data-gh-warehouse-sell-all]');
+  const nextButton=updated.querySelector('[data-gh-warehouse-sell-all]');
+  if(currentButton&&nextButton){
+   currentButton.disabled=nextButton.disabled;
+   currentButton.setAttribute('aria-label',nextButton.getAttribute('aria-label'));
+   const text=currentButton.querySelector('.gh-warehouse-sell-all-copy');
+   const nextText=nextButton.querySelector('.gh-warehouse-sell-all-copy');
+   if(text&&nextText)text.textContent=nextText.textContent;
+  }
+  panel.querySelector('.gh-warehouse-sale-overlay')?.remove();
+  scroll.scrollTop=previousTop;
+  ghWareUpdateScrollbar();
+  return true;
+ }
  function ghWareConfirmSale(){
   const id=ghWareSelectedId,qty=ghWareSellQty;
   const price=GH_WAREHOUSE_SELL_PRICES[id],limit=ghWareSaleLimit(id);
@@ -2800,7 +2829,7 @@ render();
   }
   const name=ghWareMeta.get(id)?.[2]||id;
   ghWareSelectedId=null;
-  paint();
+  ghWareRefreshAfterSale();
   ghWareShowToast('✅ Продано '+name+' ×'+qty+' · +'+reward.toLocaleString('uk-UA')+' 🪙');
   return true;
  }
@@ -2827,7 +2856,8 @@ render();
   if(!window.GreenHavenEconomy?.creditGold(quote.total)){
    ghWareStock=previous;ghWareSave();return false;
   }
-  ghWareSelectedId=null;ghWareScrollTop=0;paint();
+  ghWareSelectedId=null;
+  ghWareRefreshAfterSale();
   ghWareShowToast('🪙 Продано весь урожай ×'+quote.count.toLocaleString('uk-UA')+' · +'+quote.total.toLocaleString('uk-UA')+' золота!');
   return true;
  }
