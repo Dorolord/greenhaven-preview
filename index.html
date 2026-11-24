@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="uk"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no"/>
-<title>GreenHaven — мобільна тестова версія v323</title>
+<title>GreenHaven — мобільна тестова версія v324</title>
 <style>
 *{box-sizing:border-box}html,body{margin:0;min-height:100%;background:#14221b;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;color:#fff}
 .page{min-height:100dvh;display:grid;place-items:center;padding:0 0 72px}.stage{position:relative;width:min(100vw,520px);height:min(100dvh,calc(min(100vw,520px)*1.91));max-height:1040px;min-height:min(780px,100dvh);overflow:hidden;isolation:isolate;background:#8ed92f;box-shadow:0 10px 35px #0005}
@@ -912,7 +912,7 @@ body:not(.gh-debug-visible) .gh-ui-screen {padding-top:calc(clamp(90px,21vw,116p
 .gh-econ-status {min-height:2.4em;margin:8px 0 0;font-size:11px;line-height:1.4;color:#486134}
 .gh-econ-note {font-size:11px;color:#5b7147;line-height:1.4;margin:8px 0 0}
 
-</style><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><link rel="stylesheet" href="assets/gh-warehouse-v316.css?v=316"><link rel="stylesheet" href="assets/gh-coop-eggs-v323.css?v=323">
+</style><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><link rel="stylesheet" href="assets/gh-warehouse-v316.css?v=316"><link rel="stylesheet" href="assets/gh-coop-eggs-v323.css?v=323"><link rel="stylesheet" href="assets/gh-cowshed-milk-v324.css?v=324">
 </head><body><main class="page"><section class="stage" id="stage" aria-label="Інтерактивний макет ферми">
 <button id="gh-cowshed-toggle" class="gh-cowshed-toggle" type="button" aria-pressed="false" title="Тест: спершу ремонт, потім окрема покупка корови">🛠 Відновити корівник</button>
 <button id="gh-cow-toggle" class="gh-cow-toggle" type="button" aria-pressed="true" title="Купити першу корову (лише тест, без оплати)" hidden>🐄 Купити корову</button>
@@ -1045,6 +1045,29 @@ body:not(.gh-debug-visible) .gh-ui-screen {padding-top:calc(clamp(90px,21vw,116p
   </section>
 </div>
 
+
+
+<div id="gh-milk-dialog" hidden role="presentation">
+ <section class="gh-milk-box" role="dialog" aria-modal="true" aria-labelledby="gh-milk-title">
+   <button id="gh-milk-close" type="button" aria-label="Закрити">✕</button>
+   <h3 id="gh-milk-title">🐄 Корівник</h3>
+   <p id="gh-milk-description">Молоко виробляється, коли у корівнику є корова.</p>
+   <p id="gh-milk-locked" hidden>Спочатку потрібно відремонтувати корівник і купити корову.</p>
+   <section id="gh-milk-production" hidden aria-label="Виробництво молока">
+    <div class="gh-milk-header">
+      <span class="gh-milk-icon" aria-hidden="true"></span>
+      <div><strong>🥛 Молоко · 2 шт.</strong><span id="gh-milk-state" role="status">Виробляється</span></div>
+    </div>
+    <div id="gh-milk-meter" class="gh-milk-meter" role="progressbar" aria-label="Готовність молока" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+     <span id="gh-milk-progress"></span>
+    </div>
+    <div id="gh-milk-countdown" class="gh-milk-countdown" aria-live="off"></div>
+    <button id="gh-milk-collect" type="button" hidden>🥛 Зібрати 2 молока</button>
+    <button id="gh-milk-test" type="button" hidden>⚡ Тест: зробити готовим</button>
+    <div id="gh-milk-feedback" role="status" aria-live="polite"></div>
+   </section>
+ </section>
+</div>
 
 <div id="gh-coop-dialog" hidden role="presentation">
   <section class="gh-coop-box" role="dialog" aria-modal="true" aria-labelledby="gh-coop-title">
@@ -1723,6 +1746,48 @@ let ghCowCount=1;
 try { const previous=localStorage.getItem(GH_COW_COUNT_KEY); if(previous!==null) ghCowCount=previous==='0'?0:1; }catch(e){}
 if(!ghCowshedRepaired)ghCowCount=0;
 function ghSaveCowPurchased(){try{localStorage.setItem(GH_COW_COUNT_KEY,String(ghCowCount));}catch(e){}}
+/* v324: One 2-milk batch every 30 minutes with an owned cow.
+   Timestamp is persisted; a ready batch waits for collection. */
+const GH_MILK_KEY='greenhaven-cowshed-milk-v324';
+const GH_MILK_DURATION=30*60*1000;
+const GH_MILK_AMOUNT=2;
+let ghMilkStartedAt=null;
+try{
+ const saved=JSON.parse(localStorage.getItem(GH_MILK_KEY)||'null');
+ if(saved&&Number.isSafeInteger(saved.startedAt)&&saved.startedAt>0
+    &&saved.startedAt<=Date.now()+60000)ghMilkStartedAt=saved.startedAt;
+}catch(e){}
+function ghMilkOwned(){return ghCowshedRepaired&&ghCowCount>0;}
+function ghMilkSave(){
+ try{
+  if(ghMilkStartedAt===null)localStorage.removeItem(GH_MILK_KEY);
+  else localStorage.setItem(GH_MILK_KEY,JSON.stringify({startedAt:ghMilkStartedAt}));
+ }catch(e){}
+}
+function ghMilkSync(){
+ if(!ghMilkOwned()){
+  if(ghMilkStartedAt!==null){ghMilkStartedAt=null;ghMilkSave();}
+ }else if(ghMilkStartedAt===null){ghMilkStartedAt=Date.now();ghMilkSave();}
+}
+function ghMilkTimeLeft(){
+ if(!ghMilkOwned()||ghMilkStartedAt===null)return GH_MILK_DURATION;
+ return Math.max(0,GH_MILK_DURATION-(Date.now()-ghMilkStartedAt));
+}
+function ghMilkReady(){
+ return ghMilkOwned()&&ghMilkStartedAt!==null&&ghMilkTimeLeft()===0;
+}
+function ghMilkBadgeMarkup(){
+ return '<span class="gh-milk-ready-badge" hidden aria-hidden="true"><span class="gh-milk-ready-art"></span></span>';
+}
+function ghMilkRefreshReadyBadge(){
+ const badge=world.querySelector('.item[data-id="cow"] .gh-milk-ready-badge');
+ if(badge)badge.hidden=!ghMilkReady();
+}
+function ghMilkFormatTime(ms){
+ const secs=Math.ceil(ms/1000),h=Math.floor(secs/3600),m=Math.floor(secs%3600/60),s=secs%60;
+ return (h?h+' год ':'')+m+' хв '+String(s).padStart(2,'0')+' с';
+}
+ghMilkSync();
 const GH_COW_CHARACTER_SPRITE='assets/asset_041_39367dcc3f868c7a.webp';
 const GH_COW_FRONT_FENCE_SPRITE='assets/asset_042_de81888f1ecdc849.webp';
 /* Independent cow position in percentages of the cowshed artwork, separate from the farm building position. */
@@ -1766,7 +1831,10 @@ function ghAttachCowDrag(itemEl){
     apply();
   });
   const finish=e=>{if(!drag || e.pointerId!==drag.pointerId)return;
-    e.stopPropagation();drag=null;cow.classList.remove('dragging');ghSaveCowPosition();
+    e.stopPropagation();
+    const tapped=e.type==='pointerup'&&Math.hypot(e.clientX-drag.x,e.clientY-drag.y)<9;
+    drag=null;cow.classList.remove('dragging');ghSaveCowPosition();
+    if(tapped)ghMilkShowDialog();
   };
   cow.addEventListener('pointerup',finish);
   cow.addEventListener('pointercancel',finish);
@@ -1799,7 +1867,7 @@ if(ghCowToggle){
    e.stopPropagation();
    if(!ghCowshedRepaired || ghCowCount===1)return;
    ghCowCount=1;
-   ghSaveCowPurchased();
+   ghSaveCowPurchased();ghMilkSync();
    render();
  });
  ghCowToggle.addEventListener('pointerdown',e=>e.stopPropagation());
@@ -1827,16 +1895,83 @@ if(ghCowshedToggle){
      ghCowCount=0;
    }
    ghSaveCowshedRepair();
-   ghSaveCowPurchased();
+   ghSaveCowPurchased();ghMilkSync();
    render();
  });
 }
+
+/* v324: Cow shed popup — a small production view matching the chicken coop. */
+function ghMilkUpdateDialog(){
+ ghMilkSync();
+ const owned=ghMilkOwned();
+ const production=document.getElementById('gh-milk-production');
+ const locked=document.getElementById('gh-milk-locked');
+ production.hidden=!owned;
+ locked.hidden=owned;
+ document.getElementById('gh-milk-description').textContent=!ghCowshedRepaired
+  ?'Корівник потребує ремонту.'
+  :!ghCowCount
+   ?'Корівник відремонтований, але поки немає корови.'
+   :'Корова виробляє молоко. Натисни «Зібрати», коли партія буде готова.';
+ if(!owned)return;
+ const left=ghMilkTimeLeft(),ready=left===0;
+ const percentage=ready?100:Math.max(0,Math.min(100,(1-left/GH_MILK_DURATION)*100));
+ document.getElementById('gh-milk-state').textContent=ready?'Готово до збору!':'Виробляється';
+ document.getElementById('gh-milk-progress').style.width=percentage.toFixed(2)+'%';
+ document.getElementById('gh-milk-meter').setAttribute('aria-valuenow',String(Math.round(percentage)));
+ document.getElementById('gh-milk-countdown').textContent=ready
+  ?'🥛 Молоко готове — можна збирати!'
+  :'⏳ До готовності: '+ghMilkFormatTime(left);
+ document.getElementById('gh-milk-collect').hidden=!ready;
+ document.getElementById('gh-milk-test').hidden=ready;
+}
+function ghMilkShowDialog(){
+ ghMilkUpdateDialog();
+ document.getElementById('gh-milk-feedback').textContent='';
+ document.getElementById('gh-milk-dialog').hidden=false;
+}
+function ghMilkCloseDialog(){document.getElementById('gh-milk-dialog').hidden=true;}
+document.getElementById('gh-milk-close').addEventListener('click',ghMilkCloseDialog);
+document.getElementById('gh-milk-dialog').addEventListener('click',e=>{
+ if(e.target===e.currentTarget)ghMilkCloseDialog();
+});
+document.getElementById('gh-milk-collect').addEventListener('click',()=>{
+ if(!ghMilkReady()){ghMilkUpdateDialog();return;}
+ const feedback=document.getElementById('gh-milk-feedback');
+ // The existing warehouse uses the exact inventory key "milk".
+ if(!window.GreenHavenInventory?.add('milk',GH_MILK_AMOUNT)){
+  feedback.textContent='Склад недоступний або переповнений. Спробуй ще раз.';
+  return;
+ }
+ ghMilkStartedAt=Date.now();
+ ghMilkSave();
+ feedback.textContent='✅ Зібрано '+GH_MILK_AMOUNT+' молока! Додано на склад.';
+ ghMilkRefreshReadyBadge();ghMilkUpdateDialog();
+});
+document.getElementById('gh-milk-test').addEventListener('click',()=>{
+ if(!ghMilkOwned())return;
+ ghMilkStartedAt=Date.now()-GH_MILK_DURATION;ghMilkSave();
+ document.getElementById('gh-milk-feedback').textContent='';
+ ghMilkRefreshReadyBadge();ghMilkUpdateDialog();
+});
+window.setInterval(()=>{
+ ghMilkRefreshReadyBadge();
+ if(!document.getElementById('gh-milk-dialog').hidden)ghMilkUpdateDialog();
+},1000);
+document.addEventListener('visibilitychange',()=>{
+ if(document.hidden)return;
+ ghMilkRefreshReadyBadge();
+ if(!document.getElementById('gh-milk-dialog').hidden)ghMilkUpdateDialog();
+});
+document.addEventListener('keydown',e=>{
+ if(e.key==='Escape'&&!document.getElementById('gh-milk-dialog').hidden)ghMilkCloseDialog();
+});
 
 function cowMarkup(){
  if(!ghCowshedRepaired){
    return '<div class="cow-visual cow-broken-visual" aria-label="Поламаний корівник до відновлення"><img class="cow-broken-art" draggable="false" alt="Поламаний корівник" src="'+GH_COW_BARN_BROKEN_SPRITE+'"></div>';
  }
- return '<div class="cow-visual"><div class="cow-back-layer"><img class="cow-art" draggable="false" alt="Корівник із поїлкою з водою" src="'+GH_COW_BARN_WATER_SPRITE+'"></div>'+ghCowArtMarkup()+'</div>';
+ return '<div class="cow-visual"><div class="cow-back-layer"><img class="cow-art" draggable="false" alt="Корівник із поїлкою з водою" src="'+GH_COW_BARN_WATER_SPRITE+'"></div>'+ghCowArtMarkup()+ghMilkBadgeMarkup()+'</div>';
 }
 
 /* Chicken coop artwork — two independent PNG states, with transparent grass edges. */
@@ -2151,12 +2286,12 @@ let pointer=null,start=null;el.addEventListener('pointerdown',e=>{pointer=e.poin
 el.addEventListener('pointermove',e=>{if(pointer!==e.pointerId)return;const r=stage.getBoundingClientRect();item.x=+clamp(start.x+(e.clientX-start.px)/r.width*100,item.w/2,100-item.w/2).toFixed(2);item.y=+clamp(start.y+(e.clientY-start.py)/r.height*100,17+item.h/2,87-item.h/2).toFixed(2);el.style.setProperty('--x',item.x+'%');el.style.setProperty('--y',item.y+'%');
  if(start.plotOffsets){for(const sp of start.plotOffsets){const plot=items.find(o=>o.id===sp.id);if(!plot)continue;plot.x=+clamp(sp.x+item.x-start.x,plot.w/2,100-plot.w/2).toFixed(2);plot.y=+clamp(sp.y+item.y-start.y,17+plot.h/2,87-plot.h/2).toFixed(2);const pEl=world.querySelector('[data-id="'+plot.id+'"]');if(pEl){pEl.style.setProperty('--x',plot.x+'%');pEl.style.setProperty('--y',plot.y+'%');}}}
  drawRoutes()});
-el.addEventListener('pointerup',e=>{if(pointer!==e.pointerId)return;const tapped=start&&Math.hypot(e.clientX-start.px,e.clientY-start.py)<9;pointer=null;el.classList.remove('selected');save();if(tapped&&item.id==='mill')showMillDialog();if(tapped&&item.id==='apiary')showApiaryDialog();if(tapped&&item.id==='chicken')ghCoopShowDialog();if(tapped&&item.id.startsWith('plot-')){
+el.addEventListener('pointerup',e=>{if(pointer!==e.pointerId)return;const tapped=start&&Math.hypot(e.clientX-start.px,e.clientY-start.py)<9;pointer=null;el.classList.remove('selected');save();if(tapped&&item.id==='mill')showMillDialog();if(tapped&&item.id==='apiary')showApiaryDialog();if(tapped&&item.id==='chicken')ghCoopShowDialog();if(tapped&&item.id==='cow')ghMilkShowDialog();if(tapped&&item.id.startsWith('plot-')){
  const plotNumber=Number(item.id.slice(5));
  if(!document.body.classList.contains('gh-debug-visible')&&ghCanPlantOnPlot(plotNumber)){
   window.dispatchEvent(new CustomEvent('greenhaven:open-seed-market',{detail:{plot:plotNumber}}));
  }else inspectBed(plotNumber);
-}});el.addEventListener('pointercancel',()=>{pointer=null;el.classList.remove('selected');save()});if(item.id==='cow')ghAttachCowDrag(el);world.appendChild(el)}drawRoutes();ghRenderMapHives();ghRenderOrangeHen();ghUpdateCowshedUI();if(typeof ghRenderHouseDog==='function')ghRenderHouseDog();ghCoopRefreshReadyBadge()}
+}});el.addEventListener('pointercancel',()=>{pointer=null;el.classList.remove('selected');save()});if(item.id==='cow')ghAttachCowDrag(el);world.appendChild(el)}drawRoutes();ghRenderMapHives();ghRenderOrangeHen();ghUpdateCowshedUI();if(typeof ghRenderHouseDog==='function')ghRenderHouseDog();ghCoopRefreshReadyBadge();ghMilkRefreshReadyBadge()}
 function drawRoutes(){
  // V128 — base plan from uploaded GreenHaven-layout(4).json; apiary and hives are 5% smaller.
  // Stone drawing is below all buildings and animals. Only anchors move when a building moves.
@@ -2316,7 +2451,7 @@ function drawRoutes(){
  routes.innerHTML=stones.join('');
 }
 document.getElementById('toggle').onclick=()=>{const on=document.getElementById('paths').classList.toggle('on');document.getElementById('toggle').textContent='Стежки: '+(on?'увімк.':'вимк.');document.getElementById('toggle').classList.toggle('active',on)};
-document.getElementById('reset').onclick=()=>{items=structuredClone(original);unlockedBeds=1;saveBedAccess();ghBedSoilLook={};ghSaveBedSoilLook();ghCarrotStages={1:1};ghSaveCarrotStages();ghCowPosition={...GH_COW_POSITION_DEFAULT};ghSaveCowPosition();ghApiaryHivePositions=GH_APIARY_HIVES_DEFAULT.map(h=>({...h}));ghSaveApiaryHivePositions();ghMapHivePositions=GH_APIARY_FIXED_HIVE_POSITIONS.map(h=>({...h}));ghSaveMapHives();ghSelectedHiveIndex=0;ghHiveEditMode=true;ghApiaryHiveCount=0;ghSaveApiaryHiveCount();ghCowshedRepaired=false;ghCowCount=0;ghSaveCowshedRepair();ghSaveCowPurchased();ghCoopRepaired=false;ghCoopHenCount=0;ghOrangeHenEditMode=false;ghSaveCoopHenState();ghSaveCoopState();ghCoopEggsSync();ghOrangeHenPosition={...GH_ORANGE_HEN_DEFAULT};ghSaveOrangeHenPosition();ghFamilyHenPosition={...GH_FAMILY_HEN_DEFAULT};ghSaveFamilyHenPosition();ghRoosterPosition={...GH_ROOSTER_DEFAULT};ghSaveRoosterPosition();ghDogPosition={...GH_DOG_DEFAULT};ghSaveDogPosition();ghDogEditMode=true;ghSmokePosition={...GH_SMOKE_DEFAULT};ghSmokeEditMode=false;ghSaveSmokePosition();ghUpdateSmokeElement();save();render()};
+document.getElementById('reset').onclick=()=>{items=structuredClone(original);unlockedBeds=1;saveBedAccess();ghBedSoilLook={};ghSaveBedSoilLook();ghCarrotStages={1:1};ghSaveCarrotStages();ghCowPosition={...GH_COW_POSITION_DEFAULT};ghSaveCowPosition();ghApiaryHivePositions=GH_APIARY_HIVES_DEFAULT.map(h=>({...h}));ghSaveApiaryHivePositions();ghMapHivePositions=GH_APIARY_FIXED_HIVE_POSITIONS.map(h=>({...h}));ghSaveMapHives();ghSelectedHiveIndex=0;ghHiveEditMode=true;ghApiaryHiveCount=0;ghSaveApiaryHiveCount();ghCowshedRepaired=false;ghCowCount=0;ghSaveCowshedRepair();ghSaveCowPurchased();ghMilkSync();ghCoopRepaired=false;ghCoopHenCount=0;ghOrangeHenEditMode=false;ghSaveCoopHenState();ghSaveCoopState();ghCoopEggsSync();ghOrangeHenPosition={...GH_ORANGE_HEN_DEFAULT};ghSaveOrangeHenPosition();ghFamilyHenPosition={...GH_FAMILY_HEN_DEFAULT};ghSaveFamilyHenPosition();ghRoosterPosition={...GH_ROOSTER_DEFAULT};ghSaveRoosterPosition();ghDogPosition={...GH_DOG_DEFAULT};ghSaveDogPosition();ghDogEditMode=true;ghSmokePosition={...GH_SMOKE_DEFAULT};ghSmokeEditMode=false;ghSaveSmokePosition();ghUpdateSmokeElement();save();render()};
 const serialize=()=>JSON.stringify({project:'GreenHaven',type:'farm-layout',version:2,objects:items,cowPosition:ghCowPosition,apiaryHivePositions:ghApiaryHivePositions,apiaryMapHives:ghMapHivePositions,apiaryHivesSizeVersion:78,apiaryOwnedHives:ghApiaryHiveCount,bedTilledStates:Object.fromEntries(Array.from({length:6},(_,i)=>[String(i+1),ghBedIsTilled(i+1)])),carrotGrowthStages:Object.fromEntries(Array.from({length:6},(_,i)=>[String(i+1),ghCarrotStages[i+1]||0])),cowshedRepaired:ghCowshedRepaired,cowPurchased:Boolean(ghCowCount),chickenCoopRepaired:ghCoopRepaired,chickenCount:ghCoopRepaired?ghCoopHenCount:0,orangeHenPosition:ghOrangeHenPosition,orangeHenSizeVersion:95,familyHenPosition:ghFamilyHenPosition,familyHenSizeVersion:94,roosterPosition:ghRoosterPosition,roosterSizeVersion:99,dogPosition:ghDogPosition,dogSizeVersion:3,smokePosition:ghSmokePosition,smokeAnimationVersion:1},null,2);
 document.getElementById('copy').onclick=async(e)=>{try{await navigator.clipboard.writeText(serialize());e.target.textContent='Скопійовано ✓';setTimeout(()=>e.target.textContent='Скопіювати план',1600)}catch(e){alert('Натисни «Зберегти план»')}};
 document.getElementById('import').onclick=()=>document.getElementById('json-import').click();
@@ -2369,7 +2504,7 @@ document.getElementById('json-import').addEventListener('change',async e=>{
     if(typeof data.cowshedRepaired==='boolean')ghCowshedRepaired=data.cowshedRepaired;
     else ghCowshedRepaired=false;
     ghCowCount=ghCowshedRepaired && data.cowPurchased===true?1:0;
-    ghSaveCowshedRepair();ghSaveCowPurchased();
+    ghSaveCowshedRepair();ghSaveCowPurchased();ghMilkSync();
     ghCoopRepaired=data.chickenCoopRepaired===true;ghCoopHenCount=ghCoopRepaired?Math.max(0,Math.min(3,Math.floor(Number(data.chickenCount)||0))):0;
     if(data.orangeHenPosition&&Number.isFinite(data.orangeHenPosition.x)&&Number.isFinite(data.orangeHenPosition.y)){
       const p=data.orangeHenPosition;
