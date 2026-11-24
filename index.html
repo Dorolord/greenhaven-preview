@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="uk"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no"/>
-<title>GreenHaven — мобільна тестова версія v314</title>
+<title>GreenHaven — мобільна тестова версія v315</title>
 <style>
 *{box-sizing:border-box}html,body{margin:0;min-height:100%;background:#14221b;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;color:#fff}
 .page{min-height:100dvh;display:grid;place-items:center;padding:0 0 72px}.stage{position:relative;width:min(100vw,520px);height:min(100dvh,calc(min(100vw,520px)*1.91));max-height:1040px;min-height:min(780px,100dvh);overflow:hidden;isolation:isolate;background:#8ed92f;box-shadow:0 10px 35px #0005}
@@ -2851,10 +2851,13 @@ render();
   const at=(offset,t,scale,opacity)=>({
    offset,transform:transform(fromX+dx*t,fromY+dy*t-arc*Math.sin(Math.PI*t),scale),opacity
   });
+  // v315: Nonlinear distance steps make the coin start gently and
+  // accelerate visibly as it approaches the gold counter.
   const frames=[
-   at(0,0,.83,0),at(.13,0,1.08,1),at(.29,0,1,1),
-   at(.47,.18,.95,1),at(.66,.48,.74,1),
-   at(.85,.83,.43,.98),at(.96,1,.20,.9),at(1,1,.12,0)
+   at(0,0,.83,0),at(.12,0,1.08,1),at(.26,0,1,1),
+   at(.40,.035,.98,1),at(.54,.15,.91,1),
+   at(.67,.36,.75,1),at(.78,.65,.50,.98),
+   at(.87,1,.20,.84),at(1,1,.12,0)
   ];
   const motion=flyer.animate(frames,{duration:1080,fill:'forwards',easing:'linear'});
   motion.addEventListener('finish',finish,{once:true});
