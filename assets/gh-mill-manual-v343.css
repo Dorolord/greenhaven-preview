@@ -1,0 +1,4 @@
+.item[data-id="mill"].mill-active:not(.gh-mill-running) .mill-spin{animation-play-state:paused!important;will-change:auto}
+.item[data-id="mill"].mill-active.gh-mill-running .mill-spin{animation-play-state:running}
+#mill-dialog #gh-flour-start{display:block;width:100%;margin:8px 0;padding:10px;border:1px solid #365c1c;border-radius:9px;background:linear-gradient(#82b948,#4d8028);color:white;font:700 14px system-ui;box-shadow:0 3px 0 #305316;cursor:pointer}
+#mill-dialog #gh-flour-start[hidden]{display:none!important}
