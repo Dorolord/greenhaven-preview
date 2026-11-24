@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="uk"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no"/>
-<title>GreenHaven — мобільна тестова версія v336</title>
+<title>GreenHaven — мобільна тестова версія v337</title>
 <style>
 *{box-sizing:border-box}html,body{margin:0;min-height:100%;background:#14221b;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;color:#fff}
 .page{min-height:100dvh;display:grid;place-items:center;padding:0 0 72px}.stage{position:relative;width:min(100vw,520px);height:min(100dvh,calc(min(100vw,520px)*1.91));max-height:1040px;min-height:min(780px,100dvh);overflow:hidden;isolation:isolate;background:#8ed92f;box-shadow:0 10px 35px #0005}
@@ -1652,7 +1652,7 @@ function ghHoneyUpdatePanel(){
  document.getElementById('gh-honey-countdown').textContent=ready
   ?'🍯 Мед готовий — можна збирати!'
   :'⏳ До готовності: '+ghHoneyFormatTime(left);
- document.getElementById('gh-honey-collect').textContent='🍯 Зібрати '+count+' '+(count===1?'мед':'меди');
+ document.getElementById('gh-honey-collect').textContent='🍯 Зібрати мед · '+count+' шт.';
  document.getElementById('gh-honey-collect').hidden=!ready;
  document.getElementById('gh-honey-test').hidden=ready;
 }
@@ -1665,7 +1665,7 @@ document.getElementById('gh-honey-collect').addEventListener('click',()=>{
   return;
  }
  ghHoneyStartedAt=Date.now();ghHoneySave();
- feedback.textContent='✅ Зібрано '+amount+' '+(amount===1?'мед':'меди')+'! Додано на склад.';
+ feedback.textContent='✅ Мед зібрано: '+amount+' шт. Додано на склад.';
  ghHoneyRefreshReadyBadge();ghHoneyUpdatePanel();
 });
 document.getElementById('gh-honey-test').addEventListener('click',()=>{
