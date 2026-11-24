@@ -1,0 +1,5 @@
+.item[data-id="house"] > .name,
+.item[data-id="mill"] > .name,
+.item[data-id="cow"] > .name,
+.item[data-id="chicken"] > .name,
+.item[data-id="apiary"] > .name{display:none!important}
