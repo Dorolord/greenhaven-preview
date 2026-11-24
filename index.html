@@ -912,7 +912,7 @@ body:not(.gh-debug-visible) .gh-ui-screen {padding-top:calc(clamp(90px,21vw,116p
 .gh-econ-status {min-height:2.4em;margin:8px 0 0;font-size:11px;line-height:1.4;color:#486134}
 .gh-econ-note {font-size:11px;color:#5b7147;line-height:1.4;margin:8px 0 0}
 
-</style><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><link rel="stylesheet" href="assets/gh-warehouse-v297.css?v=297">
+</style><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><link rel="stylesheet" href="assets/gh-warehouse-v298.css?v=298">
 </head><body><main class="page"><section class="stage" id="stage" aria-label="Інтерактивний макет ферми">
 <button id="gh-cowshed-toggle" class="gh-cowshed-toggle" type="button" aria-pressed="false" title="Тест: спершу ремонт, потім окрема покупка корови">🛠 Відновити корівник</button>
 <button id="gh-cow-toggle" class="gh-cow-toggle" type="button" aria-pressed="true" title="Купити першу корову (лише тест, без оплати)" hidden>🐄 Купити корову</button>
@@ -2603,7 +2603,14 @@ render();
    action,
    getMessage:()=>message,
    // Test-only gold settlement for selling inventory crops.
-   creditGold(amount){return Number.isSafeInteger(amount)&&amount>0&&change({gold:amount});},
+   creditGold(amount){
+    if(!Number.isSafeInteger(amount)||amount<1||amount>MAX_BALANCE||state.gold>MAX_BALANCE-amount){
+     message="Досягнуто ліміт золота.";return false;
+    }
+    state={...state,gold:state.gold+amount};
+    message="Отримано "+format(amount)+" золота за урожай.";
+    persist();return true;
+   },
    render
  };
 })();
@@ -2732,7 +2739,7 @@ render();
   if(!Number.isSafeInteger(price)||price<1)return 0;
   const gold=window.GreenHavenEconomy?.getState()?.gold;
   if(!Number.isSafeInteger(gold))return 0;
-  return Math.max(0,Math.min(ghWareStock[id]||0,Math.floor(100000/price),Math.floor((1000000000-gold)/price)));
+  return Math.max(0,Math.min(ghWareStock[id]||0,Math.floor((1000000000-gold)/price)));
  }
  function ghWareSaleCard(){
   const id=ghWareSelectedId,meta=ghWareMeta.get(id);
@@ -2783,7 +2790,7 @@ render();
   const id=ghWareSelectedId,qty=ghWareSellQty;
   const price=GH_WAREHOUSE_SELL_PRICES[id],limit=ghWareSaleLimit(id);
   if(!Number.isSafeInteger(price)||price<1||!Number.isSafeInteger(qty)||qty<1||qty>limit)return false;
-  const reward=price*qty; // Safe integer, bounded by the economy's 100,000-gold per-action limit.
+  const reward=price*qty; // Safely bounded by the gold balance cap.
   // Mutate stock silently; if gold credit is rejected, restore stock before repainting.
   if(!window.GreenHavenInventory.remove(id,qty,true))return false;
   if(!window.GreenHavenEconomy?.creditGold(reward)){
@@ -2797,8 +2804,39 @@ render();
   ghWareShowToast('✅ Продано '+name+' ×'+qty+' · +'+reward.toLocaleString('uk-UA')+' 🪙');
   return true;
  }
+ /* v298: One-tap Sell All. Only priced crop types are sold; other stock stays. */
+ function ghWareSellAllQuote(){
+  const entries=ghWareEntries().filter(([id])=>Object.hasOwn(GH_WAREHOUSE_SELL_PRICES,id));
+  const gold=window.GreenHavenEconomy?.getState()?.gold;
+  if(!Number.isSafeInteger(gold)||gold<0||gold>1000000000)return {entries:[],count:0,total:0,ok:false};
+  let total=0,count=0;
+  for(const [id,qty] of entries){
+   const value=qty*GH_WAREHOUSE_SELL_PRICES[id];
+   if(!Number.isSafeInteger(value)||value<=0||!Number.isSafeInteger(total+value)||!Number.isSafeInteger(count+qty))
+    return {entries,count,total,ok:false};
+   total+=value;count+=qty;
+  }
+  return {entries,count,total,ok:count>0&&total<=1000000000-gold};
+ }
+ function ghWareSellAll(){
+  if(currentTab!=='warehouse')return false;
+  const quote=ghWareSellAllQuote();if(!quote.ok)return false;
+  const previous={...ghWareStock};
+  for(const [id] of quote.entries)delete ghWareStock[id];
+  ghWareSave();
+  if(!window.GreenHavenEconomy?.creditGold(quote.total)){
+   ghWareStock=previous;ghWareSave();return false;
+  }
+  ghWareSelectedId=null;ghWareScrollTop=0;paint();
+  ghWareShowToast('🪙 Продано весь урожай ×'+quote.count.toLocaleString('uk-UA')+' · +'+quote.total.toLocaleString('uk-UA')+' золота!');
+  return true;
+ }
  function warehouse(){
   const entries=ghWareEntries();
+  const bulk=ghWareSellAllQuote();
+  const bulkLabel=bulk.count>0
+    ? bulk.ok?'Продати все · +'+bulk.total.toLocaleString('uk-UA')+' 🪙':'Ліміт золота'
+    : 'Продати все · 0 🪙';
   // Native scroll: at least 24 independently rendered cells, three per row, expandable to all owned resources.
   const amount=Math.max(24,Math.ceil(entries.length/3)*3);
   const cells=Array.from({length:amount},(_,i)=>{
@@ -2821,6 +2859,7 @@ render();
      '<div class="gh-warehouse-scrollbar-track"><div class="gh-warehouse-thumb"></div></div></div>'+
    '<button type="button" class="gh-warehouse-arrow" data-gh-warehouse-prev aria-label="Прокрутити вгору"></button>'+
    '<button type="button" class="gh-warehouse-arrow" data-gh-warehouse-next aria-label="Прокрутити вниз"></button>'+
+   '<button type="button" class="gh-warehouse-sell-all" data-gh-warehouse-sell-all'+(bulk.ok?'':' disabled')+' aria-label="'+(bulk.ok?'Продати весь урожай за '+bulk.total+' золота':'Немає доступного для продажу урожаю')+'"><span class="gh-warehouse-sell-all-coin" aria-hidden="true">🪙</span><span>'+bulkLabel+'</span></button>'+
    '<button type="button" class="gh-warehouse-close" data-gh-warehouse-close aria-label="Закрити склад і повернутися на ферму"></button></div>';
  }
  function market(){
@@ -2911,7 +2950,7 @@ render();
  screen.addEventListener('touchstart',e=>{
   if(currentTab!=='warehouse'||e.touches.length!==1)return;
   const target=e.target;
-  if(target.closest('.gh-warehouse-art')&&!target.closest('.gh-warehouse-scroll,.gh-warehouse-scrollbar,.gh-warehouse-close,.gh-warehouse-arrow'))ghWarePanelTouchY=e.touches[0].clientY;
+  if(target.closest('.gh-warehouse-art')&&!target.closest('.gh-warehouse-scroll,.gh-warehouse-scrollbar,.gh-warehouse-close,.gh-warehouse-arrow,.gh-warehouse-sell-all,.gh-warehouse-sale-overlay'))ghWarePanelTouchY=e.touches[0].clientY;
  },{passive:true});
  screen.addEventListener('touchend',e=>{
   if(ghWarePanelTouchY===null)return;
@@ -2950,6 +2989,10 @@ render();
    const close=screen.querySelector('[data-gh-warehouse-close]');
    close?.classList.add('is-pressed');
    window.setTimeout(()=>{ghWareScrollTop=0;ghWareClosing=false;showTab('farm');},175);
+   return;
+  }
+  if(e.target.closest('[data-gh-warehouse-sell-all]')){
+   if(!ghWareSellAll())ghWareShowToast('Немає урожаю для продажу або досягнуто ліміт золота.');
    return;
   }
   // Sale overlay is part of the warehouse window, never an image hotspot.
