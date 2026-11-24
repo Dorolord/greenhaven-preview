@@ -912,7 +912,7 @@ body:not(.gh-debug-visible) .gh-ui-screen {padding-top:calc(clamp(90px,21vw,116p
 .gh-econ-status {min-height:2.4em;margin:8px 0 0;font-size:11px;line-height:1.4;color:#486134}
 .gh-econ-note {font-size:11px;color:#5b7147;line-height:1.4;margin:8px 0 0}
 
-</style><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><link rel="stylesheet" href="assets/gh-warehouse-v296.css?v=296">
+</style><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><link rel="stylesheet" href="assets/gh-warehouse-v297.css?v=297">
 </head><body><main class="page"><section class="stage" id="stage" aria-label="Інтерактивний макет ферми">
 <button id="gh-cowshed-toggle" class="gh-cowshed-toggle" type="button" aria-pressed="false" title="Тест: спершу ремонт, потім окрема покупка корови">🛠 Відновити корівник</button>
 <button id="gh-cow-toggle" class="gh-cow-toggle" type="button" aria-pressed="true" title="Купити першу корову (лише тест, без оплати)" hidden>🐄 Купити корову</button>
@@ -2602,6 +2602,8 @@ render();
    requirement,
    action,
    getMessage:()=>message,
+   // Test-only gold settlement for selling inventory crops.
+   creditGold(amount){return Number.isSafeInteger(amount)&&amount>0&&change({gold:amount});},
    render
  };
 })();
@@ -2648,7 +2650,10 @@ render();
  ];
  const ghWareMeta=new Map(ghWareCatalog.map(item=>[item[0],item]));
  const ghWareArtwork={carrot:"assets/gh-warehouse-carrot-v296.webp",wheat:"assets/gh-warehouse-wheat-v296.webp",pumpkin:"assets/gh-warehouse-pumpkin-v296.webp"};
+ /* Test prices per item, paid in gold. No real tokens or external transactions. */
+ const GH_WAREHOUSE_SELL_PRICES={carrot:5,wheat:4,pumpkin:25};
  let ghWareStock={};let ghWareScrollTop=0;
+ let ghWareSelectedId=null,ghWareSellQty=1;
  try{
   const saved=JSON.parse(localStorage.getItem(GH_WAREHOUSE_KEY)||"{}");
   if(saved && typeof saved==="object" && !Array.isArray(saved)){
@@ -2703,23 +2708,95 @@ render();
  }
  window.GreenHavenInventory={
   getState(){return {...ghWareStock};},
-  add(id,amount=1){
+  add(id,amount=1,silent=false){
    if(typeof id!=="string"||!/^[a-z][a-z0-9_-]{0,39}$/.test(id))return false;
    const count=Number(amount);if(!Number.isSafeInteger(count)||count<1)return false;
    const previous=ghWareStock[id]||0;if(count>GH_WAREHOUSE_MAX-previous)return false;
    ghWareStock[id]=previous+count;ghWareSave();
-   if(currentTab==="warehouse")paint();return true;
+   if(!silent&&currentTab==="warehouse")paint();return true;
   },
-  remove(id,amount=1){
+  remove(id,amount=1,silent=false){
    const count=Number(amount),previous=ghWareStock[id]||0;
    if(!Number.isSafeInteger(count)||count<1||count>previous)return false;
    if(count===previous)delete ghWareStock[id];else ghWareStock[id]=previous-count;
-   ghWareSave();if(currentTab==="warehouse")paint();return true;
+   ghWareSave();if(!silent&&currentTab==="warehouse")paint();return true;
   },
-  reset(){ghWareStock={};ghWareScrollTop=0;ghWareSave();if(currentTab==="warehouse")paint();}
+  reset(){ghWareStock={};ghWareScrollTop=0;ghWareSelectedId=null;ghWareSave();if(currentTab==="warehouse")paint();}
  };
 
 
+
+ /* v297: Each stocked slot opens a sale card; keep the scrolling inventory intact. */
+ function ghWareSaleLimit(id){
+  const price=GH_WAREHOUSE_SELL_PRICES[id];
+  if(!Number.isSafeInteger(price)||price<1)return 0;
+  const gold=window.GreenHavenEconomy?.getState()?.gold;
+  if(!Number.isSafeInteger(gold))return 0;
+  return Math.max(0,Math.min(ghWareStock[id]||0,Math.floor(100000/price),Math.floor((1000000000-gold)/price)));
+ }
+ function ghWareSaleCard(){
+  const id=ghWareSelectedId,meta=ghWareMeta.get(id);
+  const price=GH_WAREHOUSE_SELL_PRICES[id],stock=ghWareStock[id]||0;
+  if(!meta||!Number.isSafeInteger(price)||price<1||stock<1)return '';
+  const max=ghWareSaleLimit(id);
+  ghWareSellQty=max>0?Math.min(max,Math.max(1,ghWareSellQty)):0;
+  const total=price*ghWareSellQty;
+  const art=ghWareArtwork[id];
+  const img=art?'<img src="'+art+'" alt="" draggable="false">':'<span>'+esc(meta[1])+'</span>';
+  const buttonLabel=max?'Продати ×'+ghWareSellQty+' · +'+total.toLocaleString('uk-UA')+' 🪙':'Ліміт золота досягнуто';
+  return '<div class="gh-warehouse-sale-overlay" data-gh-sale-overlay>'+
+   '<section class="gh-warehouse-sale-card" role="dialog" aria-modal="true" aria-label="Продаж '+esc(meta[2])+'">'+
+    '<button type="button" class="gh-warehouse-sale-x" data-gh-sale-close aria-label="Закрити продаж">✕</button>'+
+    '<div class="gh-warehouse-sale-head">'+img+'<strong>'+esc(meta[2])+'</strong></div>'+
+    '<div class="gh-warehouse-sale-available">На складі: <b>×'+stock.toLocaleString('uk-UA')+'</b> · Ціна: <b>'+price+' 🪙 / шт.</b></div>'+
+    '<div class="gh-warehouse-sale-adjust">'+
+     '<button type="button" data-gh-sale-dec aria-label="Зменшити кількість" '+(ghWareSellQty<=1?'disabled':'')+'>−</button>'+
+     '<span aria-live="polite">'+ghWareSellQty.toLocaleString('uk-UA')+' шт.</span>'+
+     '<button type="button" data-gh-sale-inc aria-label="Збільшити кількість" '+(ghWareSellQty>=max?'disabled':'')+'>+</button></div>'+
+    '<button type="button" class="gh-warehouse-sale-all" data-gh-sale-all '+(max<1?'disabled':'')+'>Вибрати все'+(max<stock?' доступне':'')+'</button>'+
+    '<button type="button" class="gh-warehouse-sale-confirm" data-gh-sale-confirm '+(max<1?'disabled':'')+'>'+buttonLabel+'</button>'+
+    '<small>Тестовий продаж за ігрове золото</small>'+
+   '</section></div>';
+ }
+ function ghWareRenderSale(){
+  const panel=screen.querySelector('.gh-warehouse-art');
+  if(!panel)return;
+  panel.querySelector('.gh-warehouse-sale-overlay')?.remove();
+  if(!ghWareSelectedId)return;
+  const markup=ghWareSaleCard();
+  if(markup)panel.insertAdjacentHTML('beforeend',markup);
+ }
+ function ghWareOpenSale(id){
+  if(currentTab!=='warehouse'||!Object.hasOwn(GH_WAREHOUSE_SELL_PRICES,id)||!(ghWareStock[id]>0))return;
+  ghWareSelectedId=id;ghWareSellQty=1;
+  ghWareRenderSale();
+ }
+ function ghWareShowToast(label){
+  const panel=screen.querySelector('.gh-warehouse-art');if(!panel)return;
+  panel.querySelector('.gh-warehouse-sale-toast')?.remove();
+  const toast=document.createElement('div');toast.className='gh-warehouse-sale-toast';
+  toast.setAttribute('role','status');toast.textContent=label;
+  panel.appendChild(toast);
+  window.setTimeout(()=>toast.remove(),2100);
+ }
+ function ghWareConfirmSale(){
+  const id=ghWareSelectedId,qty=ghWareSellQty;
+  const price=GH_WAREHOUSE_SELL_PRICES[id],limit=ghWareSaleLimit(id);
+  if(!Number.isSafeInteger(price)||price<1||!Number.isSafeInteger(qty)||qty<1||qty>limit)return false;
+  const reward=price*qty; // Safe integer, bounded by the economy's 100,000-gold per-action limit.
+  // Mutate stock silently; if gold credit is rejected, restore stock before repainting.
+  if(!window.GreenHavenInventory.remove(id,qty,true))return false;
+  if(!window.GreenHavenEconomy?.creditGold(reward)){
+   window.GreenHavenInventory.add(id,qty,true);
+   ghWareRenderSale();
+   return false;
+  }
+  const name=ghWareMeta.get(id)?.[2]||id;
+  ghWareSelectedId=null;
+  paint();
+  ghWareShowToast('✅ Продано '+name+' ×'+qty+' · +'+reward.toLocaleString('uk-UA')+' 🪙');
+  return true;
+ }
  function warehouse(){
   const entries=ghWareEntries();
   // Native scroll: at least 24 independently rendered cells, three per row, expandable to all owned resources.
@@ -2730,9 +2807,12 @@ render();
    const [id,count]=entry,meta=ghWareMeta.get(id)||[id,"📦",id];
    const art=ghWareArtwork[id];
    const icon=art?'<img class="gh-warehouse-product-art" src="'+art+'" alt="" draggable="false">':esc(meta[1]);
+   const selling=Object.hasOwn(GH_WAREHOUSE_SELL_PRICES,id);
    return '<div class="gh-warehouse-cell" role="listitem" title="'+esc(meta[2])+'" aria-label="'+esc(meta[2])+': '+count+'">'+
     '<span class="gh-warehouse-stock-icon'+(art?' gh-warehouse-stock-art':'')+'" aria-hidden="true">'+icon+'</span>'+
-    '<span class="gh-warehouse-stock-badge" aria-hidden="true">'+count+'</span></div>';
+    '<span class="gh-warehouse-stock-badge" aria-hidden="true">'+count+'</span>'+
+    (selling?'<button type="button" class="gh-warehouse-stock-button" data-gh-warehouse-item="'+id+'" aria-label="Продати '+esc(meta[2])+', у наявності '+count+'"></button>':'')+
+   '</div>';
   }).join('');
   return '<div class="gh-warehouse-art" role="group" aria-label="Склад: '+(entries.length?entries.length+' видів ресурсів':'поки порожній')+'">'+
    '<div id="gh-warehouse-scroll-area" class="gh-warehouse-scroll" aria-label="Комірки складу" tabindex="0">'+
@@ -2789,6 +2869,8 @@ render();
  <p class="gh-econ-status" role="status" aria-live="polite">${eco.getMessage()}</p>
  </div><p class="gh-ui-disclaimer">Тестові баланси зберігаються лише в цьому браузері. Це не реальні виплати й не синхронізований ігровий сервер.</p>`}
  function paint(){
+  // Rebuild on navigation or stock changes; clear any transient sale overlay.
+  ghWareSelectedId=null;
   navButtons.forEach(b=>b.setAttribute('aria-selected',String(b.dataset.ghTab===currentTab)));
    if (ghNavArt && ghNavImages[currentTab] && ghNavArt.src!==ghNavImages[currentTab]) ghNavArt.src=ghNavImages[currentTab];
   screen.classList.toggle('gh-warehouse-active',currentTab==='warehouse');
@@ -2870,6 +2952,25 @@ render();
    window.setTimeout(()=>{ghWareScrollTop=0;ghWareClosing=false;showTab('farm');},175);
    return;
   }
+  // Sale overlay is part of the warehouse window, never an image hotspot.
+  if(e.target.closest('[data-gh-sale-close]')||e.target.matches('[data-gh-sale-overlay]')){
+   ghWareSelectedId=null;ghWareRenderSale();return;
+  }
+  if(e.target.closest('[data-gh-sale-dec]')){
+   ghWareSellQty=Math.max(1,ghWareSellQty-1);ghWareRenderSale();return;
+  }
+  if(e.target.closest('[data-gh-sale-inc]')){
+   ghWareSellQty=Math.min(ghWareSaleLimit(ghWareSelectedId),ghWareSellQty+1);ghWareRenderSale();return;
+  }
+  if(e.target.closest('[data-gh-sale-all]')){
+   ghWareSellQty=ghWareSaleLimit(ghWareSelectedId);ghWareRenderSale();return;
+  }
+  if(e.target.closest('[data-gh-sale-confirm]')){
+   if(!ghWareConfirmSale())window.alert('Не вдалося продати. Перевір кількість і ліміт золота.');
+   return;
+  }
+  const stockButton=e.target.closest('[data-gh-warehouse-item]');
+  if(stockButton){ghWareOpenSale(stockButton.dataset.ghWarehouseItem);return;}
   if(e.target.closest('[data-gh-warehouse-prev]')){ghWareScrollBy(-1);return;}
   if(e.target.closest('[data-gh-warehouse-next]')){ghWareScrollBy(1);return;}
   const econButton=e.target.closest('[data-gh-econ-action]');
