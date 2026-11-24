@@ -1,0 +1,2 @@
+.item[data-id="chicken"] .gh-coop-ready-badge:not([hidden]),.item[data-id="cow"] .gh-milk-ready-badge:not([hidden]),.item[data-id="apiary"] .gh-honey-ready-badge:not([hidden]),.item[data-id="mill"] .gh-flour-ready-badge:not([hidden]){pointer-events:auto;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+.gh-produce-flight{position:fixed;display:block;z-index:2147483647;pointer-events:none;transform-origin:center;filter:drop-shadow(0 2px 2px #58300d44)}
