@@ -1,0 +1,12 @@
+/* Actual approved raster artwork; live labels and progress retained. */
+:is(#gh-milk-dialog .gh-milk-box,#gh-coop-dialog .gh-coop-box,#apiary-dialog .apiary-dialog-box,#mill-dialog .mill-dialog-box){border:0!important;border-image:none!important;background:none!important;box-shadow:none!important;padding:45px 38px 35px!important;width:min(92vw,380px)!important;isolation:isolate;overflow:visible!important}
+:is(#gh-milk-dialog .gh-milk-box,#gh-coop-dialog .gh-coop-box,#apiary-dialog .apiary-dialog-box,#mill-dialog .mill-dialog-box)::before{content:"";position:absolute;inset:0!important;width:auto!important;height:auto!important;background:url("gh349_frame.webp") center/100% 100% no-repeat!important;z-index:-1!important;pointer-events:none}
+:is(#gh-milk-dialog .gh-milk-box,#gh-coop-dialog .gh-coop-box,#apiary-dialog .apiary-dialog-box,#mill-dialog .mill-dialog-box)::after{content:"";position:absolute;inset:15% 9% 12%;border-radius:20px;background:radial-gradient(ellipse at top,#fff2cc,#eac78a);z-index:-2;pointer-events:none}
+#gh-milk-dialog .gh-milk-box:has(#gh-milk-production:not([hidden])){padding-top:45px!important}
+#gh-milk-close,#gh-coop-close,#apiary-close,#mill-close{right:5px!important;top:12px!important;width:40px!important;height:40px!important;border:0!important;background:url("gh349_close.webp") center/contain no-repeat!important;box-shadow:none!important;color:transparent!important;text-shadow:none!important}
+.gh-timer-art347{padding:0!important;grid-template-columns:48px minmax(0,1fr);grid-template-rows:auto 25px;gap:3px 7px}
+.gh-timer-art347 strong{font-size:21px!important}
+.gh-timer-art347 :is(.gh-milk-icon,.gh-coop-eggs-icon,.gh-honey-jar,.gh-flour-jar){width:48px!important;height:48px!important}
+.gh-timer-art347 [role=progressbar]{height:25px!important;border:0!important;background:url("gh349_track.webp") center/100% 100% no-repeat!important;box-shadow:none!important;padding:3px!important;box-sizing:border-box!important}
+.gh-timer-art347 [role=progressbar]>span{background:url("gh349_fill.webp") left center/100% 100% no-repeat!important;box-shadow:none!important;max-width:100%;border-radius:20px!important}
+.gh-timer-art347 [id$="-countdown"]{font-size:11px!important}
