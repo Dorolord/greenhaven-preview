@@ -1,0 +1,238 @@
+/* GreenHaven v303: fixed frame and independently pressed inner panel. */
+/* GreenHaven v302: keep exact approved button position and size; replace blurry WebP with source-derived 1750x471 transparent PNG. */
+/* GreenHaven v301: reduce Sell All by 12%, center it, and move it slightly up. */
+/* GreenHaven v300: approved compact fourth-option wooden sell-all button. */
+/* GreenHaven v299: approved sell-all artwork positioned above the lower border. */
+/* GreenHaven v298: sell-all button and refined individual-sale card. */
+/* GreenHaven v297: tap stocked inventory slot to sell a chosen quantity for test gold. */
+/* v292: uniformly enlarge the entire warehouse window by exactly 5%, preserving every component's relative placement and interactions. */
+/* v291: bottom inventory cells clip before the decorative leaves; preserve top alignment and bottom scroll reach. */
+/* GreenHaven v289: thumb reaches 1% higher; bottom remains at approved 4% inset. */
+/* v288: Slightly extend the scrollbar thumb travel at both ends (4% inset, previously 7%). */
+/* GreenHaven v286: hide scrolled cells below decorative leaves while preserving an unclipped first row. */
+/* GreenHaven v285: individually approved artwork, functional native-scroll inventory. */
+#gh-ui-screen.gh-warehouse-active{
+ background:rgba(26,34,13,.28);
+ overflow:hidden;padding:calc(68px + env(safe-area-inset-top,0px)) 10px calc(94px + env(safe-area-inset-bottom,0px));
+ display:flex;align-items:center;justify-content:center;
+}
+#gh-ui-screen .gh-warehouse-art{
+ position:relative;flex:0 0 auto;margin:auto;width:min(96%,430px,58vh);max-height:100%;aspect-ratio:1086/1448;
+ background:transparent url("gh-warehouse-frame-v285.webp") center / 100% 100% no-repeat;
+ filter:drop-shadow(0 7px 8px #243a1e65);
+ transform:scale(1.05);animation:ghWhOpen .18s ease-out both;-webkit-tap-highlight-color:transparent;
+}
+@keyframes ghWhOpen{from{opacity:.55;transform:scale(1.03425)}to{opacity:1;transform:scale(1.05)}}
+#gh-ui-screen .gh-warehouse-scroll{
+ position:absolute;z-index:2;left:14.35%;top:20.7%;width:66.5%;height:67.5%;
+ overflow-x:hidden;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;
+ touch-action:pan-y;scrollbar-width:none;-webkit-tap-highlight-color:transparent;
+ clip-path:inset(18px 0 22px 0 round 14px);
+}
+#gh-ui-screen .gh-warehouse-scroll::-webkit-scrollbar{display:none;width:0}
+#gh-ui-screen .gh-warehouse-grid{
+ display:grid;grid-template-columns:repeat(3,minmax(0,1fr));column-gap:1.7%;row-gap:clamp(5px,1.4vw,9px);align-content:start;
+ padding:18px 1.1% 26px;width:100%;min-height:100%;
+}
+#gh-ui-screen .gh-warehouse-cell{
+ position:relative;aspect-ratio:1/1;min-width:0;display:flex;align-items:center;justify-content:center;
+ background:transparent url("gh-warehouse-slot-v285.webp") center/100% 100% no-repeat;
+ user-select:none;-webkit-user-select:none;
+}
+#gh-ui-screen .gh-warehouse-stock-icon{
+ font-size:clamp(22px,5vw,37px);line-height:1;
+ filter:drop-shadow(0 1px 2px #8b623f52);transform:translateY(-7%);pointer-events:none;
+}
+/* v296: individually approved high-resolution inventory artwork (not platform emojis). */
+#gh-ui-screen .gh-warehouse-stock-art{transform:translateY(-13%);filter:none}
+#gh-ui-screen .gh-warehouse-product-art{
+ display:block;width:clamp(40px,11.7vw,66px);height:clamp(40px,11.7vw,66px);
+ max-width:100%;object-fit:contain;pointer-events:none;user-select:none;
+ filter:drop-shadow(0 1px 2px #8b623f50)
+}
+#gh-ui-screen .gh-warehouse-stock-badge{
+ position:absolute;bottom:9%;left:22%;right:22%;height:19%;display:flex;align-items:center;justify-content:center;
+ border-radius:999px;border:1px solid #ba8a4c9c;background:linear-gradient(#ffefc9,#f7d9a5);
+ box-shadow:0 1px 2px #9a714966;color:#593417;
+ font:900 clamp(9px,2.1vw,15px)/1 system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+#gh-ui-screen .gh-warehouse-scrollbar{
+ position:absolute;z-index:4;right:11.55%;top:23.4%;width:8.5%;height:56.5%;
+ touch-action:none;cursor:grab;-webkit-tap-highlight-color:transparent;
+}
+#gh-ui-screen .gh-warehouse-scrollbar:active{cursor:grabbing}
+#gh-ui-screen .gh-warehouse-scrollbar-track{
+ position:absolute;inset:0;background:transparent url("gh-warehouse-scroll_track-v285.webp") center/100% 100% no-repeat;
+}
+#gh-ui-screen .gh-warehouse-thumb{
+ position:absolute;left:14%;width:72%;height:19%;top:3%;
+ background:transparent url("gh-warehouse-scroll_thumb-v285.webp") center/100% 100% no-repeat;
+ pointer-events:none;will-change:top;
+}
+#gh-ui-screen .gh-warehouse-arrow{
+ position:absolute;z-index:5;right:12.25%;width:7.2%;aspect-ratio:1/1;
+ border:0;padding:0;cursor:pointer;touch-action:manipulation;
+ -webkit-tap-highlight-color:transparent;background-color:transparent;background-position:center;
+ background-size:100% 100%;background-repeat:no-repeat;
+ transition:transform .09s ease,filter .09s ease;
+}
+#gh-ui-screen .gh-warehouse-arrow[data-gh-warehouse-prev]{
+ top:18.7%;background-image:url("gh-warehouse-scroll_up-v285.webp");
+}
+#gh-ui-screen .gh-warehouse-arrow[data-gh-warehouse-next]{
+ bottom:13.1%;background-image:url("gh-warehouse-scroll_down-v285.webp");
+}
+#gh-ui-screen .gh-warehouse-arrow:active{transform:scale(.9);filter:brightness(.86)}
+#gh-ui-screen .gh-warehouse-close{
+ position:absolute;z-index:8;left:78.5%;top:5.95%;width:12.65%;aspect-ratio:1/1;
+ padding:0;border:0;cursor:pointer;touch-action:manipulation;
+ background:transparent url("gh-warehouse-close-v285.webp") center/100% 100% no-repeat;
+ transition:transform .13s ease,filter .13s ease;-webkit-tap-highlight-color:transparent;
+}
+#gh-ui-screen .gh-warehouse-close:active,#gh-ui-screen .gh-warehouse-close.is-pressed{
+ transform:translateY(2px) scale(.87);filter:brightness(.72) saturate(1.12);
+}
+#gh-ui-screen .gh-warehouse-close:focus-visible,
+#gh-ui-screen .gh-warehouse-arrow:focus-visible,
+#gh-ui-screen .gh-warehouse-scrollbar:focus-visible{
+ outline:3px solid #fff3ba;outline-offset:2px;border-radius:18px
+}
+@media(prefers-reduced-motion:reduce){
+ #gh-ui-screen .gh-warehouse-art{animation:none}
+ #gh-ui-screen .gh-warehouse-close,#gh-ui-screen .gh-warehouse-arrow{transition:none}
+}
+
+#gh-ui-screen .gh-warehouse-stock-button{
+ position:absolute;inset:0;z-index:3;display:block;width:100%;height:100%;
+ border:0;border-radius:15px;margin:0;padding:0;background:transparent;
+ cursor:pointer;touch-action:pan-y;-webkit-tap-highlight-color:transparent;
+}
+#gh-ui-screen .gh-warehouse-stock-button:focus-visible{
+ outline:3px solid #dd9b35;outline-offset:-5px;
+}
+#gh-ui-screen .gh-warehouse-stock-button:active{
+ background:rgba(120,81,26,.10);
+}
+#gh-ui-screen .gh-warehouse-sale-overlay{
+ position:absolute;z-index:14;inset:20% 11% 14%;
+ display:flex;align-items:center;justify-content:center;
+ background:rgba(69,41,17,.32);border-radius:18px;
+}
+#gh-ui-screen .gh-warehouse-sale-card{
+ position:relative;width:96%;max-height:100%;overflow-y:auto;
+ padding:14px 12px 12px;border:3px solid #a76532;border-radius:17px;
+ background:linear-gradient(175deg,#fff3cf,#ecd1a2);
+ color:#57361b;box-shadow:0 6px 0 #713f23,0 12px 24px #321a0d80;
+ text-align:center;font:600 clamp(11px,2.8vw,14px)/1.35 system-ui,-apple-system,sans-serif;
+}
+#gh-ui-screen .gh-warehouse-sale-head{display:flex;flex-direction:column;align-items:center;gap:2px;margin:0 auto 8px}
+#gh-ui-screen .gh-warehouse-sale-head img{display:block;width:clamp(46px,13vw,70px);height:clamp(46px,13vw,70px);object-fit:contain}
+#gh-ui-screen .gh-warehouse-sale-head span{font-size:48px;line-height:1}
+#gh-ui-screen .gh-warehouse-sale-head strong{font:900 clamp(17px,4.5vw,22px)/1.1 Georgia,serif;text-shadow:0 1px 0 #fff8e4}
+#gh-ui-screen .gh-warehouse-sale-x{
+ position:absolute;top:5px;right:5px;width:35px;height:35px;border:2px solid #a56b40;
+ border-radius:50%;background:linear-gradient(#f7d8a6,#e8ba86);color:#713b26;
+ font-size:19px;font-weight:900;cursor:pointer;
+}
+#gh-ui-screen .gh-warehouse-sale-available{margin:5px 0 9px;color:#724f2d}
+#gh-ui-screen .gh-warehouse-sale-adjust{
+ display:flex;align-items:center;justify-content:center;gap:10px;margin:7px 0;
+}
+#gh-ui-screen .gh-warehouse-sale-adjust button{
+ display:grid;place-items:center;width:44px;height:42px;border:2px solid #a87a48;border-radius:12px;
+ background:linear-gradient(#fff1cb,#e8c18e);font-size:24px;font-weight:800;color:#5a351a;
+ cursor:pointer;touch-action:manipulation;
+}
+#gh-ui-screen .gh-warehouse-sale-adjust span{flex:1;max-width:75px;font-weight:900;font-size:15px}
+#gh-ui-screen .gh-warehouse-sale-adjust button:disabled,
+#gh-ui-screen .gh-warehouse-sale-all:disabled,
+#gh-ui-screen .gh-warehouse-sale-confirm:disabled{opacity:.43;cursor:default}
+#gh-ui-screen .gh-warehouse-sale-all{
+ display:block;width:100%;padding:7px;margin:5px 0 8px;border:1px solid #ba945f;border-radius:8px;
+ background:#fff3d6;color:#78512b;font-weight:800;cursor:pointer;
+}
+#gh-ui-screen .gh-warehouse-sale-confirm{
+ display:block;width:100%;min-height:44px;padding:9px 7px;border:2px solid #5b7c32;border-radius:11px;
+ background:linear-gradient(#78a847,#426e2d);color:#fff9da;
+ font-size:clamp(12px,3.1vw,15px);font-weight:900;cursor:pointer;
+ box-shadow:0 2px 0 #2f5522;touch-action:manipulation;
+}
+#gh-ui-screen .gh-warehouse-sale-confirm:active{transform:translateY(2px);box-shadow:none}
+#gh-ui-screen .gh-warehouse-sale-card small{display:block;margin-top:8px;color:#846947;font-size:10px}
+#gh-ui-screen .gh-warehouse-sale-toast{
+ position:absolute;z-index:16;top:45%;left:11%;right:11%;padding:12px 8px;
+ border:3px solid #a9773c;border-radius:12px;background:#fff3cdeF;
+ color:#42642c;font:900 clamp(12px,3vw,16px)/1.25 system-ui,sans-serif;
+ box-shadow:0 4px 16px #0007;text-align:center;pointer-events:none;
+ animation:ghWhToast 2.05s ease-out both;
+}
+@keyframes ghWhToast{0%{opacity:0;transform:translateY(10px)}12%,78%{opacity:1;transform:translateY(0)}100%{opacity:0;transform:translateY(-6px)}}
+@media(prefers-reduced-motion:reduce){#gh-ui-screen .gh-warehouse-sale-toast{animation:none}}
+
+/* v303: visually split button. The wooden frame remains stationary while
+   only the green inner surface, coins and lettering press down. */
+#gh-ui-screen .gh-warehouse-scroll{height:57.8%}
+#gh-ui-screen .gh-warehouse-sell-all{
+ position:absolute;z-index:8;left:25.8%;top:79.5%;width:48.4%;height:auto;aspect-ratio:420/113;
+ display:block;margin:0;padding:0;overflow:visible;
+ border:0;border-radius:0;background:transparent;
+ box-shadow:none;color:transparent;font:inherit;
+ cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;
+ transform:none;filter:none;transition:none;
+}
+#gh-ui-screen .gh-warehouse-sell-all-inner,
+#gh-ui-screen .gh-warehouse-sell-all-frame{
+ position:absolute;inset:0;display:block;pointer-events:none;
+ background-repeat:no-repeat;background-position:center;background-size:100% 100%;
+}
+#gh-ui-screen .gh-warehouse-sell-all-inner{
+ z-index:1;background-image:url("gh-warehouse-sell-all-inner-v303.webp");
+ transform:translateY(0);transform-origin:50% 50%;
+ transition:transform .13s ease-out,filter .13s ease-out;
+}
+#gh-ui-screen .gh-warehouse-sell-all-frame{
+ z-index:2;background-image:url("gh-warehouse-sell-all-frame-v303.webp");
+ filter:drop-shadow(0 2px 1px #4e2b1988);
+}
+#gh-ui-screen .gh-warehouse-sell-all-copy{
+ position:absolute;width:1px;height:1px;padding:0;margin:-1px;
+ overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0;
+}
+#gh-ui-screen .gh-warehouse-sell-all:active:not(:disabled){
+ transform:none;filter:none;box-shadow:none;
+}
+#gh-ui-screen .gh-warehouse-sell-all:active:not(:disabled) .gh-warehouse-sell-all-inner{
+ transform:translateY(2px) scaleY(.98);filter:brightness(.86);
+}
+#gh-ui-screen .gh-warehouse-sell-all:disabled{opacity:.9;cursor:default}
+#gh-ui-screen .gh-warehouse-sell-all:focus-visible{
+ outline:3px solid #fff2ac;outline-offset:2px;border-radius:30px;
+}
+@media(prefers-reduced-motion:reduce){
+ #gh-ui-screen .gh-warehouse-sell-all-inner{transition:none}
+}
+/* Compact, readable parchment panel when selling a single crop. */
+#gh-ui-screen .gh-warehouse-sale-overlay{inset:24% 12% 18%;background:rgba(41,32,17,.38)}
+#gh-ui-screen .gh-warehouse-sale-card{
+ width:96%;max-width:315px;padding:11px 11px 10px;
+ border:3px solid #b1773c;border-radius:17px;
+ background:linear-gradient(180deg,#fff3d2,#f4ddb6 60%,#e8c99a);
+ box-shadow:0 3px 0 #6e3e22,0 11px 22px #321a0d7d,inset 0 2px 0 #fffaf0;
+}
+#gh-ui-screen .gh-warehouse-sale-head{
+ flex-direction:row;justify-content:center;gap:9px;margin-bottom:8px;padding-right:24px;
+}
+#gh-ui-screen .gh-warehouse-sale-head img{
+ width:clamp(44px,11vw,54px);height:clamp(44px,11vw,54px);
+}
+#gh-ui-screen .gh-warehouse-sale-head strong{font-size:clamp(17px,4.7vw,20px)}
+#gh-ui-screen .gh-warehouse-sale-available{
+ margin:3px 0 8px;padding:7px 5px;border-radius:10px;
+ background:#e7cd9a66;font-size:clamp(10px,2.7vw,12px);
+}
+#gh-ui-screen .gh-warehouse-sale-adjust button{width:38px;height:37px;font-size:22px}
+#gh-ui-screen .gh-warehouse-sale-adjust{gap:8px;margin:5px 0 6px}
+#gh-ui-screen .gh-warehouse-sale-all{margin:4px 0 6px;padding:5px}
+#gh-ui-screen .gh-warehouse-sale-confirm{min-height:40px;padding:7px 6px}
+#gh-ui-screen .gh-warehouse-sale-card small{margin-top:6px;font-size:10px}
+@media(prefers-reduced-motion:reduce){#gh-ui-screen .gh-warehouse-sell-all{transition:none}}
