@@ -912,7 +912,7 @@ body:not(.gh-debug-visible) .gh-ui-screen {padding-top:calc(clamp(90px,21vw,116p
 .gh-econ-status {min-height:2.4em;margin:8px 0 0;font-size:11px;line-height:1.4;color:#486134}
 .gh-econ-note {font-size:11px;color:#5b7147;line-height:1.4;margin:8px 0 0}
 
-</style><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><link rel="stylesheet" href="assets/gh-warehouse-v292.css?v=292">
+</style><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><link rel="stylesheet" href="assets/gh-warehouse-v296.css?v=296">
 </head><body><main class="page"><section class="stage" id="stage" aria-label="Інтерактивний макет ферми">
 <button id="gh-cowshed-toggle" class="gh-cowshed-toggle" type="button" aria-pressed="false" title="Тест: спершу ремонт, потім окрема покупка корови">🛠 Відновити корівник</button>
 <button id="gh-cow-toggle" class="gh-cow-toggle" type="button" aria-pressed="true" title="Купити першу корову (лише тест, без оплати)" hidden>🐄 Купити корову</button>
@@ -1301,7 +1301,7 @@ window.GreenHavenPlanting={
    Yields are demo quantities until crop balance and growth timers are designed. */
 const GH_HARVEST_YIELDS={
  carrot:{icon:'🥕',name:'моркви',quantity:4},
- wheat:{icon:'🌾',name:'пшениці',quantity:1},
+ wheat:{icon:'🌾',name:'пшениці',quantity:4},
  pumpkin:{icon:'🎃',name:'гарбуза',quantity:1}
 };
 function ghReadyHarvest(n){
@@ -2647,6 +2647,7 @@ render();
   ["wood","🪵","Деревина"],["cotton","☁️","Бавовна"]
  ];
  const ghWareMeta=new Map(ghWareCatalog.map(item=>[item[0],item]));
+ const ghWareArtwork={carrot:"assets/gh-warehouse-carrot-v296.webp",wheat:"assets/gh-warehouse-wheat-v296.webp",pumpkin:"assets/gh-warehouse-pumpkin-v296.webp"};
  let ghWareStock={};let ghWareScrollTop=0;
  try{
   const saved=JSON.parse(localStorage.getItem(GH_WAREHOUSE_KEY)||"{}");
@@ -2727,8 +2728,10 @@ render();
    const entry=entries[i];
    if(!entry)return '<div class="gh-warehouse-cell" role="listitem" aria-hidden="true"></div>';
    const [id,count]=entry,meta=ghWareMeta.get(id)||[id,"📦",id];
+   const art=ghWareArtwork[id];
+   const icon=art?'<img class="gh-warehouse-product-art" src="'+art+'" alt="" draggable="false">':esc(meta[1]);
    return '<div class="gh-warehouse-cell" role="listitem" title="'+esc(meta[2])+'" aria-label="'+esc(meta[2])+': '+count+'">'+
-    '<span class="gh-warehouse-stock-icon" aria-hidden="true">'+esc(meta[1])+'</span>'+
+    '<span class="gh-warehouse-stock-icon'+(art?' gh-warehouse-stock-art':'')+'" aria-hidden="true">'+icon+'</span>'+
     '<span class="gh-warehouse-stock-badge" aria-hidden="true">'+count+'</span></div>';
   }).join('');
   return '<div class="gh-warehouse-art" role="group" aria-label="Склад: '+(entries.length?entries.length+' видів ресурсів':'поки порожній')+'">'+
