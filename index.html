@@ -2139,7 +2139,7 @@ document.getElementById('json-import').addEventListener('change',async e=>{
     if(source.size!==data.objects.length)throw new Error('У файлі повторюються об’єкти.');
     const next=original.map(base=>{
       const o=source.get(base.id);
-      if(!o||![o.x,o.y,o.w,o.h].every(v=>typeof v==='number'&&Number.isFinite(v))||o.w<=0||o.h<=0||o.x<0||o.x>100||o.y<0||o.y>100||o.w>100||o.h>100)throw new Error('Некоректні координати: '+base.id);
+      if(!o||![o.x,o.y,o.w,o.h].every(v=>typeof v==='number'&&Number.isFinite(v))||o.w<=0||o.h<=0||o.x<0||o.x>100||o.y<0||o.y>100||o.w>(base.id==='garden'?150:100)||o.h>100)throw new Error('Некоректні координати: '+base.id);
       return {...base,x:o.x,y:o.y,w:o.w,h:o.h};
     });
     items=next;
