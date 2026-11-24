@@ -1,0 +1,12 @@
+/* GreenHaven v335: make the existing painted sale targets reliably tappable
+   in iOS in-app browser; no visible layout or artwork changes. */
+#gh-ui-screen .gh-warehouse-stock-button,
+#gh-ui-screen .gh-warehouse-sell-all{
+ pointer-events:auto;
+ touch-action:manipulation;
+ -webkit-tap-highlight-color:transparent;
+}
+#gh-ui-screen .gh-warehouse-cell[data-gh-warehouse-item]{
+ cursor:pointer;
+ touch-action:manipulation;
+}

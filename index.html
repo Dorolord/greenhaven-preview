@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="uk"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no"/>
-<title>GreenHaven — мобільна тестова версія v334</title>
+<title>GreenHaven — мобільна тестова версія v335</title>
 <style>
 *{box-sizing:border-box}html,body{margin:0;min-height:100%;background:#14221b;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;color:#fff}
 .page{min-height:100dvh;display:grid;place-items:center;padding:0 0 72px}.stage{position:relative;width:min(100vw,520px);height:min(100dvh,calc(min(100vw,520px)*1.91));max-height:1040px;min-height:min(780px,100dvh);overflow:hidden;isolation:isolate;background:#8ed92f;box-shadow:0 10px 35px #0005}
@@ -912,7 +912,7 @@ body:not(.gh-debug-visible) .gh-ui-screen {padding-top:calc(clamp(90px,21vw,116p
 .gh-econ-status {min-height:2.4em;margin:8px 0 0;font-size:11px;line-height:1.4;color:#486134}
 .gh-econ-note {font-size:11px;color:#5b7147;line-height:1.4;margin:8px 0 0}
 
-</style><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><link rel="stylesheet" href="assets/gh-warehouse-v316.css?v=316"><link rel="stylesheet" href="assets/gh-coop-eggs-v332.css?v=332"><link rel="stylesheet" href="assets/gh-cowshed-milk-v332.css?v=332">
+</style><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><link rel="stylesheet" href="assets/gh-warehouse-v316.css?v=316"><link rel="stylesheet" href="assets/gh-coop-eggs-v332.css?v=332"><link rel="stylesheet" href="assets/gh-cowshed-milk-v332.css?v=332"><link rel="stylesheet" href="assets/gh-warehouse-taps-v335.css?v=335">
 </head><body><main class="page"><section class="stage" id="stage" aria-label="Інтерактивний макет ферми">
 <button id="gh-cowshed-toggle" class="gh-cowshed-toggle" type="button" aria-pressed="false" title="Тест: спершу ремонт, потім окрема покупка корови">🛠 Відновити корівник</button>
 <button id="gh-cow-toggle" class="gh-cow-toggle" type="button" aria-pressed="true" title="Купити першу корову (лише тест, без оплати)" hidden>🐄 Купити корову</button>
@@ -3215,7 +3215,7 @@ render();
       :'<img class="gh-warehouse-product-art" src="'+art+'" alt="" draggable="false">')
     :esc(meta[1]);
    const selling=Object.hasOwn(GH_WAREHOUSE_SELL_PRICES,id);
-   return '<div class="gh-warehouse-cell" role="listitem" title="'+esc(meta[2])+'" aria-label="'+esc(meta[2])+': '+count+'">'+
+   return '<div class="gh-warehouse-cell" role="listitem" title="'+esc(meta[2])+'" aria-label="'+esc(meta[2])+': '+count+'"'+(selling?' data-gh-warehouse-item="'+id+'"':'')+'>'+
     '<span class="gh-warehouse-stock-icon'+(art?' gh-warehouse-stock-art':'')+'" aria-hidden="true">'+icon+'</span>'+
     '<span class="gh-warehouse-stock-badge" aria-hidden="true">'+count+'</span>'+
     (selling?'<button type="button" class="gh-warehouse-stock-button" data-gh-warehouse-item="'+id+'" aria-label="Продати '+esc(meta[2])+', у наявності '+count+'"></button>':'')+
@@ -3351,7 +3351,41 @@ render();
    e.preventDefault();ghWareScrollBy(['ArrowDown','PageDown'].includes(e.key)?1:-1);
   }
  });
+/* v335: iPhone in-app browsers sometimes swallow a generated click while
+   the warehouse scroll container handles a touch. Accept a genuine short
+   pointer tap too, without changing visuals or triggering during scrolling. */
+ let ghWareTouchStart=null;
+ let ghWareLastTouchAction=null;
+ screen.addEventListener('pointerdown',e=>{
+  if(currentTab!=='warehouse'||e.pointerType!=='touch')return;
+  const target=e.target.closest('[data-gh-warehouse-sell-all],[data-gh-warehouse-item]');
+  ghWareTouchStart=target&&!target.disabled
+   ?{pointerId:e.pointerId,target,x:e.clientX,y:e.clientY}
+   :null;
+ },{capture:true});
+ screen.addEventListener('pointerup',e=>{
+  const start=ghWareTouchStart;
+  ghWareTouchStart=null;
+  if(!start||e.pointerId!==start.pointerId||currentTab!=='warehouse'
+    ||!start.target.isConnected)return;
+  if(Math.hypot(e.clientX-start.x,e.clientY-start.y)>12)return;
+  if(e.target!==start.target&&!start.target.contains(e.target))return;
+  ghWareLastTouchAction={target:start.target,at:Date.now()};
+  if(start.target.hasAttribute('data-gh-warehouse-sell-all')){
+   if(!ghWareSellAll())ghWareShowToast('Немає продукції для продажу або досягнуто ліміт золота.');
+  }else{
+   const id=start.target.dataset.ghWarehouseItem;
+   if(id)ghWareOpenSale(id);
+  }
+ },{capture:true});
+ screen.addEventListener('pointercancel',()=>{ghWareTouchStart=null;},{capture:true});
  screen.addEventListener('click',e=>{
+  /* Ignore only the synthetic click for a touch tap we already handled. */
+  if(ghWareLastTouchAction&&Date.now()-ghWareLastTouchAction.at<650
+     &&(e.target===ghWareLastTouchAction.target
+        ||ghWareLastTouchAction.target.contains(e.target))){
+   ghWareLastTouchAction=null;return;
+  }
   if(e.target.closest('[data-gh-warehouse-close]')){
    if(ghWareClosing)return;
    ghWareClosing=true;
