@@ -32,7 +32,7 @@
  .gh-shop-tabs{position:absolute;left:8.7%;right:10.5%;top:25.8%;height:10%;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1.3%;align-items:start}
  .gh-shop-tabs button{width:100%;height:100%;background-position:center top;background-size:contain;background-repeat:no-repeat}
  .gh-shop-tabs button:active{filter:brightness(.9)}
- .gh-shop-scroll{position:absolute;left:8.6%;top:37.5%;width:77.8%;height:47.8%;overflow:auto;overscroll-behavior:contain;touch-action:pan-y;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+ .gh-shop-scroll{position:absolute;left:11.1%;top:37.5%;width:77.8%;height:47.8%;overflow:auto;overscroll-behavior:contain;touch-action:pan-y;scrollbar-width:none;-webkit-overflow-scrolling:touch}
  .gh-shop-scroll::-webkit-scrollbar{display:none}
  .gh-shop-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1.6cqw;padding:.3cqw;align-content:start;min-height:100%;box-sizing:border-box}
  .gh-shop-card{position:relative;display:grid;grid-template-columns:45% minmax(0,1fr);align-items:center;gap:1%;aspect-ratio:1.89;background:url('${art('card_blank')}') center/100% 100% no-repeat;padding:3%;box-sizing:border-box;min-width:0}
@@ -49,11 +49,6 @@
  #gh-ui-screen .gh-shop-buy:disabled{background-image:url('${art('buy_disabled')}')}
  #gh-ui-screen .gh-shop-buy:not(:disabled):active{transform:translateY(1px) scale(.95);filter:brightness(.8)}
  #gh-ui-screen .gh-shop-buy.plant{background-image:none;background:linear-gradient(#9cce1e,#437800);border:1px solid #527010;border-radius:999px;color:white;font:900 2.65cqw/1 system-ui;text-shadow:0 1px 1px #2c4308}
- .gh-shop-scrollbar{position:absolute;right:5.9%;top:37.1%;height:50%;width:6.2%;display:flex;flex-direction:column;gap:1.05cqw;align-items:center}
- #gh-ui-screen .gh-shop-arrow{flex:0 0 auto;width:85%;aspect-ratio:1/1;background-position:center;background-size:100% 100%;background-repeat:no-repeat}
- #gh-ui-screen .gh-shop-arrow:active{transform:scale(.9);filter:brightness(.85)}
- .gh-shop-track{position:relative;flex:1;width:100%;background:url('${art('scroll_track')}') center/100% 100% no-repeat;touch-action:none;cursor:grab;min-height:0}
- .gh-shop-thumb{position:absolute;left:14%;width:72%;top:3%;height:19%;background:url('${art('scroll_thumb')}') center/100% 100% no-repeat;pointer-events:none}
  #gh-ui-screen .gh-shop-close{position:absolute;z-index:10;right:3.5%;top:13.4%;width:12.5%;aspect-ratio:715/675;background:url('${art('close')}') center/contain no-repeat;transition:transform .08s ease}
  #gh-ui-screen .gh-shop-close:active,#gh-ui-screen .gh-shop-close.is-pressed{background-image:url('${art('close_pressed')}');transform:translateY(1px)}
  .gh-shop-status{position:absolute;left:14%;right:14%;top:85.7%;height:4%;margin:0;text-align:center;display:grid;place-items:center;color:#71441e;font:750 2.6cqw/1.1 system-ui;pointer-events:none}
@@ -73,17 +68,10 @@
    return `<div class="gh-shop-card"><div class="gh-shop-picture"><img src="${art(id)}" alt=""></div><div class="gh-shop-details"><strong class="gh-shop-name ${name.length>7?'long':''}">${name}</strong><span class="gh-shop-price">${price===null?'<small>Незабаром</small>':`<img src="${art('coin')}" alt="">${price}`}</span><button type="button" class="gh-shop-buy${planting?' plant':''}" data-gh-shop-buy="${id}" aria-label="${note}" title="${note}" ${can?'':'disabled'}>${planting?'Посадити':''}</button></div></div>`;
   }).join('');
   const status=message;message='';
-  return `<div class="gh-shop-frame" role="group" aria-label="Магазин"><div class="gh-shop-tabs" role="group" aria-label="Категорії магазину">${tabs}</div><div class="gh-shop-scroll" tabindex="0" aria-label="Товари"><div class="gh-shop-grid">${cards||'<div class="gh-shop-empty">Декор з’явиться згодом</div>'}</div></div><div class="gh-shop-scrollbar"><button class="gh-shop-arrow" type="button" data-dir="-1" aria-label="Прокрутити вгору" style="background-image:url('${art('scroll_up')}')"></button><div class="gh-shop-track" aria-hidden="true"><div class="gh-shop-thumb"></div></div><button class="gh-shop-arrow" type="button" data-dir="1" aria-label="Прокрутити вниз" style="background-image:url('${art('scroll_down')}')"></button></div><p class="gh-shop-status" role="status" aria-live="polite">${status}</p><button type="button" class="gh-shop-close" aria-label="Закрити магазин"></button></div>`;
+  return `<div class="gh-shop-frame" role="group" aria-label="Магазин"><div class="gh-shop-tabs" role="group" aria-label="Категорії магазину">${tabs}</div><div class="gh-shop-scroll" tabindex="0" aria-label="Товари"><div class="gh-shop-grid">${cards||'<div class="gh-shop-empty">Декор з’явиться згодом</div>'}</div></div><p class="gh-shop-status" role="status" aria-live="polite">${status}</p><button type="button" class="gh-shop-close" aria-label="Закрити магазин"></button></div>`;
  }
  function bind(screen,{category,plot,refresh,close}){
   const root=screen.querySelector('.gh-shop-frame');if(!root)return;
-  const scroll=root.querySelector('.gh-shop-scroll'),track=root.querySelector('.gh-shop-track'),thumb=root.querySelector('.gh-shop-thumb');
-  const max=()=>Math.max(0,scroll.scrollHeight-scroll.clientHeight);
-  const sync=()=>{const m=max(),h=.19;thumb.style.height=h*100+'%';thumb.style.top=(.03+(m?scroll.scrollTop/m:0)*(.93-h))*100+'%';root.querySelectorAll('.gh-shop-arrow').forEach(b=>b.disabled=!m);};
-  scroll.addEventListener('scroll',sync,{passive:true});requestAnimationFrame(sync);
-  root.querySelectorAll('.gh-shop-arrow').forEach(b=>b.addEventListener('click',()=>scroll.scrollBy({top:Number(b.dataset.dir)*scroll.clientHeight*.65,behavior:'smooth'})));
-  const drag=e=>{if(!max())return;const r=track.getBoundingClientRect(),h=thumb.getBoundingClientRect().height;scroll.scrollTop=Math.max(0,Math.min(1,(e.clientY-r.top-h/2-r.height*.03)/Math.max(1,r.height*.93-h)))*max();};
-  track.addEventListener('pointerdown',e=>{track.setPointerCapture(e.pointerId);drag(e);});track.addEventListener('pointermove',e=>{if(track.hasPointerCapture(e.pointerId))drag(e);});
   root.querySelector('.gh-shop-close').addEventListener('click',e=>{const b=e.currentTarget;if(b.disabled)return;b.disabled=true;b.classList.add('is-pressed');setTimeout(()=>{if(root.isConnected)close();},window.matchMedia('(prefers-reduced-motion: reduce)').matches?0:140);});
   root.querySelectorAll('[data-gh-shop-buy]').forEach(b=>b.addEventListener('click',()=>{
    if(b.disabled)return; const id=b.dataset.ghShopBuy;
@@ -106,6 +94,6 @@
   }));
  }
  // Do not replace the old market until every required graphic is loaded successfully.
- const names=['frame','card_blank','coin','buy','buy_disabled','close','close_pressed','scroll_up','scroll_down','scroll_track','scroll_thumb',...cats.flatMap(([id])=>['tab_'+id,'tab_'+id+'_active']),...Object.values(products).flat().map(x=>x[0])];
- Promise.all([...new Set(names)].map(name=>new Promise((resolve,reject)=>{const im=new Image();im.onload=resolve;im.onerror=reject;im.src=art(name);}))).then(()=>{window.GreenHavenShop375={render,bind};document.title=document.title.replace(/v374/,'v378');window.dispatchEvent(new Event('greenhaven:shop375-ready'));}).catch(()=>{console.warn('GreenHaven shop assets incomplete; previous market retained.');});
+ const names=['frame','card_blank','coin','buy','buy_disabled','close','close_pressed',...cats.flatMap(([id])=>['tab_'+id,'tab_'+id+'_active']),...Object.values(products).flat().map(x=>x[0])];
+ Promise.all([...new Set(names)].map(name=>new Promise((resolve,reject)=>{const im=new Image();im.onload=resolve;im.onerror=reject;im.src=art(name);}))).then(()=>{window.GreenHavenShop375={render,bind};document.title=document.title.replace(/v374/,'v380');window.dispatchEvent(new Event('greenhaven:shop375-ready'));}).catch(()=>{console.warn('GreenHaven shop assets incomplete; previous market retained.');});
 })();

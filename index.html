@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="uk"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no"/>
-<title>GreenHaven — мобільна тестова версія v379</title>
+<title>GreenHaven — мобільна тестова версія v380</title>
 <style>
 *{box-sizing:border-box}html,body{margin:0;min-height:100%;background:#14221b;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;color:#fff}
 .page{min-height:100dvh;display:grid;place-items:center;padding:0 0 72px}.stage{position:relative;width:min(100vw,520px);height:min(100dvh,calc(min(100vw,520px)*1.91));max-height:1040px;min-height:min(780px,100dvh);overflow:hidden;isolation:isolate;background:#8ed92f;box-shadow:0 10px 35px #0005}
@@ -1082,6 +1082,11 @@ body :is(#gh-milk-dialog,#gh-coop-dialog,#apiary-dialog,#mill-dialog)[hidden] *{
 #gh-ui-screen .gh-warehouse-sale-overlay>.gh-warehouse-sale-card{
  z-index:1;
 }
+</style>
+<style id="gh-native-scroll-v380">
+/* Preserve card sizes and center the lists after removing scrollbars. */
+#gh-ui-screen.gh-warehouse-active .gh-warehouse-scroll{left:16.75%;width:66.5%;overflow-y:auto;touch-action:pan-y;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+#gh-ui-screen.gh-warehouse-active .gh-warehouse-scroll::-webkit-scrollbar{display:none}
 </style>
 </head><body><main class="page"><section class="stage" id="stage" aria-label="Інтерактивний макет ферми">
 <button id="gh-cowshed-toggle" class="gh-cowshed-toggle" type="button" aria-pressed="false" title="Тест: спершу ремонт, потім окрема покупка корови">🛠 Відновити корівник</button>
@@ -3311,7 +3316,7 @@ render();
 })();
 </script>
 
-<script src="assets/shop-v375/shop.js?v=378" onerror="this.remove()"></script>
+<script src="assets/shop-v375/shop.js?v=380" onerror="this.remove()"></script>
 <script>
 /* v236 UI navigation prototype: read-only inventory, no purchases or currency writes. */
 (()=>{
@@ -3403,40 +3408,7 @@ render();
  }
 
  function ghWareGetScroll(){return screen.querySelector('.gh-warehouse-scroll');}
- function ghWareUpdateScrollbar(){
-  const sc=ghWareGetScroll(),track=screen.querySelector('[data-gh-warehouse-scrollbar]'),
-        thumb=screen.querySelector('.gh-warehouse-thumb');
-  if(!sc||!track||!thumb)return;
-  ghWareScrollTop=sc.scrollTop;
-  const maxScroll=Math.max(0,sc.scrollHeight-sc.clientHeight);
-  const progress=maxScroll?Math.max(0,Math.min(1,sc.scrollTop/maxScroll)):0;
-  // Keep the yellow thumb safely inside its wooden track at BOTH endpoints.
-  const topPadding=track.clientHeight*.03;
-  const bottomPadding=track.clientHeight*.04;
-  const minTop=topPadding;
-  const maxTop=Math.max(minTop,track.clientHeight-thumb.offsetHeight-bottomPadding);
-  thumb.style.top=(minTop+(maxTop-minTop)*progress)+'px';
-  track.setAttribute('aria-valuenow',String(Math.round(progress*100)));
- }
- function ghWareScrollBy(direction){
-  const sc=ghWareGetScroll();if(!sc)return;
-  sc.scrollBy({top:direction*sc.clientHeight*.80,behavior:'smooth'});
- }
- function ghWareSeek(event){
-  const sc=ghWareGetScroll(),track=screen.querySelector('[data-gh-warehouse-scrollbar]'),
-        thumb=screen.querySelector('.gh-warehouse-thumb');
-  if(!sc||!track||!thumb)return;
-  const rect=track.getBoundingClientRect();
-  const topPadding=track.clientHeight*.03;
-  const bottomPadding=track.clientHeight*.04;
-  const minTop=topPadding;
-  const maxTop=Math.max(minTop,track.clientHeight-thumb.offsetHeight-bottomPadding);
-  const desiredTop=event.clientY-rect.top-thumb.offsetHeight/2;
-  const thumbTop=Math.max(minTop,Math.min(maxTop,desiredTop));
-  const progress=maxTop>minTop?(thumbTop-minTop)/(maxTop-minTop):0;
-  sc.scrollTop=progress*Math.max(0,sc.scrollHeight-sc.clientHeight);
-  ghWareUpdateScrollbar();
- }
+ function ghWareRememberScroll(){const sc=ghWareGetScroll();if(sc)ghWareScrollTop=sc.scrollTop;}
  window.GreenHavenInventory={
   getState(){return {...ghWareStock};},
   getSalePrices(){return {...GH_WAREHOUSE_SELL_PRICES};},
@@ -3655,7 +3627,7 @@ render();
   }
   if(keepSale)ghWareRenderSale();else panel.querySelector('.gh-warehouse-sale-overlay')?.remove();
   scroll.scrollTop=previousTop;
-  ghWareUpdateScrollbar();
+  ghWareRememberScroll();
   return true;
  }
  function ghWareConfirmSale(){
@@ -3732,10 +3704,6 @@ render();
   return '<div class="gh-warehouse-art" role="group" aria-label="Склад: '+(entries.length?entries.length+' видів ресурсів':'поки порожній')+'">'+
    '<div id="gh-warehouse-scroll-area" class="gh-warehouse-scroll" aria-label="Комірки складу" tabindex="0">'+
      '<div class="gh-warehouse-grid" role="list">'+cells+'</div></div>'+
-   '<div class="gh-warehouse-scrollbar" role="scrollbar" aria-label="Прокрутка складу" aria-controls="gh-warehouse-scroll-area" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" aria-orientation="vertical" tabindex="0" data-gh-warehouse-scrollbar>'+
-     '<div class="gh-warehouse-scrollbar-track"><div class="gh-warehouse-thumb"></div></div></div>'+
-   '<button type="button" class="gh-warehouse-arrow" data-gh-warehouse-prev aria-label="Прокрутити вгору"></button>'+
-   '<button type="button" class="gh-warehouse-arrow" data-gh-warehouse-next aria-label="Прокрутити вниз"></button>'+
    '<button type="button" class="gh-warehouse-sell-all" data-gh-warehouse-sell-all'+(bulk.ok?'':' disabled')+' aria-label="'+(bulk.ok?'Продати всю продукцію за '+bulk.total+' золота':'Немає доступної для продажу продукції')+'"><span class="gh-warehouse-sell-all-inner" aria-hidden="true"></span><span class="gh-warehouse-sell-all-frame" aria-hidden="true"></span><span class="gh-warehouse-sell-all-copy">'+bulkLabel+'</span></button>'+
    '<button type="button" class="gh-warehouse-close" data-gh-warehouse-close aria-label="Закрити склад і повернутися на ферму"></button></div>';
  }
@@ -3801,8 +3769,8 @@ render();
    const sc=ghWareGetScroll();
    if(sc){
     sc.scrollTop=ghWareScrollTop;
-    sc.addEventListener('scroll',ghWareUpdateScrollbar,{passive:true});
-    ghWareUpdateScrollbar();
+    sc.addEventListener('scroll',ghWareRememberScroll,{passive:true});
+    ghWareRememberScroll();
    }
   }
  }
@@ -3830,11 +3798,11 @@ render();
  document.getElementById('gh-ui-open-profile').addEventListener('click',()=>showTab('profile'));
  document.querySelectorAll('[data-gh-top-market]').forEach(b=>b.addEventListener('click',()=>showTab('market')));
  // Actual inertial finger-scrolling in the item grid; dragging elsewhere on the panel scrolls the same list.
- let ghWarePanelTouchY=null,ghWareDragTrack=null,ghWareClosing=false;
+ let ghWarePanelTouchY=null,ghWareClosing=false;
  screen.addEventListener('touchstart',e=>{
   if(currentTab!=='warehouse'||e.touches.length!==1)return;
   const target=e.target;
-  if(target.closest('.gh-warehouse-art')&&!target.closest('.gh-warehouse-scroll,.gh-warehouse-scrollbar,.gh-warehouse-close,.gh-warehouse-arrow,.gh-warehouse-sell-all,.gh-warehouse-sale-overlay'))ghWarePanelTouchY=e.touches[0].clientY;
+  if(target.closest('.gh-warehouse-art')&&!target.closest('.gh-warehouse-scroll,.gh-warehouse-close,.gh-warehouse-sell-all,.gh-warehouse-sale-overlay'))ghWarePanelTouchY=e.touches[0].clientY;
  },{passive:true});
  screen.addEventListener('touchend',e=>{
   if(ghWarePanelTouchY===null)return;
@@ -3850,22 +3818,12 @@ render();
  screen.addEventListener('pointerdown',e=>{
   if(currentTab!=='warehouse')return;
   const btn=e.target.closest('[data-gh-warehouse-close]');if(btn)btn.classList.add('is-pressed');
-  const slider=e.target.closest('[data-gh-warehouse-scrollbar]');
-  if(slider){e.preventDefault();ghWareDragTrack=slider;try{slider.setPointerCapture(e.pointerId);}catch(err){}ghWareSeek(e);}
  });
- screen.addEventListener('pointermove',e=>{if(ghWareDragTrack)ghWareSeek(e);});
  for(const kind of ['pointerup','pointercancel']){
   screen.addEventListener(kind,e=>{
    screen.querySelector('[data-gh-warehouse-close]')?.classList.remove('is-pressed');
-   if(ghWareDragTrack){try{ghWareDragTrack.releasePointerCapture(e.pointerId);}catch(err){}ghWareDragTrack=null;}
   });
  }
- screen.addEventListener('keydown',e=>{
-  if(currentTab!=='warehouse')return;
-  if(e.target.matches('[data-gh-warehouse-scrollbar]')&&['ArrowDown','ArrowUp','PageDown','PageUp'].includes(e.key)){
-   e.preventDefault();ghWareScrollBy(['ArrowDown','PageDown'].includes(e.key)?1:-1);
-  }
- });
 /* v335: iPhone in-app browsers sometimes swallow a generated click while
    the warehouse scroll container handles a touch. Accept a genuine short
    pointer tap too, without changing visuals or triggering during scrolling. */
@@ -3942,8 +3900,6 @@ render();
   }
   const stockButton=e.target.closest('[data-gh-warehouse-item]');
   if(stockButton){ghWareOpenSale(stockButton.dataset.ghWarehouseItem);return;}
-  if(e.target.closest('[data-gh-warehouse-prev]')){ghWareScrollBy(-1);return;}
-  if(e.target.closest('[data-gh-warehouse-next]')){ghWareScrollBy(1);return;}
   const econButton=e.target.closest('[data-gh-econ-action]');
   if(econButton){
     const pos=screen.scrollTop;
