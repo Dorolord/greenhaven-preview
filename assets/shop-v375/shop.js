@@ -24,7 +24,7 @@
  style.id='gh-shop-v375-style';
  style.textContent=`
  #gh-ui-screen.gh-market-active{background:rgba(26,34,13,.28);overflow:hidden;padding:calc(68px + env(safe-area-inset-top,0px)) 10px calc(94px + env(safe-area-inset-bottom,0px));display:flex;align-items:center;justify-content:center}
- #gh-ui-screen .gh-shop-frame{position:relative;flex:0 0 auto;margin:auto;width:min(96%,430px,58vh);max-height:100%;aspect-ratio:1006/1422;transform:scale(1.05);background:url('${art('frame')}') center/100% 100% no-repeat;filter:drop-shadow(0 7px 8px #243a1e65);container-type:inline-size;isolation:isolate;user-select:none;-webkit-user-select:none}
+ #gh-ui-screen .gh-shop-frame{position:relative;flex:0 0 auto;margin:auto;width:min(96%,430px,58vh);max-height:100%;aspect-ratio:1006/1422;transform:scale(0.966);background:url('${art('frame')}') center/100% 100% no-repeat;filter:drop-shadow(0 7px 8px #243a1e65);container-type:inline-size;isolation:isolate;user-select:none;-webkit-user-select:none}
  #gh-ui-screen .gh-shop-frame button{padding:0;border:0;appearance:none;-webkit-appearance:none;background-color:transparent;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
  #gh-ui-screen .gh-shop-frame button:focus-visible{outline:2px solid #86532a;outline-offset:2px;border-radius:12px}
  #gh-ui-screen .gh-shop-frame button:disabled{cursor:default}
@@ -95,5 +95,5 @@
  }
  // Do not replace the old market until every required graphic is loaded successfully.
  const names=['frame','card_blank','coin','buy','buy_disabled','close','close_pressed',...cats.flatMap(([id])=>['tab_'+id,'tab_'+id+'_active']),...Object.values(products).flat().map(x=>x[0])];
- Promise.all([...new Set(names)].map(name=>new Promise((resolve,reject)=>{const im=new Image();im.onload=resolve;im.onerror=reject;im.src=art(name);}))).then(()=>{window.GreenHavenShop375={render,bind};document.title=document.title.replace(/v374/,'v380');window.dispatchEvent(new Event('greenhaven:shop375-ready'));}).catch(()=>{console.warn('GreenHaven shop assets incomplete; previous market retained.');});
+ Promise.all([...new Set(names)].map(name=>new Promise((resolve,reject)=>{const im=new Image();im.onload=resolve;im.onerror=reject;im.src=art(name);}))).then(()=>{window.GreenHavenShop375={render,bind};document.title=document.title.replace(/v374/,'v381');window.dispatchEvent(new Event('greenhaven:shop375-ready'));}).catch(()=>{console.warn('GreenHaven shop assets incomplete; previous market retained.');});
 })();
