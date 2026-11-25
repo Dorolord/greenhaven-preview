@@ -15,11 +15,10 @@
   animals:[['cow','Корова',null,false],['chicken','Курка',null,false],['hive','Вулик',null,false]],
   fertilizer:[['fertilizer','Добриво',null,false]],decor:[]
  };
- const key='greenhaven-preview-shop-seed-stock-v375';
- let stock={};
- try {const v=JSON.parse(localStorage.getItem(key)||'{}');for(const [id] of products.seeds)if(Number.isSafeInteger(v[id])&&v[id]>0&&v[id]<=1000000)stock[id]=v[id];}catch(_){}
- const save=()=>{try{localStorage.setItem(key,JSON.stringify(stock));}catch(_){}};
- const count=id=>stock[id]||0;
+ // v378: seeds share the warehouse inventory, distinct from harvested produce.
+ const seedId=id=>'seed_'+id;
+ window.GreenHavenSeedArtwork=Object.fromEntries(products.seeds.map(([id])=>[seedId(id),art(id)]));
+ const count=id=>window.GreenHavenInventory?.getState()?.[seedId(id)]||0;
  let message='';
  const style=document.createElement('style');
  style.id='gh-shop-v375-style';
@@ -71,7 +70,7 @@
    const owned=count(id), planting=pending&&active==='seeds'&&enabled&&owned>0;
    const can=enabled&&(planting||gold>=price)&& (planting||pending||owned<1000000);
    const note=!enabled?'Незабаром':!can?'Недостатньо золота':planting?'Посадити '+name:'Купити '+name+' за '+price+' золота';
-   return `<div class="gh-shop-card"><div class="gh-shop-picture"><img src="${art(id)}" alt="">${owned?`<span class="gh-shop-count" title="Насіння в запасі">${owned}</span>`:''}</div><div class="gh-shop-details"><strong class="gh-shop-name ${name.length>7?'long':''}">${name}</strong><span class="gh-shop-price">${price===null?'<small>Незабаром</small>':`<img src="${art('coin')}" alt="">${price}`}</span><button type="button" class="gh-shop-buy${planting?' plant':''}" data-gh-shop-buy="${id}" aria-label="${note}" title="${note}" ${can?'':'disabled'}>${planting?'Посадити':''}</button></div></div>`;
+   return `<div class="gh-shop-card"><div class="gh-shop-picture"><img src="${art(id)}" alt=""></div><div class="gh-shop-details"><strong class="gh-shop-name ${name.length>7?'long':''}">${name}</strong><span class="gh-shop-price">${price===null?'<small>Незабаром</small>':`<img src="${art('coin')}" alt="">${price}`}</span><button type="button" class="gh-shop-buy${planting?' plant':''}" data-gh-shop-buy="${id}" aria-label="${note}" title="${note}" ${can?'':'disabled'}>${planting?'Посадити':''}</button></div></div>`;
   }).join('');
   const status=message;message='';
   return `<div class="gh-shop-frame" role="group" aria-label="Магазин"><div class="gh-shop-tabs" role="group" aria-label="Категорії магазину">${tabs}</div><div class="gh-shop-scroll" tabindex="0" aria-label="Товари"><div class="gh-shop-grid">${cards||'<div class="gh-shop-empty">Декор з’явиться згодом</div>'}</div></div><div class="gh-shop-scrollbar"><button class="gh-shop-arrow" type="button" data-dir="-1" aria-label="Прокрутити вгору" style="background-image:url('${art('scroll_up')}')"></button><div class="gh-shop-track" aria-hidden="true"><div class="gh-shop-thumb"></div></div><button class="gh-shop-arrow" type="button" data-dir="1" aria-label="Прокрутити вниз" style="background-image:url('${art('scroll_down')}')"></button></div><p class="gh-shop-status" role="status" aria-live="polite">${status}</p><button type="button" class="gh-shop-close" aria-label="Закрити магазин"></button></div>`;
@@ -89,18 +88,24 @@
   root.querySelectorAll('[data-gh-shop-buy]').forEach(b=>b.addEventListener('click',()=>{
    if(b.disabled)return; const id=b.dataset.ghShopBuy;
    const p=products.seeds.find(x=>x[0]===id&&x[3]);if(category!=='seeds'||!p)return;
-   const eco=window.GreenHavenEconomy,plant=window.GreenHavenPlanting;
+   const eco=window.GreenHavenEconomy,plant=window.GreenHavenPlanting,inventory=window.GreenHavenInventory;
+   if(!inventory){message='Склад недоступний';refresh();return;}
    const pending=Number.isInteger(plot);const price=p[2];
    if(pending&&!plant?.canPlant(plot)){message='Грядка вже недоступна';refresh();return;}
    b.disabled=true;
-   if(pending&&count(id)>0){if(plant.plant(plot,id)){stock[id]--;save();close();return;}message='Не вдалося посадити';refresh();return;}
+   if(pending&&count(id)>0){
+    if(!inventory.remove(seedId(id),1,true)){message='Насіння недоступне';refresh();return;}
+    if(plant.plant(plot,id)){close();return;}
+    inventory.add(seedId(id),1,true);message='Не вдалося посадити';refresh();return;
+   }
    if(!pending&&count(id)>=1000000){message='Досягнуто ліміт насіння';refresh();return;}
    if(!eco?.debitGold(price)){message='Недостатньо золота';refresh();return;}
    if(pending){if(plant.plant(plot,id)){close();return;}eco.creditGold(price);message='Не вдалося посадити';refresh();return;}
-   stock[id]=count(id)+1;save();message='Придбано 1 шт. · '+p[1];refresh();
+   if(!inventory.add(seedId(id),1,true)){eco.creditGold(price);message='Не вдалося додати насіння на склад';refresh();return;}
+   message='Придбано 1 шт. · '+p[1];refresh();
   }));
  }
  // Do not replace the old market until every required graphic is loaded successfully.
  const names=['frame','card_blank','coin','buy','buy_disabled','close','close_pressed','scroll_up','scroll_down','scroll_track','scroll_thumb',...cats.flatMap(([id])=>['tab_'+id,'tab_'+id+'_active']),...Object.values(products).flat().map(x=>x[0])];
- Promise.all([...new Set(names)].map(name=>new Promise((resolve,reject)=>{const im=new Image();im.onload=resolve;im.onerror=reject;im.src=art(name);}))).then(()=>{window.GreenHavenShop375={render,bind};document.title=document.title.replace(/v374/,'v377');window.dispatchEvent(new Event('greenhaven:shop375-ready'));}).catch(()=>{console.warn('GreenHaven shop assets incomplete; previous market retained.');});
+ Promise.all([...new Set(names)].map(name=>new Promise((resolve,reject)=>{const im=new Image();im.onload=resolve;im.onerror=reject;im.src=art(name);}))).then(()=>{window.GreenHavenShop375={render,bind};document.title=document.title.replace(/v374/,'v378');window.dispatchEvent(new Event('greenhaven:shop375-ready'));}).catch(()=>{console.warn('GreenHaven shop assets incomplete; previous market retained.');});
 })();

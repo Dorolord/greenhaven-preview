@@ -3300,7 +3300,7 @@ render();
 })();
 </script>
 
-<script src="assets/shop-v375/shop.js?v=377" onerror="this.remove()"></script>
+<script src="assets/shop-v375/shop.js?v=378" onerror="this.remove()"></script>
 <script>
 /* v236 UI navigation prototype: read-only inventory, no purchases or currency writes. */
 (()=>{
@@ -3329,6 +3329,11 @@ render();
  /* v283: Warehouse starts completely empty. Only a successful future harvest calls GreenHavenInventory.add(). */
  const GH_WAREHOUSE_KEY="greenhaven-preview-inventory-v283";
  const GH_WAREHOUSE_MAX=1000000000;
+ const GH_SEED_CATALOG=[
+  ["seed_carrot","🌱","Насіння моркви"],["seed_wheat","🌱","Насіння пшениці"],
+  ["seed_pumpkin","🌱","Насіння гарбуза"],["seed_corn","🌱","Насіння кукурудзи"],
+  ["seed_strawberry","🌱","Насіння полуниці"],["seed_potato","🌱","Насіння картоплі"]
+ ];
  const ghWareCatalog=[
   ["carrot","🥕","Морква"],["wheat","🌾","Пшениця"],["pumpkin","🎃","Гарбуз"],
   ["corn","🌽","Кукурудза"],["tomato","🍅","Помідор"],["cucumber","🥒","Огірок"],
@@ -3338,28 +3343,46 @@ render();
   ["blueberry","🫐","Чорниця"],["grape","🍇","Виноград"],["apple","🍎","Яблуко"],
   ["milk","🥛","Молоко"],["eggs","🥚","Яйця"],["honey","🍯","Мед"],["flour","🌾","Борошно"],
   ["wool","🧶","Вовна"],["cheese","🧀","Сир"],["butter","🧈","Масло"],
-  ["wood","🪵","Деревина"],["cotton","☁️","Бавовна"]
+  ["wood","🪵","Деревина"],["cotton","☁️","Бавовна"],
+  ...GH_SEED_CATALOG
  ];
  const ghWareMeta=new Map(ghWareCatalog.map(item=>[item[0],item]));
  const ghWareArtwork={
   carrot:"assets/gh-warehouse-carrot-v296.webp",
   wheat:"assets/gh-warehouse-wheat-v296.webp",
   pumpkin:"assets/gh-warehouse-pumpkin-v366.avif",
-  milk:"sprite:milk",eggs:"sprite:eggs",honey:"sprite:honey",flour:"sprite:flour"
+  milk:"sprite:milk",eggs:"sprite:eggs",honey:"sprite:honey",flour:"sprite:flour",
+  ...(window.GreenHavenSeedArtwork||{})
  };
  /* Temporary test prices in game gold. Milk and eggs are now sellable just like crops. */
  const GH_WAREHOUSE_SELL_PRICES={carrot:5,wheat:4,pumpkin:25,milk:10,eggs:5,honey:15,flour:12};
  let ghWareStock={};let ghWareScrollTop=0;
+ let ghWareSeedMigrated=false;
  let ghWareSelectedId=null,ghWareSellQty=1;
  try{
   const saved=JSON.parse(localStorage.getItem(GH_WAREHOUSE_KEY)||"{}");
   if(saved && typeof saved==="object" && !Array.isArray(saved)){
+   ghWareSeedMigrated=saved._seedStockMigrated===true;
    for(const [id,amount] of Object.entries(saved)){
     if(/^[a-z][a-z0-9_-]{0,39}$/.test(id)&&Number.isSafeInteger(amount)&&amount>0&&amount<=GH_WAREHOUSE_MAX)ghWareStock[id]=amount;
    }
   }
  }catch(e){}
- function ghWareSave(){try{localStorage.setItem(GH_WAREHOUSE_KEY,JSON.stringify(ghWareStock));}catch(e){}}
+ function ghWareSave(){try{localStorage.setItem(GH_WAREHOUSE_KEY,JSON.stringify({...ghWareStock,_seedStockMigrated:ghWareSeedMigrated}));}catch(e){}}
+ // One-time migration preserves old purchased packets, without treating them as harvest.
+ if(!ghWareSeedMigrated){
+  try{
+   const legacy=JSON.parse(localStorage.getItem('greenhaven-preview-shop-seed-stock-v375')||'{}');
+   if(legacy&&typeof legacy==='object'&&!Array.isArray(legacy)){
+    for(const [id] of GH_SEED_CATALOG){
+     const amount=legacy[id.slice(5)];
+     if(Number.isSafeInteger(amount)&&amount>0&&amount<=1000000)
+      ghWareStock[id]=Math.min(GH_WAREHOUSE_MAX,(ghWareStock[id]||0)+amount);
+    }
+   }
+   ghWareSeedMigrated=true;ghWareSave();
+  }catch(e){}
+ }
  function ghWareEntries(){
   return Object.entries(ghWareStock).filter(([id,count])=>count>0)
    .sort((a,b)=>{
@@ -3781,7 +3804,10 @@ render();
    }
    paint();
  }
- window.addEventListener('greenhaven:shop375-ready',()=>{if(currentTab==='market')paint();});
+ window.addEventListener('greenhaven:shop375-ready',()=>{
+  Object.assign(ghWareArtwork,window.GreenHavenSeedArtwork||{});
+  if(currentTab==='market'||currentTab==='warehouse')paint();
+ });
  navButtons.forEach(b=>b.addEventListener('click',()=>showTab(b.dataset.ghTab)));
  window.addEventListener('greenhaven:open-seed-market',e=>{
   const plot=e.detail?.plot;
