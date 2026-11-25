@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="uk"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no"/>
-<title>GreenHaven — мобільна тестова версія v349</title>
+<title>GreenHaven — мобільна тестова версія v350</title>
 <style>
 *{box-sizing:border-box}html,body{margin:0;min-height:100%;background:#14221b;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;color:#fff}
 .page{min-height:100dvh;display:grid;place-items:center;padding:0 0 72px}.stage{position:relative;width:min(100vw,520px);height:min(100dvh,calc(min(100vw,520px)*1.91));max-height:1040px;min-height:min(780px,100dvh);overflow:hidden;isolation:isolate;background:#8ed92f;box-shadow:0 10px 35px #0005}
@@ -912,7 +912,7 @@ body:not(.gh-debug-visible) .gh-ui-screen {padding-top:calc(clamp(90px,21vw,116p
 .gh-econ-status {min-height:2.4em;margin:8px 0 0;font-size:11px;line-height:1.4;color:#486134}
 .gh-econ-note {font-size:11px;color:#5b7147;line-height:1.4;margin:8px 0 0}
 
-</style><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><link rel="stylesheet" href="assets/gh-warehouse-v316.css?v=316"><link rel="stylesheet" href="assets/gh-coop-eggs-v332.css?v=332"><link rel="stylesheet" href="assets/gh-cowshed-milk-v332.css?v=332"><link rel="stylesheet" href="assets/gh-warehouse-taps-v335.css?v=335"><link rel="stylesheet" href="assets/gh-apiary-honey-v336.css?v=336"><link rel="stylesheet" href="assets/gh-mill-flour-v340.css?v=340"><link rel="stylesheet" href="assets/gh-produce-glow-v342.css?v=342"><link rel="stylesheet" href="assets/gh-mill-manual-v343.css?v=343"><link rel="stylesheet" href="assets/gh-hide-building-labels-v344.css?v=344"><link rel="stylesheet" href="assets/gh-produce-collect-v345.css?v=345"><link rel="stylesheet" href="assets/gh-production-dialogs-v347.css?v=347"><link rel="stylesheet" href="assets/gh-production-art-v348.css?v=348"><link rel="stylesheet" href="assets/gh-production-art-v349.css?v=349">
+</style><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><link rel="stylesheet" href="assets/gh-warehouse-v316.css?v=316"><link rel="stylesheet" href="assets/gh-coop-eggs-v332.css?v=332"><link rel="stylesheet" href="assets/gh-cowshed-milk-v332.css?v=332"><link rel="stylesheet" href="assets/gh-warehouse-taps-v335.css?v=335"><link rel="stylesheet" href="assets/gh-apiary-honey-v336.css?v=336"><link rel="stylesheet" href="assets/gh-mill-flour-v340.css?v=340"><link rel="stylesheet" href="assets/gh-produce-glow-v342.css?v=342"><link rel="stylesheet" href="assets/gh-mill-manual-v343.css?v=343"><link rel="stylesheet" href="assets/gh-hide-building-labels-v344.css?v=344"><link rel="stylesheet" href="assets/gh-produce-collect-v345.css?v=345"><link rel="stylesheet" href="assets/gh-production-dialogs-v347.css?v=347"><link rel="stylesheet" href="assets/gh-production-art-v348.css?v=348"><link rel="stylesheet" href="assets/gh-production-art-v349.css?v=349"><link rel="stylesheet" href="assets/gh-production-player-v350.css?v=350">
 </head><body><main class="page"><section class="stage" id="stage" aria-label="Інтерактивний макет ферми">
 <button id="gh-cowshed-toggle" class="gh-cowshed-toggle" type="button" aria-pressed="false" title="Тест: спершу ремонт, потім окрема покупка корови">🛠 Відновити корівник</button>
 <button id="gh-cow-toggle" class="gh-cow-toggle" type="button" aria-pressed="true" title="Купити першу корову (лише тест, без оплати)" hidden>🐄 Купити корову</button>
@@ -1169,6 +1169,7 @@ function ghFlourUpdatePanel(){
  ghFlourSync();
  const hasHives=ghFlourOwned();
  panel.hidden=!hasHives;
+ panel.closest('[role="presentation"]')?.classList.toggle('gh-player-timer',hasHives);
  if(!hasHives)return;
  const count=ghFlourAmount(),left=ghFlourTimeLeft(),ready=ghFlourReady(),running=ghFlourRunning();
  const percent=ready?100:Math.max(0,Math.min(100,(1-left/GH_FLOUR_DURATION)*100));
@@ -1753,6 +1754,7 @@ function ghHoneyUpdatePanel(){
  ghHoneySync();
  const hasHives=ghHoneyOwned();
  panel.hidden=!hasHives;
+ panel.closest('[role="presentation"]')?.classList.toggle('gh-player-timer',hasHives);
  if(!hasHives)return;
  const count=ghHoneyAmount(),left=ghHoneyTimeLeft(),ready=left===0;
  const percent=ready?100:Math.max(0,Math.min(100,(1-left/GH_HONEY_DURATION)*100));
@@ -2130,6 +2132,7 @@ function ghMilkUpdateDialog(){
  const production=document.getElementById('gh-milk-production');
  const locked=document.getElementById('gh-milk-locked');
  production.hidden=!owned;
+ production.closest('[role="presentation"]')?.classList.toggle('gh-player-timer',owned);
  locked.hidden=owned;
  document.getElementById('gh-milk-description').textContent=!ghCowshedRepaired
   ?'Корівник потребує ремонту.'
@@ -2443,6 +2446,7 @@ function ghCoopUpdateEggProduction(){
  ghCoopEggsSync();
  const enabled=ghCoopEggsOwned();
  panel.hidden=!enabled;
+ panel.closest('[role="presentation"]')?.classList.toggle('gh-player-timer',enabled);
  if(!enabled)return;
  const amount=ghCoopEggsAmount();
  document.getElementById('gh-coop-eggs-amount-label').textContent="Яйця";
@@ -2453,7 +2457,7 @@ function ghCoopUpdateEggProduction(){
  document.getElementById('gh-coop-eggs-progress').style.width=percent.toFixed(2)+'%';
  document.getElementById('gh-coop-eggs-meter').setAttribute('aria-valuenow',String(Math.round(percent)));
  document.getElementById('gh-coop-eggs-countdown').textContent=ready
-  ?'🥚 Яйця готові — можна збирати!'
+  ?'Готово!'
   :''+ghCoopEggsTime(left);
  document.getElementById('gh-coop-eggs-collect').hidden=!ready;
  document.getElementById('gh-coop-eggs-test').hidden=ready;
