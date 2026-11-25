@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="uk"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no"/>
-<title>GreenHaven — мобільна тестова версія v386</title>
+<title>GreenHaven — мобільна тестова версія v387</title>
 <style>
 *{box-sizing:border-box}html,body{margin:0;min-height:100%;background:#14221b;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;color:#fff}
 .page{min-height:100dvh;display:grid;place-items:center;padding:0 0 72px}.stage{position:relative;width:min(100vw,520px);height:min(100dvh,calc(min(100vw,520px)*1.91));max-height:1040px;min-height:min(780px,100dvh);overflow:hidden;isolation:isolate;background:#8ed92f;box-shadow:0 10px 35px #0005}
@@ -2748,7 +2748,8 @@ el.addEventListener('pointermove',e=>{if(pointer!==e.pointerId)return;const r=st
 el.addEventListener('pointerup',e=>{if(pointer!==e.pointerId)return;const tapped=start&&Math.hypot(e.clientX-start.px,e.clientY-start.py)<9;pointer=null;el.classList.remove('selected');save();if(tapped&&item.id==='mill')showMillDialog();if(tapped&&item.id==='apiary')showApiaryDialog();if(tapped&&item.id==='chicken')ghCoopShowDialog();if(tapped&&item.id==='cow')ghMilkShowDialog();if(tapped&&item.id.startsWith('plot-')){
  const plotNumber=Number(item.id.slice(5));
  if(!document.body.classList.contains('gh-debug-visible')&&ghCanPlantOnPlot(plotNumber)){
-  window.dispatchEvent(new CustomEvent('greenhaven:open-seed-warehouse',{detail:{plot:plotNumber}}));
+  e.preventDefault();e.stopPropagation();
+  window.GreenHavenOpenSeedWarehouse?.(plotNumber,e);
  }else inspectBed(plotNumber);
 }});el.addEventListener('pointercancel',()=>{pointer=null;el.classList.remove('selected');save()});if(item.id==='cow')ghAttachCowDrag(el);world.appendChild(el)}drawRoutes();ghRenderMapHives();ghRenderOrangeHen();ghUpdateCowshedUI();if(typeof ghRenderHouseDog==='function')ghRenderHouseDog();ghCoopRefreshReadyBadge();ghMilkRefreshReadyBadge();ghHoneyRefreshReadyBadge();ghFlourRefreshReadyBadge()}
 function drawRoutes(){
@@ -3812,13 +3813,30 @@ render();
   if(currentTab==='market'||currentTab==='warehouse')paint();
  });
  navButtons.forEach(b=>b.addEventListener('click',()=>showTab(b.dataset.ghTab)));
- window.addEventListener('greenhaven:open-seed-warehouse',e=>{
-  const plot=e.detail?.plot;
-  if(!window.GreenHavenPlanting?.canPlant(plot))return;
+ // Open the warehouse synchronously for a valid plot. Suppress the trailing
+ // mobile click from the same tap so it cannot activate a newly exposed control.
+ let ghPlotTrailingClick=false;
+ document.addEventListener('pointerdown',()=>{ghPlotTrailingClick=false;},true);
+ document.addEventListener('click',e=>{
+  if(!ghPlotTrailingClick)return;
+  ghPlotTrailingClick=false;
+  if(e.detail===0)return;
+  e.preventDefault();e.stopImmediatePropagation();
+ },true);
+ let ghPlotClickTimer;
+ window.GreenHavenOpenSeedWarehouse=(plot,event)=>{
+  if(!window.GreenHavenPlanting?.canPlant(plot))return false;
+  if(event){
+   ghPlotTrailingClick=true;clearTimeout(ghPlotClickTimer);
+   ghPlotClickTimer=setTimeout(()=>{ghPlotTrailingClick=false;},500);
+  }
   ghWareScrollTop=0;
   marketCategory='seeds';
   showTab('warehouse',plot);
- });
+  return true;
+ };
+ window.addEventListener('greenhaven:open-seed-warehouse',e=>window.GreenHavenOpenSeedWarehouse(e.detail?.plot));
+ window.addEventListener('greenhaven:open-seed-market',e=>window.GreenHavenOpenSeedWarehouse(e.detail?.plot));
  document.getElementById('gh-ui-open-profile').addEventListener('click',()=>showTab('profile'));
  document.querySelectorAll('[data-gh-top-market]').forEach(b=>b.addEventListener('click',()=>showTab('market')));
  // Actual inertial finger-scrolling in the item grid; dragging elsewhere on the panel scrolls the same list.
