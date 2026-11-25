@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="uk"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no"/>
-<title>GreenHaven — мобільна тестова версія v369</title>
+<title>GreenHaven — мобільна тестова версія v370</title>
 <style>
 *{box-sizing:border-box}html,body{margin:0;min-height:100%;background:#14221b;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;color:#fff}
 .page{min-height:100dvh;display:grid;place-items:center;padding:0 0 72px}.stage{position:relative;width:min(100vw,520px);height:min(100dvh,calc(min(100vw,520px)*1.91));max-height:1040px;min-height:min(780px,100dvh);overflow:hidden;isolation:isolate;background:#8ed92f;box-shadow:0 10px 35px #0005}
@@ -3406,6 +3406,24 @@ render();
     '<button type="button" class="gh-warehouse-sale-confirm" data-gh-sale-confirm aria-label="'+esc(confirmLabel)+'" '+(max<1?'disabled':'')+'>'+buttonLabel+'</button>'+
    '</section></div>';
  }
+ function ghWareUpdateSaleQuantity(overlay){
+  // Quantity taps must not touch the price/stock bar or rebuild its DOM.
+  const max=ghWareSaleLimit(ghWareSelectedId);
+  ghWareSellQty=max>0?Math.min(max,Math.max(1,ghWareSellQty)):0;
+  const qty=overlay.querySelector('[data-gh-sale-quantity]');
+  const label=ghWareSellQty.toLocaleString('uk-UA')+' шт.';
+  if(qty.textContent!==label)qty.textContent=label;
+  qty.classList.toggle('compact',ghWareSellQty>=10000);
+  const dec=overlay.querySelector('[data-gh-sale-dec]');
+  const inc=overlay.querySelector('[data-gh-sale-inc]');
+  const confirm=overlay.querySelector('[data-gh-sale-confirm]');
+  if(dec.disabled!==(ghWareSellQty<=1))dec.disabled=ghWareSellQty<=1;
+  if(inc.disabled!==(ghWareSellQty>=max))inc.disabled=ghWareSellQty>=max;
+  if(confirm.disabled!==(max<1))confirm.disabled=max<1;
+  const total=GH_WAREHOUSE_SELL_PRICES[ghWareSelectedId]*ghWareSellQty;
+  const confirmLabel=max?'Продати '+ghWareSellQty+' шт. за '+total.toLocaleString('uk-UA')+' золота':'Ліміт золота досягнуто';
+  if(confirm.getAttribute('aria-label')!==confirmLabel)confirm.setAttribute('aria-label',confirmLabel);
+ }
  function ghWareRenderSale(){
   const panel=screen.querySelector('.gh-warehouse-art');
   if(!panel)return;
@@ -3417,15 +3435,17 @@ render();
    // Update only live values; keep buttons mounted so a press is never interrupted.
    const tpl=document.createElement('template');tpl.innerHTML=markup;
    for(const selector of ['[data-gh-sale-stock]','[data-gh-sale-price]','[data-gh-sale-quantity]']){
-    existing.querySelector(selector).textContent=tpl.content.querySelector(selector).textContent;
+    const node=existing.querySelector(selector),value=tpl.content.querySelector(selector).textContent;
+    if(node.textContent!==value)node.textContent=value;
    }
    for(const selector of ['.gh-warehouse-sale-available','[data-gh-sale-quantity]']){
-    existing.querySelector(selector).className=tpl.content.querySelector(selector).className;
+    const node=existing.querySelector(selector),value=tpl.content.querySelector(selector).className;
+    if(node.className!==value)node.className=value;
    }
    for(const selector of ['[data-gh-sale-dec]','[data-gh-sale-inc]','[data-gh-sale-confirm]']){
     const btn=existing.querySelector(selector),fresh=tpl.content.querySelector(selector);
-    btn.disabled=fresh.disabled;
-    btn.setAttribute('aria-label',fresh.getAttribute('aria-label'));
+    if(btn.disabled!==fresh.disabled)btn.disabled=fresh.disabled;
+    if(btn.getAttribute('aria-label')!==fresh.getAttribute('aria-label'))btn.setAttribute('aria-label',fresh.getAttribute('aria-label'));
    }
    return;
   }
@@ -3801,7 +3821,7 @@ render();
    saleButton.classList.add('is-pressed');
    if(saleButton.hasAttribute('data-gh-sale-dec')||saleButton.hasAttribute('data-gh-sale-inc')){
     ghWareSellQty=saleButton.hasAttribute('data-gh-sale-dec')?Math.max(1,ghWareSellQty-1):Math.min(ghWareSaleLimit(ghWareSelectedId),ghWareSellQty+1);
-    ghWareRenderSale();
+    ghWareUpdateSaleQuantity(saleOverlay);
     clearTimeout(saleButton.ghPressTimer);
     saleButton.ghPressTimer=setTimeout(()=>saleButton.classList.remove('is-pressed'),115);
     return;
