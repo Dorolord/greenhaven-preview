@@ -3277,6 +3277,7 @@ render();
    getState:()=>({...state,claimed:[...state.claimed]}),
    requirement,
    action,
+   debitGold(amount){return Number.isSafeInteger(amount)&&amount>0&&amount<=100000&&change({gold:-amount});},
    getMessage:()=>message,
    // Test-only gold settlement for selling inventory crops.
    creditGold(amount,waitForFlight=false){
@@ -3299,6 +3300,7 @@ render();
 })();
 </script>
 
+<script src="assets/shop-v375/shop.js" onerror="this.remove()"></script>
 <script>
 /* v236 UI navigation prototype: read-only inventory, no purchases or currency writes. */
 (()=>{
@@ -3704,6 +3706,7 @@ render();
    '<button type="button" class="gh-warehouse-close" data-gh-warehouse-close aria-label="Закрити склад і повернутися на ферму"></button></div>';
  }
  function market(){
+  if(window.GreenHavenShop375)return window.GreenHavenShop375.render({category:marketCategory,plot:pendingPlantPlot});
   const categories=[['seeds','🌱 Насіння'],['animals','🐄 Тварини'],['buildings','🏡 Будівлі']];
   const planting=window.GreenHavenPlanting;
   const pending=Number.isInteger(pendingPlantPlot)&&planting?.canPlant(pendingPlantPlot);
@@ -3754,10 +3757,12 @@ render();
   navButtons.forEach(b=>b.setAttribute('aria-selected',String(b.dataset.ghTab===currentTab)));
    if (ghNavArt && ghNavImages[currentTab] && ghNavArt.src!==ghNavImages[currentTab]) ghNavArt.src=ghNavImages[currentTab];
   screen.classList.toggle('gh-warehouse-active',currentTab==='warehouse');
+  screen.classList.toggle('gh-market-active',currentTab==='market'&&!!window.GreenHavenShop375);
   screen.hidden=currentTab==='farm';
   if(screen.hidden){screen.innerHTML='';return}
   screen.innerHTML=currentTab==='warehouse'?warehouse():currentTab==='market'?market():profile();
   screen.scrollTop=0;
+  if(currentTab==='market'&&window.GreenHavenShop375)window.GreenHavenShop375.bind(screen,{category:marketCategory,plot:pendingPlantPlot,refresh:paint,close:()=>showTab('farm')});
   if(currentTab==='warehouse'){
    const sc=ghWareGetScroll();
    if(sc){
@@ -3776,6 +3781,7 @@ render();
    }
    paint();
  }
+ window.addEventListener('greenhaven:shop375-ready',()=>{if(currentTab==='market')paint();});
  navButtons.forEach(b=>b.addEventListener('click',()=>showTab(b.dataset.ghTab)));
  window.addEventListener('greenhaven:open-seed-market',e=>{
   const plot=e.detail?.plot;
