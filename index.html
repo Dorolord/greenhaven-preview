@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="uk"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no"/>
-<title>GreenHaven — мобільна тестова версія v368</title>
+<title>GreenHaven — мобільна тестова версія v369</title>
 <style>
 *{box-sizing:border-box}html,body{margin:0;min-height:100%;background:#14221b;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;color:#fff}
 .page{min-height:100dvh;display:grid;place-items:center;padding:0 0 72px}.stage{position:relative;width:min(100vw,520px);height:min(100dvh,calc(min(100vw,520px)*1.91));max-height:1040px;min-height:min(780px,100dvh);overflow:hidden;isolation:isolate;background:#8ed92f;box-shadow:0 10px 35px #0005}
@@ -1010,176 +1010,9 @@ body :is(#gh-milk-dialog,#gh-coop-dialog,#apiary-dialog,#mill-dialog)[hidden] *{
   pointer-events:none!important;
 }
 </style>
-<style id="gh-warehouse-single-sale-v367">
-/* v367 — independent, live HTML sale controls; illustrated styling follows the approved mockup. */
-#gh-ui-screen .gh-warehouse-sale-overlay{
- inset:18% 7.8% 13%;border-radius:20px;background:transparent;
- display:flex;align-items:center;justify-content:center;z-index:14;
-}
-#gh-ui-screen .gh-warehouse-sale-card{
- width:98%;max-width:350px;max-height:none;overflow:visible;
- padding:clamp(14px,4vw,22px) clamp(10px,3vw,18px) clamp(14px,4.5vw,23px);
- position:relative;isolation:isolate;box-sizing:border-box;
- border:3px solid #d47a13;border-radius:clamp(20px,5.3vw,29px);
- background:radial-gradient(ellipse at 35% 8%,#fff4d9 0%,transparent 65%),linear-gradient(155deg,#ffecc3,#f9dba3 100%);
- box-shadow:0 0 0 1px #873d0b,0 0 0 3px #f7bd4c,inset 0 0 0 2px #ffe7a0,inset 0 0 0 4px #ae671b,0 5px 0 2px #81380b,0 8px 11px #55260766;
- color:#62320c;text-align:center;
-}
-#gh-ui-screen .gh-warehouse-sale-card::before{
- content:"";position:absolute;top:0;left:50%;width:47%;height:36px;
- transform:translate(-50%,-53%);z-index:1;pointer-events:none;
- background:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20240%2065%22%3E%3Cdefs%3E%3ClinearGradient%20id%3D%22l%22%20x2%3D%22.8%22%20y2%3D%221%22%3E%3Cstop%20stop-color%3D%22%23d6eb61%22%2F%3E%3Cstop%20offset%3D%22.45%22%20stop-color%3D%22%2383ba26%22%2F%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%233d710d%22%2F%3E%3C%2FlinearGradient%3E%3ClinearGradient%20id%3D%22w%22%20x2%3D%220%22%20y2%3D%221%22%3E%3Cstop%20stop-color%3D%22%23ffbc4a%22%2F%3E%3Cstop%20offset%3D%22.45%22%20stop-color%3D%22%23d67b20%22%2F%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%239b3d0d%22%2F%3E%3C%2FlinearGradient%3E%3ClinearGradient%20id%3D%22s%22%20x2%3D%220%22%20y2%3D%221%22%3E%3Cstop%20stop-color%3D%22%23fff4bb%22%2F%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%23dba752%22%2F%3E%3C%2FlinearGradient%3E%3C%2Fdefs%3E%3Cg%20fill%3D%22url(%23l)%22%20stroke%3D%22%23517b17%22%20stroke-width%3D%221.5%22%3E%3Cpath%20d%3D%22M70%2040Q33%2049%208%2031Q35%2023%2071%2034Z%22%2F%3E%3Cpath%20d%3D%22M65%2035Q33%2033%2027%2011Q54%209%2072%2032Z%22%2F%3E%3Cpath%20d%3D%22M70%2034Q59%2016%2065%204Q84%2017%2082%2035Z%22%2F%3E%3Cpath%20d%3D%22M170%2040Q207%2049%20232%2031Q205%2023%20169%2034Z%22%2F%3E%3Cpath%20d%3D%22M175%2035Q207%2033%20213%2011Q186%209%20168%2032Z%22%2F%3E%3Cpath%20d%3D%22M170%2034Q181%2016%20175%204Q156%2017%20158%2035Z%22%2F%3E%3C%2Fg%3E%3Cpath%20d%3D%22M66%2023Q120%201%20174%2023Q185%2031%20174%2043Q120%2067%2066%2043Q55%2031%2066%2023Z%22%20fill%3D%22%2371300a%22%20stroke%3D%22%2375380b%22%20stroke-width%3D%223%22%2F%3E%3Cpath%20d%3D%22M66%2020Q120%200%20174%2020Q184%2028%20174%2039Q120%2060%2066%2039Q56%2028%2066%2020Z%22%20fill%3D%22url(%23w)%22%20stroke%3D%22%23ffcb5f%22%20stroke-width%3D%222%22%2F%3E%3Cg%20fill%3D%22url(%23s)%22%20stroke%3D%22%23a75a21%22%20stroke-width%3D%221.5%22%3E%3Cpath%20d%3D%22M120%2038Q106%2024%20120%2012Q134%2024%20120%2038Z%22%2F%3E%3Cpath%20d%3D%22M116%2041Q98%2043%2094%2028Q111%2026%20116%2041Z%22%2F%3E%3Cpath%20d%3D%22M124%2041Q142%2043%20146%2028Q129%2026%20124%2041Z%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E") center/contain no-repeat;
-}
-#gh-ui-screen .gh-warehouse-sale-head{
- display:flex;flex-direction:row;align-items:center;justify-content:center;gap:clamp(5px,2vw,10px);
- min-height:66px;margin:3px 0 10px;padding:0 29px 0 0;
-}
-#gh-ui-screen .gh-warehouse-sale-head img,
-#gh-ui-screen .gh-warehouse-sale-head .gh-warehouse-product-sprite{
- flex:0 0 auto;width:clamp(56px,17vw,82px);height:clamp(56px,17vw,82px);
- object-fit:contain;filter:drop-shadow(0 2px 1px #a76e3333);
-}
-#gh-ui-screen .gh-warehouse-sale-head strong{
- position:relative;font:900 clamp(18px,5.3vw,29px)/1.03 Georgia,serif;
- color:#5c2d0c;text-shadow:0 1px #fff5dc;overflow-wrap:anywhere;min-width:0;padding-bottom:13px;
-}
-#gh-ui-screen .gh-warehouse-sale-head strong::after{
- content:"";position:absolute;left:0;right:0;bottom:0;height:10px;
- background:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20150%2024%22%3E%3Cg%20fill%3D%22%23bc883d%22%3E%3Cpath%20d%3D%22M0%209Q21%201%2048%2011Q62%2018%2072%2018Q50%2022%2032%2013Q14%206%200%209Z%22%2F%3E%3Cpath%20d%3D%22M150%209Q129%201%20102%2011Q88%2018%2078%2018Q100%2022%20118%2013Q136%206%20150%209Z%22%2F%3E%3Cpath%20d%3D%22M75%2016Q63%207%2075%200Q87%207%2075%2016Z%22%2F%3E%3Cpath%20d%3D%22M70%2017Q54%2015%2055%205Q69%204%2070%2017Z%22%2F%3E%3Cpath%20d%3D%22M80%2017Q96%2015%2095%205Q81%204%2080%2017Z%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E") center/contain no-repeat;pointer-events:none;
-}
-#gh-ui-screen .gh-warehouse-sale-card button{
- -webkit-appearance:none;appearance:none;touch-action:manipulation;
- -webkit-tap-highlight-color:transparent;user-select:none;
- transition:transform .09s ease,filter .09s ease,box-shadow .09s ease;
-}
-#gh-ui-screen .gh-warehouse-sale-x{
- position:absolute;top:9px;right:9px;width:34px;height:34px;
- display:grid;place-items:center;padding:0;border-radius:50%;z-index:3;
- border:2px solid #9c480e;background:linear-gradient(155deg,#fbc384 0%,#d78635 45%,#a54d0d 100%);
- color:#fff3d3;font:900 24px/1 system-ui,sans-serif;text-shadow:0 1px 2px #713209;
- box-shadow:inset 0 2px 2px #ffe1aa,inset 0 -2px 2px #a45517,0 2px 0 #763509,0 3px 3px #8b4d2866;
-}
-#gh-ui-screen .gh-warehouse-sale-available{
- display:flex;flex-wrap:wrap;justify-content:center;align-items:center;
- gap:3px 7px;margin:5px 0 13px;padding:7px 4px;
- border:1px solid #e7b36b;border-radius:999px;
- background:linear-gradient(#ffe5ae,#f4c77c);
- box-shadow:inset 0 1px 1px #fff5db,0 2px 1px #cc9b5b66;
- color:#64340f;font:700 clamp(10px,2.8vw,13px)/1.25 Georgia,serif;
-}
-#gh-ui-screen .gh-warehouse-sale-available>span{display:inline-flex;align-items:center;gap:3px;white-space:nowrap}
-#gh-ui-screen .gh-warehouse-sale-available>span+span{border-left:1px solid #bf8539;padding-left:7px}
-#gh-ui-screen .gh-warehouse-sale-coin{
- display:inline-block;flex:0 0 auto;width:17px;height:17px;vertical-align:middle;
- background:url("assets/gh-warehouse-gold-wheat-v308.webp") center/contain no-repeat;
-}
-#gh-ui-screen .gh-warehouse-sale-adjust{gap:clamp(7px,2vw,12px);margin:7px 0 17px}
-#gh-ui-screen .gh-warehouse-sale-adjust button{
- flex:0 0 auto;display:grid;place-items:center;width:43px;height:43px;padding:0;
- border:2px solid #b66a12;border-radius:13px;
- background:linear-gradient(155deg,#fff0a8 0%,#ffdc81 37%,#efa949 100%);
- color:#65310c;font:900 28px/1 system-ui,sans-serif;text-shadow:0 1px #ffe6af;
- box-shadow:inset 0 0 0 1px #ffefb9,inset 0 2px 2px #fff8d6,inset 0 -3px 2px #d98b33,0 3px 0 #995013,0 4px 3px #8b4d284d;
-}
-#gh-ui-screen .gh-warehouse-sale-adjust span{
- flex:1 1 auto;min-width:0;max-width:120px;min-height:40px;padding:5px 2px;
- border:1.5px solid #e2b16e;border-radius:999px;display:grid;place-items:center;
- background:#f8dba955;color:#62320c;font:900 clamp(15px,4.4vw,22px)/1.15 Georgia,serif;
- font-variant-numeric:tabular-nums;overflow-wrap:anywhere;
-}
-#gh-ui-screen .gh-warehouse-sale-confirm{
- position:relative;isolation:isolate;display:block;width:calc(100% - 15px);margin:0 auto 2px;
- min-height:45px;padding:7px 4px;border:3px solid #d88512;border-radius:999px;
- background:linear-gradient(#8bd713 0%,#5cae05 25%,#378800 65%,#215700 100%);
- color:#fffbed;font:900 clamp(17px,4.9vw,25px)/1.15 Georgia,serif;
- text-shadow:0 2px 1px #234900;box-shadow:0 0 0 1px #803809,0 0 0 2px #f9ca4a,inset 0 0 0 2px #ffe271,inset 0 3px 3px #b4f96c,inset 0 -3px 2px #204b00,0 4px 0 #8b3e0a,0 6px 5px #6c3a1766;
-}
-#gh-ui-screen .gh-warehouse-sale-confirm::before,
-#gh-ui-screen .gh-warehouse-sale-confirm::after{
- content:"";position:absolute;top:50%;width:29px;height:46px;z-index:-1;pointer-events:none;
- background:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2080%20100%22%3E%3Cdefs%3E%3ClinearGradient%20id%3D%22l%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%221%22%3E%3Cstop%20stop-color%3D%22%23dcf76b%22%2F%3E%3Cstop%20offset%3D%22.35%22%20stop-color%3D%22%238bc52c%22%2F%3E%3Cstop%20offset%3D%22.8%22%20stop-color%3D%22%233b800e%22%2F%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%2320520b%22%2F%3E%3C%2FlinearGradient%3E%3C%2Fdefs%3E%3Cg%20stroke%3D%22%23476b0e%22%20stroke-width%3D%222%22%20stroke-linejoin%3D%22round%22%20fill%3D%22url(%23l)%22%3E%3Cpath%20d%3D%22M62%2052C25%2045%2011%2024%2018%205C42%208%2066%2025%2062%2052Z%22%2F%3E%3Cpath%20d%3D%22M58%2066C23%2072%206%2056%204%2038C31%2032%2053%2045%2058%2066Z%22%2F%3E%3Cpath%20d%3D%22M63%2064C42%2089%2025%2095%2010%2084C18%2064%2040%2057%2063%2064Z%22%2F%3E%3C%2Fg%3E%3Cg%20fill%3D%22none%22%20stroke%3D%22%23e3ec78%22%20stroke-width%3D%221.5%22%20opacity%3D%22.8%22%3E%3Cpath%20d%3D%22M22%2012Q38%2030%2059%2049M10%2043Q33%2049%2055%2064M16%2081Q40%2073%2059%2066%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E") center/contain no-repeat;
-}
-#gh-ui-screen .gh-warehouse-sale-confirm::before{left:-23px;transform:translateY(-50%)}
-#gh-ui-screen .gh-warehouse-sale-confirm::after{right:-23px;transform:translateY(-50%) scaleX(-1)}
-#gh-ui-screen .gh-warehouse-sale-card button:disabled{opacity:.52;cursor:default}
-#gh-ui-screen .gh-warehouse-sale-card button:active:not(:disabled),
-#gh-ui-screen .gh-warehouse-sale-card button.is-pressed{
- transform:translateY(2px) scale(.95);filter:brightness(.87) saturate(1.08);
- box-shadow:inset 0 2px 4px #5f350655,0 1px 0 #81430f;
-}
-#gh-ui-screen .gh-warehouse-sale-card button:focus-visible{outline:2px solid #7e4a16;outline-offset:3px}
-@media(max-width:350px){
- #gh-ui-screen .gh-warehouse-sale-card{padding-left:8px;padding-right:8px}
- #gh-ui-screen .gh-warehouse-sale-x{width:30px;height:30px;top:7px;right:7px}
- #gh-ui-screen .gh-warehouse-sale-head{padding-right:20px;gap:4px}
- #gh-ui-screen .gh-warehouse-sale-adjust button{width:39px;height:39px}
- #gh-ui-screen .gh-warehouse-sale-available>span+span{padding-left:4px}
-}
-@media(prefers-reduced-motion:reduce){#gh-ui-screen .gh-warehouse-sale-card button{transition:none}}
-</style>
-<style id="gh-warehouse-sale-art-v368">
-/* v368: actual artwork extracted from the approved mockup. One atlas; each button
-   is an independent native control. The product and all numerical data remain live. */
-#gh-ui-screen .gh-warehouse-sale-overlay{inset:18% 11.5% 11%;background:transparent;}
-#gh-ui-screen .gh-warehouse-sale-card{
- width:98%;max-width:350px;height:auto;aspect-ratio:637/677;max-height:none;
- padding:0;border:0;border-radius:0;box-shadow:none;overflow:visible;
- background-color:transparent;background-image:url("assets/gh-sale-art-v368.avif");background-size:100% 137.05882352941177%;background-position:0% 0%;background-repeat:no-repeat;
-}
-#gh-ui-screen .gh-warehouse-sale-card::before,
-#gh-ui-screen .gh-warehouse-sale-head strong::after,
-#gh-ui-screen .gh-warehouse-sale-confirm::before,
-#gh-ui-screen .gh-warehouse-sale-confirm::after{display:none!important}
-#gh-ui-screen .gh-warehouse-sale-head{display:contents}
-#gh-ui-screen .gh-warehouse-sale-head img,
-#gh-ui-screen .gh-warehouse-sale-head .gh-warehouse-product-sprite,
-#gh-ui-screen .gh-warehouse-sale-head>span:not(.gh-warehouse-product-sprite){
- position:absolute;left:6.5%;top:8.5%;width:33%;height:auto;aspect-ratio:1;
- object-fit:contain;filter:none;display:grid;place-items:center;
-}
-#gh-ui-screen .gh-warehouse-sale-head strong{
- position:absolute;left:41%;top:12.2%;width:38.5%;height:12%;
- display:flex;align-items:center;justify-content:center;padding:0;margin:0;
- font:900 clamp(17px,5.3vw,28px)/1.02 Georgia,serif;color:#542708;
- text-shadow:none;overflow-wrap:anywhere;
-}
-#gh-ui-screen .gh-warehouse-sale-available{
- position:absolute;inset:34.1% 0 auto;height:10.2%;display:block;
- background:none;border:0;border-radius:0;box-shadow:none;padding:0;margin:0;
- color:#532709;font:800 clamp(9px,2.55vw,13px)/1.05 system-ui,sans-serif;
-}
-#gh-ui-screen .gh-warehouse-sale-available>span{
- position:absolute;top:0;height:100%;display:flex;align-items:center;
- justify-content:center;gap:2px;white-space:nowrap;
-}
-#gh-ui-screen .gh-warehouse-sale-available>span:first-child{left:17.7%;width:31%}
-#gh-ui-screen .gh-warehouse-sale-available>span+span{left:52.2%;width:40.5%;padding:0;border:0}
-#gh-ui-screen .gh-warehouse-sale-coin{width:1.45em;height:1.45em;flex:none}
-#gh-ui-screen .gh-warehouse-sale-adjust{display:contents}
-#gh-ui-screen .gh-warehouse-sale-adjust span{
- position:absolute;left:33.5%;top:51%;width:32.5%;height:10.5%;
- min-height:0;max-width:none;margin:0;padding:0;border:0;border-radius:0;
- background:none;display:grid;place-items:center;
- font:900 clamp(14px,4.5vw,23px)/1 system-ui,sans-serif;
-}
-#gh-ui-screen .gh-warehouse-sale-card :is(.gh-warehouse-sale-x,.gh-warehouse-sale-adjust button,.gh-warehouse-sale-confirm){
- position:absolute;min-width:0;min-height:0;max-width:none;max-height:none;
- padding:0;margin:0;border:0;border-radius:0;box-shadow:none;
- background-color:transparent;display:block;line-height:1;font-size:0;color:transparent;text-shadow:none;
- transform:none;filter:none;cursor:pointer;touch-action:manipulation;
- transition:transform .09s ease,filter .09s ease;
-}
-#gh-ui-screen .gh-warehouse-sale-card .gh-warehouse-sale-x{left:81.78963893249608%;top:8.714918759231907%;width:13.186813186813188%;height:12.40768094534712%;background-image:url("assets/gh-sale-art-v368.avif");background-size:695.6521739130435% 1013.0434782608695%;background-position:0% 81.42857142857143%;background-repeat:no-repeat;}
-#gh-ui-screen .gh-warehouse-sale-card [data-gh-sale-dec]{left:16.95447409733124%;top:50.22156573116692%;width:14.599686028257459%;height:14.032496307237812%;background-image:url("assets/gh-sale-art-v368.avif");background-size:653.0612244897959% 932%;background-position:17.712177121771216% 82.21153846153845%;background-repeat:no-repeat;}
-#gh-ui-screen .gh-warehouse-sale-card [data-gh-sale-inc]{left:68.60282574568289%;top:50.22156573116692%;width:14.91365777080063%;height:14.032496307237812%;background-image:url("assets/gh-sale-art-v368.avif");background-size:640% 932%;background-position:36.666666666666664% 82.21153846153845%;background-repeat:no-repeat;}
-#gh-ui-screen .gh-warehouse-sale-card .gh-warehouse-sale-confirm{left:5.023547880690738%;top:68.38995568685377%;width:90.2668759811617%;height:19.79320531757755%;background-image:url("assets/gh-sale-art-v368.avif");background-size:111.11111111111111% 695.5223880597015%;background-position:0% 99.49874686716792%;background-repeat:no-repeat;}
-#gh-ui-screen .gh-warehouse-sale-card button:disabled{opacity:.55;cursor:default;filter:saturate(.6)}
-#gh-ui-screen .gh-warehouse-sale-card button:active:not(:disabled),
-#gh-ui-screen .gh-warehouse-sale-card button.is-pressed{
- transform:translateY(2px) scale(.95);filter:brightness(.82);box-shadow:none;
-}
-@media(prefers-reduced-motion:reduce){#gh-ui-screen .gh-warehouse-sale-card button{transition:none}}
-</style>
+
+
+<link rel="stylesheet" href="assets/gh-warehouse-sale-v369.css?v=369">
 </head><body><main class="page"><section class="stage" id="stage" aria-label="Інтерактивний макет ферми">
 <button id="gh-cowshed-toggle" class="gh-cowshed-toggle" type="button" aria-pressed="false" title="Тест: спершу ремонт, потім окрема покупка корови">🛠 Відновити корівник</button>
 <button id="gh-cow-toggle" class="gh-cow-toggle" type="button" aria-pressed="true" title="Купити першу корову (лише тест, без оплати)" hidden>🐄 Купити корову</button>
@@ -3552,7 +3385,9 @@ render();
   ghWareSellQty=max>0?Math.min(max,Math.max(1,ghWareSellQty)):0;
   const total=price*ghWareSellQty;
   const art=ghWareArtwork[id];
-  const img=art
+  const img=['pumpkin','milk','eggs','honey','flour'].includes(id)
+   ?'<span class="gh-sale-approved-art" data-art="'+id+'" aria-hidden="true"></span>'
+   :art
    ?(art.startsWith('sprite:')
      ?'<span class="gh-warehouse-product-sprite gh-warehouse-product-sprite--'+art.slice(7)+'" aria-hidden="true"></span>'
      :'<img src="'+art+'" alt="" draggable="false">')
@@ -3560,13 +3395,13 @@ render();
   const buttonLabel='Продати';
   const confirmLabel=max?'Продати '+ghWareSellQty+' шт. за '+total.toLocaleString('uk-UA')+' золота':'Ліміт золота досягнуто';
   return '<div class="gh-warehouse-sale-overlay" data-gh-sale-overlay>'+
-   '<section class="gh-warehouse-sale-card" role="dialog" aria-modal="true" aria-label="Продаж '+esc(meta[2])+'">'+
+   '<section class="gh-warehouse-sale-card" data-product="'+esc(id)+'" role="dialog" aria-modal="true" aria-label="Продаж '+esc(meta[2])+'">'+
     '<button type="button" class="gh-warehouse-sale-x" data-gh-sale-close aria-label="Закрити продаж">✕</button>'+
-    '<div class="gh-warehouse-sale-head">'+img+'<strong>'+esc(meta[2])+'</strong></div>'+
-    '<div class="gh-warehouse-sale-available"><span>На складі: <b data-gh-sale-stock>×'+stock.toLocaleString('uk-UA')+'</b></span><span>Ціна: <b data-gh-sale-price>'+price.toLocaleString('uk-UA')+'</b><span class="gh-warehouse-sale-coin" role="img" aria-label="золота"></span> / шт.</span></div>'+
+    '<div class="gh-warehouse-sale-head">'+img+'<strong>'+esc(meta[2])+'</strong><span class="gh-sale-ornament" aria-hidden="true"></span></div>'+
+    '<div class="gh-warehouse-sale-available'+(stock>=1000||price>=1000?' compact':'')+(stock>=1000000||price>=1000000?' compact-wide':'')+'"><span><span class="gh-sale-crate" aria-hidden="true"></span><span>На складі: <b data-gh-sale-stock>×'+stock.toLocaleString('uk-UA')+'</b></span></span><span><span>Ціна: <b data-gh-sale-price>'+price.toLocaleString('uk-UA')+'</b></span><span class="gh-warehouse-sale-coin" role="img" aria-label="золота"></span> / шт.</span></div>'+
     '<div class="gh-warehouse-sale-adjust">'+
      '<button type="button" data-gh-sale-dec aria-label="Зменшити кількість" '+(ghWareSellQty<=1?'disabled':'')+'>−</button>'+
-     '<span data-gh-sale-quantity aria-live="polite">'+ghWareSellQty.toLocaleString('uk-UA')+' шт.</span>'+
+     '<span data-gh-sale-quantity aria-live="polite"'+(ghWareSellQty>=10000?' class="compact"':'')+'>'+ghWareSellQty.toLocaleString('uk-UA')+' шт.</span>'+
      '<button type="button" data-gh-sale-inc aria-label="Збільшити кількість" '+(ghWareSellQty>=max?'disabled':'')+'>+</button></div>'+
     '<button type="button" class="gh-warehouse-sale-confirm" data-gh-sale-confirm aria-label="'+esc(confirmLabel)+'" '+(max<1?'disabled':'')+'>'+buttonLabel+'</button>'+
    '</section></div>';
@@ -3583,6 +3418,9 @@ render();
    const tpl=document.createElement('template');tpl.innerHTML=markup;
    for(const selector of ['[data-gh-sale-stock]','[data-gh-sale-price]','[data-gh-sale-quantity]']){
     existing.querySelector(selector).textContent=tpl.content.querySelector(selector).textContent;
+   }
+   for(const selector of ['.gh-warehouse-sale-available','[data-gh-sale-quantity]']){
+    existing.querySelector(selector).className=tpl.content.querySelector(selector).className;
    }
    for(const selector of ['[data-gh-sale-dec]','[data-gh-sale-inc]','[data-gh-sale-confirm]']){
     const btn=existing.querySelector(selector),fresh=tpl.content.querySelector(selector);
@@ -3883,7 +3721,7 @@ render();
   if(Math.abs(distance)>12)ghWareGetScroll()?.scrollBy({top:distance,behavior:'smooth'});
  },{passive:true});
  screen.addEventListener('wheel',e=>{
-  if(currentTab==='warehouse'&&e.target.closest('.gh-warehouse-art')&&!e.target.closest('.gh-warehouse-scroll')){
+  if(currentTab==='warehouse'&&e.target.closest('.gh-warehouse-art')&&!e.target.closest('.gh-warehouse-scroll,.gh-warehouse-sale-overlay')){
    if(e.cancelable)e.preventDefault();const sc=ghWareGetScroll();if(sc)sc.scrollTop+=e.deltaY;
   }
  },{passive:false});
