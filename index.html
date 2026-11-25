@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="uk"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no"/>
-<title>GreenHaven — мобільна тестова версія v351</title>
+<title>GreenHaven — мобільна тестова версія v352</title>
 <style>
 *{box-sizing:border-box}html,body{margin:0;min-height:100%;background:#14221b;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;color:#fff}
 .page{min-height:100dvh;display:grid;place-items:center;padding:0 0 72px}.stage{position:relative;width:min(100vw,520px);height:min(100dvh,calc(min(100vw,520px)*1.91));max-height:1040px;min-height:min(780px,100dvh);overflow:hidden;isolation:isolate;background:#8ed92f;box-shadow:0 10px 35px #0005}
@@ -1155,7 +1155,7 @@ try{millPurchased=localStorage.getItem(GH_MILL_KEY)==='yes'}catch(e){}
 /* GreenHaven v338: one flour sack per 30 minutes, temporary demo production.
    Ready batches wait to be collected; timestamps persist across page reloads. */
 const GH_FLOUR_KEY='greenhaven-mill-flour-manual-v343';
-const GH_FLOUR_DURATION=30*60*1000;
+const GH_FLOUR_DURATION=60*1000; // v352 temporary 1-minute test; normal duration: 30*60*1000
 let ghFlourStartedAt=null;
 try{
  const saved=JSON.parse(localStorage.getItem(GH_FLOUR_KEY)||'null');
@@ -1743,7 +1743,7 @@ function ghSaveApiaryHiveCount(){
 /* GreenHaven v336: one jar of honey per purchased hive every 30 minutes.
    Ready batches wait to be collected; timestamps persist across page reloads. */
 const GH_HONEY_KEY='greenhaven-apiary-honey-v336';
-const GH_HONEY_DURATION=30*60*1000;
+const GH_HONEY_DURATION=60*1000; // v352 temporary 1-minute test; normal duration: 30*60*1000
 let ghHoneyStartedAt=null;
 try{
  const saved=JSON.parse(localStorage.getItem(GH_HONEY_KEY)||'null');
@@ -2008,7 +2008,7 @@ function ghSaveCowPurchased(){try{localStorage.setItem(GH_COW_COUNT_KEY,String(g
 /* v333: One milk unit per owned cow every 30 minutes (currently one cow maximum).
    Timestamp is persisted; a ready batch waits for collection. */
 const GH_MILK_KEY='greenhaven-cowshed-milk-v324';
-const GH_MILK_DURATION=30*60*1000;
+const GH_MILK_DURATION=60*1000; // v352 temporary 1-minute test; normal duration: 30*60*1000
 const GH_MILK_AMOUNT=1;
 let ghMilkStartedAt=null;
 try{
@@ -2255,7 +2255,7 @@ function ghSaveCoopHenState(){try{localStorage.setItem(GH_COOP_HEN_KEY,String(gh
 /* v333: Two eggs per hen per 30-minute cycle (one/two/three hens give 2/4/6 eggs).
    Production timestamps persist; a finished batch waits until collected. */
 const GH_COOP_EGGS_KEY='greenhaven-coop-eggs-v317';
-const GH_COOP_EGGS_DURATION=30*60*1000;
+const GH_COOP_EGGS_DURATION=60*1000; // v352 temporary 1-minute test; normal duration: 30*60*1000
 const GH_COOP_EGGS_PER_HEN=2;
 function ghCoopEggsAmount(){return ghCoopHenCount*GH_COOP_EGGS_PER_HEN;}
 function ghCoopEggsNoun(amount){return amount===6?'яєць':'яйця';}
