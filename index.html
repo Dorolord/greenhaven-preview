@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="uk"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no"/>
-<title>GreenHaven — мобільна тестова версія v352</title>
+<title>GreenHaven — мобільна тестова версія v353</title>
 <style>
 *{box-sizing:border-box}html,body{margin:0;min-height:100%;background:#14221b;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;color:#fff}
 .page{min-height:100dvh;display:grid;place-items:center;padding:0 0 72px}.stage{position:relative;width:min(100vw,520px);height:min(100dvh,calc(min(100vw,520px)*1.91));max-height:1040px;min-height:min(780px,100dvh);overflow:hidden;isolation:isolate;background:#8ed92f;box-shadow:0 10px 35px #0005}
@@ -946,6 +946,11 @@ body:not(.gh-debug-visible) .gh-player-timer .gh-timer-art347 > :is(#gh-milk-met
   text-shadow:0 1px 1px #472d10,1px 0 #593713,-1px 0 #593713,0 -1px #593713!important;
 }
 @media(prefers-reduced-motion:reduce){.gh-player-timer .gh-timer-art347 [role="progressbar"]>span{transition:none}}
+/* v353 — move only the production icons right by 5% of the timer row. */
+body:not(.gh-debug-visible) .gh-player-timer .gh-timer-art347 > :is(.gh-milk-header,.gh-coop-eggs-heading,.gh-honey-heading,.gh-flour-heading){
+  position:relative!important;
+  left:5%!important;
+}
 </style>
 </head><body><main class="page"><section class="stage" id="stage" aria-label="Інтерактивний макет ферми">
 <button id="gh-cowshed-toggle" class="gh-cowshed-toggle" type="button" aria-pressed="false" title="Тест: спершу ремонт, потім окрема покупка корови">🛠 Відновити корівник</button>
