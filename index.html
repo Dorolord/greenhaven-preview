@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="uk"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no"/>
-<title>GreenHaven — мобільна тестова версія v350</title>
+<title>GreenHaven — мобільна тестова версія v351</title>
 <style>
 *{box-sizing:border-box}html,body{margin:0;min-height:100%;background:#14221b;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;color:#fff}
 .page{min-height:100dvh;display:grid;place-items:center;padding:0 0 72px}.stage{position:relative;width:min(100vw,520px);height:min(100dvh,calc(min(100vw,520px)*1.91));max-height:1040px;min-height:min(780px,100dvh);overflow:hidden;isolation:isolate;background:#8ed92f;box-shadow:0 10px 35px #0005}
@@ -912,7 +912,41 @@ body:not(.gh-debug-visible) .gh-ui-screen {padding-top:calc(clamp(90px,21vw,116p
 .gh-econ-status {min-height:2.4em;margin:8px 0 0;font-size:11px;line-height:1.4;color:#486134}
 .gh-econ-note {font-size:11px;color:#5b7147;line-height:1.4;margin:8px 0 0}
 
-</style><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><link rel="stylesheet" href="assets/gh-warehouse-v316.css?v=316"><link rel="stylesheet" href="assets/gh-coop-eggs-v332.css?v=332"><link rel="stylesheet" href="assets/gh-cowshed-milk-v332.css?v=332"><link rel="stylesheet" href="assets/gh-warehouse-taps-v335.css?v=335"><link rel="stylesheet" href="assets/gh-apiary-honey-v336.css?v=336"><link rel="stylesheet" href="assets/gh-mill-flour-v340.css?v=340"><link rel="stylesheet" href="assets/gh-produce-glow-v342.css?v=342"><link rel="stylesheet" href="assets/gh-mill-manual-v343.css?v=343"><link rel="stylesheet" href="assets/gh-hide-building-labels-v344.css?v=344"><link rel="stylesheet" href="assets/gh-produce-collect-v345.css?v=345"><link rel="stylesheet" href="assets/gh-production-dialogs-v347.css?v=347"><link rel="stylesheet" href="assets/gh-production-art-v348.css?v=348"><link rel="stylesheet" href="assets/gh-production-art-v349.css?v=349"><link rel="stylesheet" href="assets/gh-production-player-v350.css?v=350">
+</style><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><link rel="stylesheet" href="assets/gh-warehouse-v316.css?v=316"><link rel="stylesheet" href="assets/gh-coop-eggs-v332.css?v=332"><link rel="stylesheet" href="assets/gh-cowshed-milk-v332.css?v=332"><link rel="stylesheet" href="assets/gh-warehouse-taps-v335.css?v=335"><link rel="stylesheet" href="assets/gh-apiary-honey-v336.css?v=336"><link rel="stylesheet" href="assets/gh-mill-flour-v340.css?v=340"><link rel="stylesheet" href="assets/gh-produce-glow-v342.css?v=342"><link rel="stylesheet" href="assets/gh-mill-manual-v343.css?v=343"><link rel="stylesheet" href="assets/gh-hide-building-labels-v344.css?v=344"><link rel="stylesheet" href="assets/gh-produce-collect-v345.css?v=345"><link rel="stylesheet" href="assets/gh-production-dialogs-v347.css?v=347"><link rel="stylesheet" href="assets/gh-production-art-v348.css?v=348"><link rel="stylesheet" href="assets/gh-production-art-v349.css?v=349"><link rel="stylesheet" href="assets/gh-production-player-v350.css?v=350"><style id="gh-production-timer-v351">
+/* v351 — smooth glossy green fill and carved golden wood track; production logic unchanged. */
+body:not(.gh-debug-visible) .gh-player-timer .gh-timer-art347 > :is(#gh-milk-meter,#gh-coop-eggs-meter,#gh-honey-meter,#gh-flour-meter){
+  box-sizing:border-box!important;
+  height:29px!important;
+  padding:2px!important;
+  border:3px solid #d98a21!important;
+  border-radius:999px!important;
+  background:linear-gradient(180deg,#8a400d 0%,#b96d24 23%,#db9945 63%,#f5c575 100%)!important;
+  box-shadow:0 1px 0 1px #91460e,0 2px 3px #78430e55,inset 0 2px 3px #612a0cbb,inset 0 -1px 1px #ffdf9a!important;
+  overflow:hidden!important;
+}
+body:not(.gh-debug-visible) .gh-player-timer .gh-timer-art347 > :is(#gh-milk-meter,#gh-coop-eggs-meter,#gh-honey-meter,#gh-flour-meter)::before{
+  content:"";position:absolute;inset:0;pointer-events:none;border-radius:inherit;
+  box-shadow:inset 0 1px 0 #ffe59c,inset 0 -1px 0 #99501588;
+}
+body:not(.gh-debug-visible) .gh-player-timer .gh-timer-art347 > :is(#gh-milk-meter,#gh-coop-eggs-meter,#gh-honey-meter,#gh-flour-meter)>span{
+  display:block!important;position:relative!important;height:100%!important;max-width:100%!important;
+  border-radius:999px!important;
+  background:linear-gradient(180deg,#c5f38c 0%,#91d94a 17%,#70c529 36%,#52a817 58%,#398b0d 85%,#327908 100%)!important;
+  box-shadow:inset 0 1px 1px #e7ffbc,inset 0 -1px 2px #236c0b,inset 1px 0 2px #d9f89988,0 0 1px 1px #376c16!important;
+  transition:width .35s linear;
+}
+body:not(.gh-debug-visible) .gh-player-timer .gh-timer-art347 > :is(#gh-milk-meter,#gh-coop-eggs-meter,#gh-honey-meter,#gh-flour-meter)>span::after{
+  content:"";position:absolute;left:3px;right:3px;top:1px;height:38%;border-radius:999px;pointer-events:none;
+  background:linear-gradient(180deg,#fffbd355,#fffbd300);
+}
+body:not(.gh-debug-visible) .gh-player-timer .gh-timer-art347 > :is(#gh-milk-meter,#gh-coop-eggs-meter,#gh-honey-meter,#gh-flour-meter)>[id$="-countdown"]{
+  z-index:2!important;position:absolute!important;inset:0!important;display:grid!important;place-items:center!important;
+  font:900 12px/1 system-ui,-apple-system,sans-serif!important;
+  color:#fff9df!important;letter-spacing:.05px!important;white-space:nowrap!important;
+  text-shadow:0 1px 1px #472d10,1px 0 #593713,-1px 0 #593713,0 -1px #593713!important;
+}
+@media(prefers-reduced-motion:reduce){.gh-player-timer .gh-timer-art347 [role="progressbar"]>span{transition:none}}
+</style>
 </head><body><main class="page"><section class="stage" id="stage" aria-label="Інтерактивний макет ферми">
 <button id="gh-cowshed-toggle" class="gh-cowshed-toggle" type="button" aria-pressed="false" title="Тест: спершу ремонт, потім окрема покупка корови">🛠 Відновити корівник</button>
 <button id="gh-cow-toggle" class="gh-cow-toggle" type="button" aria-pressed="true" title="Купити першу корову (лише тест, без оплати)" hidden>🐄 Купити корову</button>
