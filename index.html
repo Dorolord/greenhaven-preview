@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="uk"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no"/>
-<title>GreenHaven — мобільна тестова версія v362</title>
+<title>GreenHaven — мобільна тестова версія v363</title>
 <style>
 *{box-sizing:border-box}html,body{margin:0;min-height:100%;background:#14221b;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;color:#fff}
 .page{min-height:100dvh;display:grid;place-items:center;padding:0 0 72px}.stage{position:relative;width:min(100vw,520px);height:min(100dvh,calc(min(100vw,520px)*1.91));max-height:1040px;min-height:min(780px,100dvh);overflow:hidden;isolation:isolate;background:#8ed92f;box-shadow:0 10px 35px #0005}
@@ -963,6 +963,19 @@ body:not(.gh-debug-visible) .gh-player-timer .gh-timer-art347 > :is(.gh-coop-egg
 body:not(.gh-debug-visible) .gh-player-timer .gh-timer-art347 > .gh-milk-header{
   left:4%!important;
 }
+</style>
+<style id="gh-produce-art-v363">
+/* Approved product art — shared by timers, ready-to-collect badges, warehouse and market.
+   Atlas quadrants: milk, eggs, honey, flour. Layout, quantities and timings unchanged. */
+:is(.gh-milk-icon,.gh-coop-eggs-icon,.gh-honey-jar,.gh-flour-jar,.gh-milk-ready-art,.gh-coop-ready-art,.gh-honey-ready-art,.gh-flour-ready-art,.gh-warehouse-product-sprite){
+  background-image:url("assets/gh-produce-v363.avif")!important;
+  background-size:200% 200%!important;
+  background-repeat:no-repeat!important;
+}
+:is(.gh-milk-icon,.gh-milk-ready-art,.gh-warehouse-product-sprite--milk){background-position:0% 0%!important}
+:is(.gh-coop-eggs-icon,.gh-coop-ready-art,.gh-warehouse-product-sprite--eggs){background-position:100% 0%!important}
+:is(.gh-honey-jar,.gh-honey-ready-art,.gh-warehouse-product-sprite--honey){background-position:0% 100%!important}
+:is(.gh-flour-jar,.gh-flour-ready-art,.gh-warehouse-product-sprite--flour){background-position:100% 100%!important}
 </style>
 </head><body><main class="page"><section class="stage" id="stage" aria-label="Інтерактивний макет ферми">
 <button id="gh-cowshed-toggle" class="gh-cowshed-toggle" type="button" aria-pressed="false" title="Тест: спершу ремонт, потім окрема покупка корови">🛠 Відновити корівник</button>
