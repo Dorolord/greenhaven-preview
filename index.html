@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="uk"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no"/>
-<title>GreenHaven — мобільна тестова версія v385</title>
+<title>GreenHaven — мобільна тестова версія v386</title>
 <style>
 *{box-sizing:border-box}html,body{margin:0;min-height:100%;background:#14221b;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;color:#fff}
 .page{min-height:100dvh;display:grid;place-items:center;padding:0 0 72px}.stage{position:relative;width:min(100vw,520px);height:min(100dvh,calc(min(100vw,520px)*1.91));max-height:1040px;min-height:min(780px,100dvh);overflow:hidden;isolation:isolate;background:#8ed92f;box-shadow:0 10px 35px #0005}
@@ -1092,6 +1092,13 @@ body :is(#gh-milk-dialog,#gh-coop-dialog,#apiary-dialog,#mill-dialog)[hidden] *{
 /* Darken the farm behind either illustrated window, not the window or HUD. */
 #gh-ui-screen.gh-ui-screen:is(.gh-warehouse-active,.gh-market-active){
  background:rgba(0,0,0,.52);
+}
+</style>
+<style id="gh-seed-selection-v386">
+#gh-ui-screen .gh-warehouse-seed-hint{
+ position:absolute;left:14%;right:14%;top:77.5%;height:9%;z-index:8;
+ margin:0;display:flex;align-items:center;justify-content:center;text-align:center;
+ color:#65401c;font:800 clamp(11px,3.2vw,18px)/1.25 Georgia,serif;
 }
 </style>
 </head><body><main class="page"><section class="stage" id="stage" aria-label="Інтерактивний макет ферми">
@@ -2741,7 +2748,7 @@ el.addEventListener('pointermove',e=>{if(pointer!==e.pointerId)return;const r=st
 el.addEventListener('pointerup',e=>{if(pointer!==e.pointerId)return;const tapped=start&&Math.hypot(e.clientX-start.px,e.clientY-start.py)<9;pointer=null;el.classList.remove('selected');save();if(tapped&&item.id==='mill')showMillDialog();if(tapped&&item.id==='apiary')showApiaryDialog();if(tapped&&item.id==='chicken')ghCoopShowDialog();if(tapped&&item.id==='cow')ghMilkShowDialog();if(tapped&&item.id.startsWith('plot-')){
  const plotNumber=Number(item.id.slice(5));
  if(!document.body.classList.contains('gh-debug-visible')&&ghCanPlantOnPlot(plotNumber)){
-  window.dispatchEvent(new CustomEvent('greenhaven:open-seed-market',{detail:{plot:plotNumber}}));
+  window.dispatchEvent(new CustomEvent('greenhaven:open-seed-warehouse',{detail:{plot:plotNumber}}));
  }else inspectBed(plotNumber);
 }});el.addEventListener('pointercancel',()=>{pointer=null;el.classList.remove('selected');save()});if(item.id==='cow')ghAttachCowDrag(el);world.appendChild(el)}drawRoutes();ghRenderMapHives();ghRenderOrangeHen();ghUpdateCowshedUI();if(typeof ghRenderHouseDog==='function')ghRenderHouseDog();ghCoopRefreshReadyBadge();ghMilkRefreshReadyBadge();ghHoneyRefreshReadyBadge();ghFlourRefreshReadyBadge()}
 function drawRoutes(){
@@ -3339,6 +3346,7 @@ render();
  let currentTab='farm';
  let marketCategory='seeds';
  let pendingPlantPlot=null;
+ const ghPlantableSeedIds=new Set(['seed_carrot','seed_wheat','seed_pumpkin']);
  const ghRegularPumpkinIcon='<img src="assets/asset_059_8d52a5d3b22fd8ae.webp" draggable="false" alt="Звичайний помаранчевий гарбуз">';
  const ghUiCropIcon=(emoji)=>emoji==='🎃'?ghRegularPumpkinIcon:emoji;
  const shopData={
@@ -3527,7 +3535,7 @@ render();
   panel.querySelector('.gh-warehouse-sale-overlay').dataset.ghSaleProduct=ghWareSelectedId;
  }
  function ghWareOpenSale(id){
-  if(currentTab!=='warehouse'||!Object.hasOwn(GH_WAREHOUSE_SELL_PRICES,id)||!(ghWareStock[id]>0))return;
+  if(Number.isInteger(pendingPlantPlot)||currentTab!=='warehouse'||!Object.hasOwn(GH_WAREHOUSE_SELL_PRICES,id)||!(ghWareStock[id]>0))return;
   ghWareSelectedId=id;ghWareSellQty=1;
   ghWareRenderSale();
  }
@@ -3609,6 +3617,7 @@ render();
  }
  /* v306: Keep the warehouse frame mounted after a sale, avoiding entrance fades. */
  function ghWareRefreshAfterSale(keepSale=false){
+  if(Number.isInteger(pendingPlantPlot))return false;
   const panel=screen.querySelector('.gh-warehouse-art');
   const grid=panel?.querySelector('.gh-warehouse-grid');
   const scroll=panel?.querySelector('.gh-warehouse-scroll');
@@ -3669,7 +3678,7 @@ render();
   return {entries,count,total,ok:count>0&&total<=1000000000-gold};
  }
  function ghWareSellAll(){
-  if(currentTab!=='warehouse')return false;
+  if(Number.isInteger(pendingPlantPlot)||currentTab!=='warehouse')return false;
   const quote=ghWareSellAllQuote();if(!quote.ok)return false;
   const previous={...ghWareStock};
   for(const [id] of quote.entries)delete ghWareStock[id];
@@ -3682,8 +3691,16 @@ render();
   ghWareShowToast(quote.total);
   return true;
  }
+ function ghWarePlantStoredSeed(id){
+  const plot=pendingPlantPlot,plant=window.GreenHavenPlanting,inv=window.GreenHavenInventory;
+  if(currentTab!=='warehouse'||!Number.isInteger(plot)||!ghPlantableSeedIds.has(id)||!plant?.canPlant(plot))return false;
+  if(!inv.remove(id,1,true))return false;
+  if(!plant.plant(plot,id.slice(5))){inv.add(id,1,true);paint();return false;}
+  ghWareScrollTop=0;showTab('farm');return true;
+ }
  function warehouse(){
-  const entries=ghWareEntries();
+  const selecting=Number.isInteger(pendingPlantPlot);
+  const entries=ghWareEntries().filter(([id])=>!selecting||ghPlantableSeedIds.has(id));
   const bulk=ghWareSellAllQuote();
   const bulkLabel=bulk.count>0
     ? bulk.ok?'Продати все · +'+bulk.total.toLocaleString('uk-UA')+' 🪙':'Ліміт золота'
@@ -3700,21 +3717,22 @@ render();
       ?'<span class="gh-warehouse-product-art gh-warehouse-product-sprite gh-warehouse-product-sprite--'+art.slice(7)+'"></span>'
       :'<img class="gh-warehouse-product-art" src="'+art+'" alt="" draggable="false">')
     :esc(meta[1]);
-   const selling=Object.hasOwn(GH_WAREHOUSE_SELL_PRICES,id);
-   return '<div class="gh-warehouse-cell" role="listitem" title="'+esc(meta[2])+'" aria-label="'+esc(meta[2])+': '+count+'"'+(selling?' data-gh-warehouse-item="'+id+'"':'')+'>'+
+   const selling=!selecting&&Object.hasOwn(GH_WAREHOUSE_SELL_PRICES,id);
+   const planting=selecting&&ghPlantableSeedIds.has(id);
+   return '<div class="gh-warehouse-cell" role="listitem" title="'+esc(meta[2])+'" aria-label="'+esc(meta[2])+': '+count+'"'+(selling?' data-gh-warehouse-item="'+id+'"':planting?' data-gh-warehouse-seed="'+id+'"':'')+'>'+
     '<span class="gh-warehouse-stock-icon'+(art?' gh-warehouse-stock-art':'')+'" aria-hidden="true">'+icon+'</span>'+
     '<span class="gh-warehouse-stock-badge" aria-hidden="true">'+count+'</span>'+
-    (selling?'<button type="button" class="gh-warehouse-stock-button" data-gh-warehouse-item="'+id+'" aria-label="Продати '+esc(meta[2])+', у наявності '+count+'"></button>':'')+
+    (selling?'<button type="button" class="gh-warehouse-stock-button" data-gh-warehouse-item="'+id+'" aria-label="Продати '+esc(meta[2])+', у наявності '+count+'"></button>':planting?'<button type="button" class="gh-warehouse-stock-button" data-gh-warehouse-seed="'+id+'" aria-label="Посадити '+esc(meta[2])+', у наявності '+count+'"></button>':'')+
    '</div>';
   }).join('');
   return '<div class="gh-warehouse-art" role="group" aria-label="Склад: '+(entries.length?entries.length+' видів ресурсів':'поки порожній')+'">'+
    '<div id="gh-warehouse-scroll-area" class="gh-warehouse-scroll" aria-label="Комірки складу" tabindex="0">'+
      '<div class="gh-warehouse-grid" role="list">'+cells+'</div></div>'+
-   '<button type="button" class="gh-warehouse-sell-all" data-gh-warehouse-sell-all'+(bulk.ok?'':' disabled')+' aria-label="'+(bulk.ok?'Продати всю продукцію за '+bulk.total+' золота':'Немає доступної для продажу продукції')+'"><span class="gh-warehouse-sell-all-inner" aria-hidden="true"></span><span class="gh-warehouse-sell-all-frame" aria-hidden="true"></span><span class="gh-warehouse-sell-all-copy">'+bulkLabel+'</span></button>'+
+   (selecting?'<p class="gh-warehouse-seed-hint" role="status">'+(entries.length?'Обери насіння':'Немає насіння. Купи його в магазині.')+'</p>':'<button type="button" class="gh-warehouse-sell-all" data-gh-warehouse-sell-all'+(bulk.ok?'':' disabled')+' aria-label="'+(bulk.ok?'Продати всю продукцію за '+bulk.total+' золота':'Немає доступної для продажу продукції')+'"><span class="gh-warehouse-sell-all-inner" aria-hidden="true"></span><span class="gh-warehouse-sell-all-frame" aria-hidden="true"></span><span class="gh-warehouse-sell-all-copy">'+bulkLabel+'</span></button>')+
    '<button type="button" class="gh-warehouse-close" data-gh-warehouse-close aria-label="Закрити склад і повернутися на ферму"></button></div>';
  }
  function market(){
-  if(window.GreenHavenShop375)return window.GreenHavenShop375.render({category:marketCategory,plot:pendingPlantPlot});
+  if(window.GreenHavenShop375)return window.GreenHavenShop375.render({category:marketCategory,plot:null});
   const categories=[['seeds','🌱 Насіння'],['animals','🐄 Тварини'],['buildings','🏡 Будівлі']];
   const planting=window.GreenHavenPlanting;
   const pending=Number.isInteger(pendingPlantPlot)&&planting?.canPlant(pendingPlantPlot);
@@ -3770,7 +3788,7 @@ render();
   if(screen.hidden){screen.innerHTML='';return}
   screen.innerHTML=currentTab==='warehouse'?warehouse():currentTab==='market'?market():profile();
   screen.scrollTop=0;
-  if(currentTab==='market'&&window.GreenHavenShop375)window.GreenHavenShop375.bind(screen,{category:marketCategory,plot:pendingPlantPlot,refresh:paint,close:()=>showTab('farm')});
+  if(currentTab==='market'&&window.GreenHavenShop375)window.GreenHavenShop375.bind(screen,{category:marketCategory,plot:null,refresh:paint,close:()=>showTab('farm')});
   if(currentTab==='warehouse'){
    const sc=ghWareGetScroll();
    if(sc){
@@ -3780,8 +3798,8 @@ render();
    }
   }
  }
- function showTab(tab){if(!['farm','warehouse','market','profile'].includes(tab))return;
-   if(tab!=='market')pendingPlantPlot=null;
+ function showTab(tab,plot=null){if(!['farm','warehouse','market','profile'].includes(tab))return;
+   pendingPlantPlot=tab==='warehouse'&&window.GreenHavenPlanting?.canPlant(plot)?plot:null;
    currentTab=tab;
    // Keep dialogs from the farming editor from covering navigation screens.
    if(tab!=='farm')for(const id of ['gh-bed-dialog','mill-dialog','apiary-dialog','gh-coop-dialog']){
@@ -3794,12 +3812,12 @@ render();
   if(currentTab==='market'||currentTab==='warehouse')paint();
  });
  navButtons.forEach(b=>b.addEventListener('click',()=>showTab(b.dataset.ghTab)));
- window.addEventListener('greenhaven:open-seed-market',e=>{
+ window.addEventListener('greenhaven:open-seed-warehouse',e=>{
   const plot=e.detail?.plot;
   if(!window.GreenHavenPlanting?.canPlant(plot))return;
-  pendingPlantPlot=plot;
+  ghWareScrollTop=0;
   marketCategory='seeds';
-  showTab('market');
+  showTab('warehouse',plot);
  });
  document.getElementById('gh-ui-open-profile').addEventListener('click',()=>showTab('profile'));
  document.querySelectorAll('[data-gh-top-market]').forEach(b=>b.addEventListener('click',()=>showTab('market')));
@@ -3837,7 +3855,7 @@ render();
  let ghWareLastTouchAction=null;
  screen.addEventListener('pointerdown',e=>{
   if(currentTab!=='warehouse'||e.pointerType!=='touch')return;
-  const target=e.target.closest('[data-gh-warehouse-sell-all],[data-gh-warehouse-item]');
+  const target=e.target.closest('[data-gh-warehouse-sell-all],[data-gh-warehouse-item],[data-gh-warehouse-seed]');
   ghWareTouchStart=target&&!target.disabled
    ?{pointerId:e.pointerId,target,x:e.clientX,y:e.clientY}
    :null;
@@ -3850,7 +3868,9 @@ render();
   if(Math.hypot(e.clientX-start.x,e.clientY-start.y)>12)return;
   if(e.target!==start.target&&!start.target.contains(e.target))return;
   ghWareLastTouchAction={target:start.target,at:Date.now()};
-  if(start.target.hasAttribute('data-gh-warehouse-sell-all')){
+  if(start.target.hasAttribute('data-gh-warehouse-seed')){
+   ghWarePlantStoredSeed(start.target.dataset.ghWarehouseSeed);
+  }else if(start.target.hasAttribute('data-gh-warehouse-sell-all')){
    if(!ghWareSellAll())ghWareShowToast('Немає продукції для продажу або досягнуто ліміт золота.');
   }else{
    const id=start.target.dataset.ghWarehouseItem;
@@ -3904,6 +3924,8 @@ render();
    },delay);
    return;
   }
+  const seedButton=e.target.closest('[data-gh-warehouse-seed]');
+  if(seedButton){ghWarePlantStoredSeed(seedButton.dataset.ghWarehouseSeed);return;}
   const stockButton=e.target.closest('[data-gh-warehouse-item]');
   if(stockButton){ghWareOpenSale(stockButton.dataset.ghWarehouseItem);return;}
   const econButton=e.target.closest('[data-gh-econ-action]');
