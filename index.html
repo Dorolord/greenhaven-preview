@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="uk"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no"/>
-<title>GreenHaven — мобільна тестова версія v371</title>
+<title>GreenHaven — мобільна тестова версія v372</title>
 <style>
 *{box-sizing:border-box}html,body{margin:0;min-height:100%;background:#14221b;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;color:#fff}
 .page{min-height:100dvh;display:grid;place-items:center;padding:0 0 72px}.stage{position:relative;width:min(100vw,520px);height:min(100dvh,calc(min(100vw,520px)*1.91));max-height:1040px;min-height:min(780px,100dvh);overflow:hidden;isolation:isolate;background:#8ed92f;box-shadow:0 10px 35px #0005}
@@ -1054,6 +1054,22 @@ body :is(#gh-milk-dialog,#gh-coop-dialog,#apiary-dialog,#mill-dialog)[hidden] *{
 #gh-ui-screen .gh-warehouse-sale-card button:active:not(:disabled),
 #gh-ui-screen .gh-warehouse-sale-card button.is-pressed{
  background-image:var(--pressed);transform:none!important;filter:none!important;
+}
+</style>
+<style id="gh-sale-backdrop-v372">
+/* A single static scrim behind the sale card. The warehouse screen is
+   raised above the HUD only while the modal exists; no JS state to linger. */
+#gh-ui-screen.gh-warehouse-active:has(.gh-warehouse-sale-overlay){
+ z-index:460;
+}
+#gh-ui-screen .gh-warehouse-sale-overlay::before{
+ content:"";position:absolute;inset:0;z-index:0;pointer-events:none;
+ background:rgba(0,0,0,.34);
+ box-shadow:0 0 0 150vmax rgba(0,0,0,.34);
+ border-radius:0;animation:none;transition:none;
+}
+#gh-ui-screen .gh-warehouse-sale-overlay>.gh-warehouse-sale-card{
+ z-index:1;
 }
 </style>
 </head><body><main class="page"><section class="stage" id="stage" aria-label="Інтерактивний макет ферми">
