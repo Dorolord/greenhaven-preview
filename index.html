@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="uk"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no"/>
-<title>GreenHaven — мобільна тестова версія v364</title>
+<title>GreenHaven — мобільна тестова версія v365</title>
 <style>
 *{box-sizing:border-box}html,body{margin:0;min-height:100%;background:#14221b;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;color:#fff}
 .page{min-height:100dvh;display:grid;place-items:center;padding:0 0 72px}.stage{position:relative;width:min(100vw,520px);height:min(100dvh,calc(min(100vw,520px)*1.91));max-height:1040px;min-height:min(780px,100dvh);overflow:hidden;isolation:isolate;background:#8ed92f;box-shadow:0 10px 35px #0005}
@@ -984,6 +984,30 @@ body:not(.gh-debug-visible) .gh-player-timer .gh-timer-art347 > .gh-milk-header{
 :is(#gh-milk-dialog,#gh-coop-dialog,#apiary-dialog,#mill-dialog),
 :is(#gh-milk-dialog,#gh-coop-dialog,#apiary-dialog,#mill-dialog) *{
   -webkit-tap-highlight-color:transparent!important;
+}
+</style>
+<style id="gh-modal-composite-v365">
+/* Keep production dialogs on separate compositor surfaces. On iOS removing
+   a translucent fixed element from the render tree can leave a stale tile
+   over the animated farm. Hide the retained surface without a transition. */
+#world{transform:translateZ(0);-webkit-transform:translateZ(0)}
+body :is(#gh-milk-dialog,#gh-coop-dialog,#apiary-dialog,#mill-dialog){
+  display:grid!important;
+  isolation:isolate;
+  transform:translate3d(0,0,0);
+  -webkit-transform:translate3d(0,0,0);
+  -webkit-backface-visibility:hidden;
+  backface-visibility:hidden;
+  transition:none!important;
+}
+body :is(#gh-milk-dialog,#gh-coop-dialog,#apiary-dialog,#mill-dialog)[hidden]{
+  opacity:0!important;
+  visibility:hidden!important;
+  pointer-events:none!important;
+}
+body :is(#gh-milk-dialog,#gh-coop-dialog,#apiary-dialog,#mill-dialog)[hidden] *{
+  visibility:hidden!important;
+  pointer-events:none!important;
 }
 </style>
 </head><body><main class="page"><section class="stage" id="stage" aria-label="Інтерактивний макет ферми">
