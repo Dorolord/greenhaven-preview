@@ -1217,6 +1217,62 @@ body.gh-debug-visible #mill-dialog.gh-mill-needs-repair .mill-dialog-box{margin-
 #gh-mill-repair-settings label{display:flex;align-items:center;justify-content:space-between;gap:6px}
 #gh-mill-repair-settings input{width:76px;padding:3px;border:1px solid #a87b42;border-radius:5px;font:600 16px system-ui}
 @media(prefers-reduced-motion:reduce){#mill-dialog #gh-mill-repair-button .gh-mr-art,#mill-dialog #gh-mill-repair-button .gh-mr-cost,#mill-dialog #gh-mill-repair-close .gh-mr-art{transition:none}}
+</style>
+<style id="gh-mill-repair-v421">
+/* Preserve v420's layout and controls. Restore native-resolution artwork; use
+   live, device-resolution lettering and UI geometry where no raster is needed. */
+#mill-dialog.gh-mill-needs-repair #gh-mill-repair-frame{
+ background:url("assets/gh-mill-frame-v421.avif") center/100% 100% no-repeat;
+}
+#gh-mill-repair-pane .gh-mr-title{background-image:url("assets/gh-mill-ui-v421.avif");background-repeat:no-repeat;background-size:136.44067796610167% 394.69026548672565%;background-position:0% 0%;}
+#gh-mill-repair-pane .gh-mr-status{background-image:url("assets/gh-mill-ui-v421.avif");background-repeat:no-repeat;background-size:107.87269681742045% 446%;background-position:0% 33.52601156069364%;}
+#gh-mill-repair-pane .gh-mr-repair{background-image:url("assets/gh-mill-ui-v421.avif");background-repeat:no-repeat;background-size:100% 412.962962962963%;background-position:0% 64.79289940828401%;}
+#gh-mill-repair-pane .gh-mr-mill{
+ background:url("assets/asset_012_5c41e414c7e04c35.webp") center/contain no-repeat;
+}
+#gh-mill-repair-pane .gh-mr-description{
+ box-sizing:border-box;display:grid;place-items:center;
+ color:#51290e;background:linear-gradient(145deg,#fff0cc,#f9d899);
+ border:1.2px solid #c99c59;border-radius:4cqw;box-shadow:inset 0 1px 1px #fff9e8,0 1.5px 0 #b78443;
+ padding:3% 1%;font:850 4.15cqw/1.18 system-ui,-apple-system,sans-serif;text-align:center;
+}
+#gh-mill-repair-pane .gh-mr-card{
+ box-sizing:border-box;border:1.2px solid #d2a15d;border-radius:4cqw;
+ background:linear-gradient(145deg,#fff0d0,#f9d18d);
+ box-shadow:inset 0 1px 1px #fff9e6,0 2px 0 #be873f;
+}
+#gh-mill-repair-pane :is(.gh-mr-wheat,.gh-mr-flour){
+ position:absolute;inset:auto;left:4%;top:5%;width:46%;height:90%;
+}
+#gh-mill-repair-pane .gh-mr-wheat{
+ background:url("assets/gh-warehouse-wheat-v296.webp") center/contain no-repeat;
+}
+#gh-mill-repair-pane .gh-mr-flour{
+ background-image:url("assets/gh-produce-v363.avif");background-size:200% 200%;background-position:100% 100%;
+ background-repeat:no-repeat;
+}
+#gh-mill-repair-pane .gh-mr-number{
+ left:47%;right:7%;top:30%;bottom:24%;width:auto;height:auto;
+ border:1px solid #774313;border-radius:2.8cqw;
+ background:linear-gradient(#996027,#754116);
+ box-shadow:inset 0 1px 2px #48230a70;
+}
+#gh-mill-repair-pane .gh-mr-arrow{
+ background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 52'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='0' y2='1'%3E%3Cstop stop-color='%23a4e943'/%3E%3Cstop offset='1' stop-color='%2349980c'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cpath d='M5 15h20V7q0-4 4-1l15 16q3 4 0 7L29 45q-4 3-4-1v-8H5q-3 0-3-3V18q0-3 3-3z' fill='url(%23g)' stroke='%233c6c0d' stroke-width='2.5' stroke-linejoin='round'/%3E%3Cpath d='M6 18h20' stroke='%23e6ffa2' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E") center/contain no-repeat;
+}
+#gh-mill-repair-pane .gh-mr-xp{
+ box-sizing:border-box;background:linear-gradient(#ffeac0,#f8d18d);
+ border:1.2px solid #d5a25b;border-radius:999px;
+ box-shadow:inset 0 1px 0 #fff8e7,0 1.5px 0 #b98442;
+}
+#gh-mill-repair-pane .gh-mr-xp::before{
+ content:"";display:block;position:absolute;left:13%;top:50%;width:29%;aspect-ratio:131/116;transform:translateY(-50%);
+ background-image:url("assets/gh-mill-ui-v421.avif");background-repeat:no-repeat;background-size:491.6030534351145% 384.48275862068965%;background-position:0% 100%;
+}
+#gh-mill-repair-pane .gh-mr-xp-value{left:45%;right:9%}
+#gh-mill-repair-pane .gh-mr-close{
+ background:url("assets/gh349_close.webp") center/contain no-repeat;
+}
 </style></head><body><main class="page"><section class="stage" id="stage" aria-label="Інтерактивний макет ферми">
 <button id="gh-cowshed-toggle" class="gh-cowshed-toggle" type="button" aria-pressed="false" title="Тест: спершу ремонт, потім окрема покупка корови">🛠 Відновити корівник</button>
 <button id="gh-cow-toggle" class="gh-cow-toggle" type="button" aria-pressed="true" title="Купити першу корову (лише тест, без оплати)" hidden>🐄 Купити корову</button>
@@ -1346,7 +1402,7 @@ body.gh-debug-visible #mill-dialog.gh-mill-needs-repair .mill-dialog-box{margin-
  <span class="gh-mr-art gh-mr-title" role="img" aria-label="Млин"></span>
  <button type="button" id="gh-mill-repair-close" aria-label="Закрити"><span class="gh-mr-art gh-mr-close" aria-hidden="true"></span></button>
  <span class="gh-mr-art gh-mr-status" role="img" aria-label="Потребує ремонту"></span>
- <div class="gh-mr-intro"><span class="gh-mr-art gh-mr-mill" aria-hidden="true"></span><p class="gh-mr-description">Переробляє пшеницю на борошно.</p></div>
+ <div class="gh-mr-intro"><span class="gh-mr-art gh-mr-mill" aria-hidden="true"></span><p class="gh-mr-description"><span>Переробляє<br>пшеницю на<br>борошно.</span></p></div>
  <div class="gh-mr-recipe" aria-label="Рецепт борошна"><div class="gh-mr-card"><span class="gh-mr-art gh-mr-wheat" role="img" aria-label="Пшениця"></span><span class="gh-mr-number" id="gh-mill-repair-wheat">10</span></div><span class="gh-mr-art gh-mr-arrow" aria-hidden="true"></span><div class="gh-mr-card"><span class="gh-mr-art gh-mr-flour" role="img" aria-label="Борошно"></span><span class="gh-mr-number">1</span></div></div>
  <div class="gh-mr-art gh-mr-xp" role="img" aria-label="Досвід після ремонту" id="gh-mill-repair-reward"><span class="gh-mr-xp-value" id="gh-mill-repair-xp">+50</span></div>
  <button type="button" id="gh-mill-repair-button" aria-label="Відремонтувати за 25 діамантів"><span class="gh-mr-art gh-mr-repair" aria-hidden="true"></span><span class="gh-mr-cost" id="gh-mill-repair-price" aria-hidden="true">25</span></button>
