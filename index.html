@@ -1227,6 +1227,38 @@ body.gh-debug-visible #gh-mill-repair-settings{display:grid;gap:4px}
 #gh-mill-repair-settings input{width:76px;padding:3px;border:1px solid #a87b42;border-radius:5px;font:600 16px system-ui}
 @media(max-width:340px){#mill-dialog.gh-mill-needs-repair .mill-dialog-box{padding:28px 22px 24px!important}#gh-mill-repair-pane{gap:6px}}
 @media(prefers-reduced-motion:reduce){#mill-dialog #gh-mill-repair-button,#mill-dialog #gh-mill-repair-close{transition:none}}
+</style>
+<style id="gh-mill-repair-v419">
+/* Higher-resolution artwork, same game sprites, and un-stretched frame corners. */
+#mill-dialog.gh-mill-needs-repair .mill-dialog-box{width:min(89vw,336px)!important;padding:33px 35px 32px!important}
+#gh-mill-repair-frame{display:block;isolation:isolate}
+#gh-mill-repair-frame .gh-mr-art{display:none}
+#gh-mill-repair-frame::before{content:"";position:absolute;inset:25px 23px 17px;border-radius:21px;background:radial-gradient(ellipse at 42% 22%,#fff5d8,#f9e2b4 77%,#edc98d);box-shadow:inset 0 0 10px #9a5b1738;z-index:0}
+#gh-mill-repair-frame::after{content:"";position:absolute;inset:0;border-style:solid;border-color:transparent;border-width:57px 72px 33px 82px;border-image:url("assets/gh349_frame.webp") 175 230 100 265 stretch;z-index:1}
+#gh-mill-repair-pane{gap:8px}
+#gh-mill-repair-pane .gh-mr-title{background-image:url("assets/gh-mill-repair-v419.avif");background-size:193.65079365079364% 535.483870967742%;background-position:0% 0%;}
+#gh-mill-repair-pane .gh-mr-status{background-image:url("assets/gh-mill-repair-v419.avif");background-size:100% 409.87654320987656%;background-position:0% 25.49800796812749%;}
+#gh-mill-repair-pane .gh-mr-xp{background-image:url("assets/gh-mill-repair-v419.avif");background-size:137.07865168539325% 360.8695652173913%;background-position:0% 61.25000000000001%;}
+#gh-mill-repair-pane .gh-mr-repair{background-image:url("assets/gh-mill-repair-v419.avif");background-size:100% 368.8888888888889%;background-position:0% 99.58677685950413%;}
+#gh-mill-repair-pane .gh-mr-title{width:54%;aspect-ratio:252/62;margin-top:-5px}
+#gh-mill-repair-pane .gh-mr-status{width:100%;aspect-ratio:488/81}
+#gh-mill-repair-pane .gh-mr-intro{gap:9px;padding:2px 0}
+#gh-mill-repair-pane .gh-mr-mill{width:44%;aspect-ratio:929/1055;background:url("assets/asset_012_5c41e414c7e04c35.webp") center/contain no-repeat}
+#gh-mill-repair-pane .gh-mr-description{font:750 clamp(12px,3.4vw,14px)/1.4 system-ui,sans-serif;background:transparent;border:0;box-shadow:none;padding:0 0 0 2px;text-align:center}
+#gh-mill-repair-pane .gh-mr-card{padding:5px 4px;gap:4px;border-color:#d2a269;border-radius:11px;box-shadow:inset 0 1px 0 #fff9e2,0 1px 1px #a36c3250;background:linear-gradient(#fff1cf,#f7d99e)}
+#gh-mill-repair-pane .gh-mr-wheat{background:url("assets/gh-warehouse-wheat-v296.webp") center/contain no-repeat}
+#gh-mill-repair-pane .gh-mr-flour{background-image:url("assets/gh-produce-v363.avif");background-size:200% 200%;background-position:100% 100%}
+#gh-mill-repair-pane .gh-mr-arrow{width:9%;aspect-ratio:1/1;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Cdefs%3E%3ClinearGradient id='a' x2='0' y2='1'%3E%3Cstop stop-color='%23c3ed71'/%3E%3Cstop offset='1' stop-color='%2356a313'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cpath d='M4 13h19V5l13 15-13 15v-8H4z' fill='url(%23a)' stroke='%233f710e' stroke-width='2.5' stroke-linejoin='round'/%3E%3Cpath d='M6 15h17' stroke='%23e5ffaf' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E") center/contain no-repeat}
+#gh-mill-repair-pane .gh-mr-number{height:25px;border-radius:10px;font-size:var(--gh-mr-number-size,18px);box-shadow:inset 0 1px 3px #42220e44}
+#gh-mill-repair-pane .gh-mr-xp{width:75%;aspect-ratio:356/92;margin:1px 0 0}
+#gh-mill-repair-pane .gh-mr-xp-value{left:50%;right:15%;font-size:var(--gh-mr-xp-size,23px)}
+#mill-dialog #gh-mill-repair-button{width:100%;aspect-ratio:488/90;margin-top:2px!important}
+#mill-dialog #gh-mill-repair-button:active:not(:disabled) .gh-mr-repair{background-image:url("assets/gh-mill-repair-v419.avif");background-size:100% 368.8888888888889%;background-position:0% 99.58677685950413%;filter:brightness(.79)}
+#mill-dialog #gh-mill-repair-button .gh-mr-cost{left:84%;right:4%;font-size:var(--gh-mr-cost-size,17px)}
+#mill-dialog #gh-mill-repair-close{width:40px;height:40px;right:-15px;top:-16px}
+#mill-dialog #gh-mill-repair-close .gh-mr-close,#mill-dialog #gh-mill-repair-close:active .gh-mr-close{background:url("assets/gh349_close.webp") center/contain no-repeat}
+#mill-dialog #gh-mill-repair-close:active .gh-mr-close{filter:brightness(.76)}
+@media(max-width:340px){#mill-dialog.gh-mill-needs-repair .mill-dialog-box{padding:30px 30px 30px!important}#gh-mill-repair-pane{gap:6px}}
 </style></head><body><main class="page"><section class="stage" id="stage" aria-label="Інтерактивний макет ферми">
 <button id="gh-cowshed-toggle" class="gh-cowshed-toggle" type="button" aria-pressed="false" title="Тест: спершу ремонт, потім окрема покупка корови">🛠 Відновити корівник</button>
 <button id="gh-cow-toggle" class="gh-cow-toggle" type="button" aria-pressed="true" title="Купити першу корову (лише тест, без оплати)" hidden>🐄 Купити корову</button>
