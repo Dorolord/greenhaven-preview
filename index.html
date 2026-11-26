@@ -1273,6 +1273,13 @@ body.gh-debug-visible #mill-dialog.gh-mill-needs-repair .mill-dialog-box{margin-
 #gh-mill-repair-pane .gh-mr-close{
  background:url("assets/gh349_close.webp") center/contain no-repeat;
 }
+</style>
+<style id="gh-mill-repair-v422">
+/* Scale the three requested controls around their existing centers. */
+#gh-mill-repair-pane .gh-mr-recipe{transform:scale(.95);transform-origin:center}
+#gh-mill-repair-pane .gh-mr-xp{transform:scale(.95);transform-origin:center}
+#mill-dialog #gh-mill-repair-button{transform:scale(.91);transform-origin:center}
+#gh-mill-repair-feedback{display:none!important}
 </style></head><body><main class="page"><section class="stage" id="stage" aria-label="Інтерактивний макет ферми">
 <button id="gh-cowshed-toggle" class="gh-cowshed-toggle" type="button" aria-pressed="false" title="Тест: спершу ремонт, потім окрема покупка корови">🛠 Відновити корівник</button>
 <button id="gh-cow-toggle" class="gh-cow-toggle" type="button" aria-pressed="true" title="Купити першу корову (лише тест, без оплати)" hidden>🐄 Купити корову</button>
@@ -1532,7 +1539,7 @@ function ghMillRefreshRepair(){
  const balance=window.GreenHavenEconomy?.getState()?.diamonds??0;
  button.disabled=balance<ghMillRepairCost;
  button.setAttribute('aria-label','Відремонтувати за '+p+' діамантів');
- document.getElementById('gh-mill-repair-feedback').textContent=button.disabled?'Недостатньо діамантів':'';
+ document.getElementById('gh-mill-repair-feedback').textContent='';
  for(const [id,n] of [['gh-mill-repair-wheat-input',ghMillWheatCost],['gh-mill-repair-xp-input',ghMillRepairXP],['gh-mill-repair-price-input',ghMillRepairCost]]){
   const input=document.getElementById(id);if(document.activeElement!==input)input.value=String(n);
  }
