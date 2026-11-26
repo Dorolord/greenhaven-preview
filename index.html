@@ -1166,99 +1166,57 @@ body:not(.gh-debug-visible) #mill-dialog.gh-player-timer .gh-flour-heading > .gh
  translate:0 10px!important;
 }
 </style>
-<style id="gh-mill-repair-v418">
+<style id="gh-mill-repair-v420">
+/* v420: new approved portrait repair art. Independent sprite regions preserve
+   the placement and proportions of every part; quantities remain live text. */
 #mill-dialog.gh-mill-needs-repair{overflow-y:auto;align-items:safe center;padding:12px!important}
-#mill-dialog.gh-mill-needs-repair .mill-dialog-box{position:relative!important;display:block!important;box-sizing:border-box!important;width:min(91vw,350px)!important;height:auto!important;min-height:0!important;max-height:none!important;aspect-ratio:auto!important;padding:30px 25px 26px!important;background:none!important;border:0!important;box-shadow:none!important;overflow:visible!important}
+#mill-dialog.gh-mill-needs-repair .mill-dialog-box{position:relative!important;display:block!important;box-sizing:border-box!important;width:min(91vw,350px)!important;width:min(91vw,350px,calc(71.1dvh - 17px))!important;height:auto!important;min-height:0!important;max-height:none!important;aspect-ratio:320/450!important;padding:0!important;background:none!important;border:0!important;border-radius:0!important;box-shadow:none!important;overflow:visible!important}
 #mill-dialog.gh-mill-needs-repair .mill-dialog-box::before,#mill-dialog.gh-mill-needs-repair .mill-dialog-box::after{content:none!important;display:none!important}
 #mill-dialog.gh-mill-needs-repair .mill-dialog-top,#mill-dialog.gh-mill-needs-repair #mill-dialog-description,#mill-dialog.gh-mill-needs-repair #mill-status,#mill-dialog.gh-mill-needs-repair #mill-action,#mill-dialog.gh-mill-needs-repair .mill-demo-notice{display:none!important}
 #gh-mill-repair-pane[hidden],#gh-mill-repair-frame[hidden]{display:none!important}
-#gh-mill-repair-pane{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;gap:8px;color:#48250c;font:800 14px/1.2 system-ui,-apple-system,sans-serif;text-align:center}
-#gh-mill-repair-pane .gh-mr-art,#gh-mill-repair-frame .gh-mr-art{display:block;background-image:url("assets/gh-mill-repair-v418.avif");background-repeat:no-repeat;pointer-events:none;flex-shrink:0}
-#gh-mill-repair-frame{position:absolute;inset:0;display:grid;grid-template-columns:54px minmax(0,1fr) 52px;grid-template-rows:60px minmax(0,1fr) 36px;z-index:0;pointer-events:none}
-#gh-mill-repair-frame .gh-mr-art{min-width:0;min-height:0}
-#mill-dialog .gh-mr-title{background-size:250.98039215686273% 1010.5263157894736%;background-position:0% 0%;}
-#mill-dialog .gh-mr-status{background-size:171.42857142857142% 1010.5263157894736%;background-position:95.625% 0%;}
-#mill-dialog .gh-mr-close{background-size:914.2857142857142% 914.2857142857142%;background-position:0% 11.403508771929824%;}
-#mill-dialog .gh-mr-closeDown{background-size:914.2857142857142% 914.2857142857142%;background-position:12.280701754385964% 11.403508771929824%;}
-#mill-dialog .gh-mr-mill{background-size:290.90909090909093% 290.90909090909093%;background-position:0% 33.33333333333333%;}
-#mill-dialog .gh-mr-wheat{background-size:800% 800%;background-position:25% 11.607142857142858%;}
-#mill-dialog .gh-mr-flour{background-size:800% 800%;background-position:39.285714285714285% 11.607142857142858%;}
-#mill-dialog .gh-mr-xp{background-size:207.56756756756758% 800%;background-position:66.33165829145729% 25%;}
-#mill-dialog .gh-mr-repair{background-size:157.37704918032787% 853.3333333333334%;background-position:94.28571428571428% 39.233038348082594%;}
-#mill-dialog .gh-mr-repairDown{background-size:157.37704918032787% 893.0232558139535%;background-position:94.28571428571428% 52.49266862170088%;}
-#mill-dialog .gh-mr-arrow{background-size:1010.5263157894736% 1129.4117647058824%;background-position:66.76300578034682% 63.714285714285715%;}
-#mill-dialog .gh-mr-frame0{background-size:853.3333333333334% 768%;background-position:0% 66.76646706586826%;}
-#mill-dialog .gh-mr-frame1{background-size:268.53146853146853% 768%;background-position:18.672199170124482% 66.76646706586826%;}
-#mill-dialog .gh-mr-frame2{background-size:893.0232558139535% 768%;background-position:55.13196480938416% 66.76646706586826%;}
-#mill-dialog .gh-mr-frame3{background-size:853.3333333333334% 480%;background-position:0% 89.80263157894737%;}
-#mill-dialog .gh-mr-frame4{background-size:268.53146853146853% 480%;background-position:18.672199170124482% 89.80263157894737%;}
-#mill-dialog .gh-mr-frame5{background-size:893.0232558139535% 480%;background-position:55.13196480938416% 89.80263157894737%;}
-#mill-dialog .gh-mr-frame6{background-size:853.3333333333334% 1280%;background-position:0% 99.71751412429379%;}
-#mill-dialog .gh-mr-frame7{background-size:268.53146853146853% 1280%;background-position:18.672199170124482% 99.71751412429379%;}
-#mill-dialog .gh-mr-frame8{background-size:893.0232558139535% 1280%;background-position:55.13196480938416% 99.71751412429379%;}
-#gh-mill-repair-pane .gh-mr-title{width:49%;aspect-ratio:153/38}
-#gh-mill-repair-pane .gh-mr-status{width:90%;aspect-ratio:224/38}
-#gh-mill-repair-pane .gh-mr-intro{width:100%;display:flex;align-items:center;justify-content:center;gap:7px}
-#gh-mill-repair-pane .gh-mr-mill{width:45%;aspect-ratio:1/1}
-#gh-mill-repair-pane .gh-mr-description{flex:1;min-width:0;margin:0;padding:9px 6px;border:1px solid #c99854;border-radius:13px;background:linear-gradient(#fff0cf,#f5d49a);box-shadow:0 2px 0 #b28447;font-weight:850;font-size:clamp(12px,3.65vw,15px);line-height:1.32}
-#gh-mill-repair-pane .gh-mr-recipe{width:100%;display:flex;align-items:center;justify-content:center;gap:6px}
-#gh-mill-repair-pane .gh-mr-card{display:flex;align-items:center;justify-content:space-evenly;gap:2px;flex:1;min-width:0;padding:3px 5px;border:1.5px solid #c99854;border-radius:13px;background:linear-gradient(#fff0cc,#f5d39b);box-shadow:0 2px 0 #b28447}
-#gh-mill-repair-pane :is(.gh-mr-wheat,.gh-mr-flour){width:45%;aspect-ratio:1/1}
-#gh-mill-repair-pane .gh-mr-arrow{width:11%;aspect-ratio:38/34}
-#gh-mill-repair-pane .gh-mr-number{display:grid;place-items:center;width:46%;min-width:0;height:27px;white-space:nowrap;border:1px solid #60360f;border-radius:11px;background:linear-gradient(#915924,#704218);color:#fff5de;font:900 var(--gh-mr-number-size,19px)/1 system-ui,sans-serif;text-shadow:0 1px 2px #42220e;font-variant-numeric:tabular-nums}
-#gh-mill-repair-pane .gh-mr-xp{position:relative;width:75%;aspect-ratio:185/48}
-#gh-mill-repair-pane .gh-mr-xp-value{position:absolute;left:50%;right:15%;top:0;bottom:0;display:grid;place-items:center;color:#512708;font:900 var(--gh-mr-xp-size,25px)/1 system-ui,sans-serif;font-variant-numeric:tabular-nums;white-space:nowrap}
-#mill-dialog #gh-mill-repair-button,#mill-dialog #gh-mill-repair-close{position:relative;display:block;touch-action:manipulation;border:0!important;background:none!important;padding:0!important;margin:0!important;box-shadow:none!important;border-radius:0!important;cursor:pointer;overflow:visible}
-#mill-dialog #gh-mill-repair-button{width:98%;aspect-ratio:244/45;flex-shrink:0;transition:transform 85ms ease}
-#mill-dialog #gh-mill-repair-button .gh-mr-art,#mill-dialog #gh-mill-repair-close .gh-mr-art{position:absolute;inset:0;width:100%;height:100%}
-#mill-dialog #gh-mill-repair-button:active:not(:disabled){transform:translateY(2px) scale(.98)}
-#mill-dialog #gh-mill-repair-button:active:not(:disabled) .gh-mr-repair{background-size:157.37704918032787% 893.0232558139535%;background-position:94.28571428571428% 52.49266862170088%;}
-#mill-dialog #gh-mill-repair-button:disabled{filter:grayscale(1);cursor:not-allowed;opacity:.84}
-#mill-dialog #gh-mill-repair-button .gh-mr-cost{position:absolute;left:85%;right:4.5%;top:0;bottom:0;display:grid;place-items:center;white-space:nowrap;color:#fff3dd;font:900 var(--gh-mr-cost-size,18px)/1 system-ui,sans-serif;text-shadow:0 1px 2px #2c200a,1px 0 #2c200a,-1px 0 #2c200a;font-variant-numeric:tabular-nums;pointer-events:none}
-#mill-dialog #gh-mill-repair-close{position:absolute;right:-8px;top:-18px;width:39px;height:39px;z-index:5;transition:transform 85ms ease}
-#mill-dialog #gh-mill-repair-close:active{transform:scale(.91)}
-#mill-dialog #gh-mill-repair-close:active .gh-mr-close{background-size:914.2857142857142% 914.2857142857142%;background-position:12.280701754385964% 11.403508771929824%;}
+#gh-mill-repair-frame{position:absolute;inset:0;display:block;z-index:0;pointer-events:none;background-image:url("assets/gh-mill-repair-v420.avif");background-repeat:no-repeat;background-size:180% 166.66666666666669%;background-position:0% 0%;}
+#gh-mill-repair-pane{position:absolute;inset:0;z-index:2;display:block;container-type:inline-size;text-align:center;color:#48250c;font:800 14px/1.2 system-ui,-apple-system,sans-serif}
+#gh-mill-repair-pane .gh-mr-art{display:block;pointer-events:none}
+#gh-mill-repair-pane .gh-mr-mill{background-image:url("assets/gh-mill-repair-v420.avif");background-repeat:no-repeat;background-size:230.39999999999998% 278.81040892193306%;background-position:99.38650306748467% 0%;}
+#gh-mill-repair-pane .gh-mr-description{background-image:url("assets/gh-mill-repair-v420.avif");background-repeat:no-repeat;background-size:240% 694.4444444444445%;background-position:96.42857142857143% 42.523364485981304%;}
+#gh-mill-repair-pane .gh-mr-close{background-image:url("assets/gh-mill-repair-v420.avif");background-repeat:no-repeat;background-size:800% 1102.9411764705883%;background-position:64.28571428571429% 56.451612903225815%;}
+#gh-mill-repair-pane .gh-mr-arrow{background-image:url("assets/gh-mill-repair-v420.avif");background-repeat:no-repeat;background-size:1339.5348837209303% 1500%;background-position:75.046904315197% 55.00000000000001%;}
+#gh-mill-repair-pane .gh-mr-xp{background-image:url("assets/gh-mill-repair-v420.avif");background-repeat:no-repeat;background-size:329.1428571428571% 1500%;background-position:0% 64.85714285714286%;}
+#gh-mill-repair-pane .gh-mr-wheat{background-image:url("assets/gh-mill-repair-v420.avif");background-repeat:no-repeat;background-size:397.2413793103448% 903.6144578313254%;background-position:41.53132250580047% 68.06596701649175%;}
+#gh-mill-repair-pane .gh-mr-flour{background-image:url("assets/gh-mill-repair-v420.avif");background-repeat:no-repeat;background-size:397.2413793103448% 914.6341463414634%;background-position:76.10208816705337% 67.96407185628742%;}
+#gh-mill-repair-pane .gh-mr-title{background-image:url("assets/gh-mill-repair-v420.avif");background-repeat:no-repeat;background-size:213.33333333333334% 1153.8461538461538%;background-position:0% 78.97810218978101%;}
+#gh-mill-repair-pane .gh-mr-status{background-image:url("assets/gh-mill-repair-v420.avif");background-repeat:no-repeat;background-size:161.79775280898875% 1250%;background-position:0% 88.40579710144928%;}
+#gh-mill-repair-pane .gh-mr-repair{background-image:url("assets/gh-mill-repair-v420.avif");background-repeat:no-repeat;background-size:130.9090909090909% 1013.5135135135135%;background-position:0% 99.70414201183432%;}
+#gh-mill-repair-pane .gh-mr-title{position:absolute;left:25%;top:4.5%;width:50%;aspect-ratio:270/65}
+#gh-mill-repair-pane .gh-mr-status{position:absolute;left:12%;top:15.5%;width:76%;aspect-ratio:356/60}
+#gh-mill-repair-pane .gh-mr-intro{position:absolute;inset:0;pointer-events:none}
+#gh-mill-repair-pane .gh-mr-mill{position:absolute;left:8.5%;top:24%;width:44%;aspect-ratio:250/269}
+#gh-mill-repair-pane .gh-mr-description{position:absolute;left:52%;top:34.4%;width:40%;aspect-ratio:240/108;margin:0;padding:0;border:0;border-radius:0;box-shadow:none;color:transparent;font-size:0;overflow:hidden}
+#gh-mill-repair-pane .gh-mr-recipe{position:absolute;inset:60.3% 9.5% auto;display:flex;align-items:center;justify-content:space-between;gap:0}
+#gh-mill-repair-pane .gh-mr-card{position:relative;width:42.6%;aspect-ratio:145/83;flex:none;min-width:0;padding:0;margin:0;border:0;box-shadow:none;background:none}
+#gh-mill-repair-pane :is(.gh-mr-wheat,.gh-mr-flour){position:absolute;inset:0;width:100%;height:100%}
+#gh-mill-repair-pane .gh-mr-arrow{width:9.9%;aspect-ratio:43/50;flex:none}
+#gh-mill-repair-pane .gh-mr-number{position:absolute;left:47%;right:8%;top:33%;bottom:25%;display:grid;place-items:center;min-width:0;padding:0;border:0;background:none;box-shadow:none;color:#fff5df;font:900 var(--gh-mr-number-size,19px)/1 system-ui,sans-serif;font-size:min(var(--gh-mr-number-size,19px),5.8cqw);font-variant-numeric:tabular-nums;white-space:nowrap;text-shadow:0 1px 2px #42220e,1px 0 #42220e,-1px 0 #42220e;pointer-events:none}
+#gh-mill-repair-pane .gh-mr-xp{position:absolute;left:30.5%;top:75.5%;width:39%;aspect-ratio:175/50}
+#gh-mill-repair-pane .gh-mr-xp-value{position:absolute;left:48%;right:11%;top:0;bottom:0;display:grid;place-items:center;white-space:nowrap;color:#512708;font:900 var(--gh-mr-xp-size,23px)/1 system-ui,sans-serif;font-size:min(var(--gh-mr-xp-size,23px),6.3cqw);font-variant-numeric:tabular-nums;pointer-events:none}
+#mill-dialog #gh-mill-repair-button,#mill-dialog #gh-mill-repair-close{position:absolute;display:block;touch-action:manipulation;border:0!important;background:none!important;padding:0!important;margin:0!important;box-shadow:none!important;border-radius:0!important;cursor:pointer;overflow:visible;-webkit-tap-highlight-color:transparent}
+#mill-dialog #gh-mill-repair-button{left:8%;top:83.8%;width:84%;aspect-ratio:440/74;z-index:4}
+#mill-dialog #gh-mill-repair-close{left:84.5%;top:4%;width:12%;aspect-ratio:72/68;z-index:5}
+#mill-dialog #gh-mill-repair-button .gh-mr-art,#mill-dialog #gh-mill-repair-close .gh-mr-art{position:absolute;inset:0;width:100%;height:100%;transition:transform 90ms ease,filter 90ms ease}
+#mill-dialog #gh-mill-repair-button:active:not(:disabled) .gh-mr-repair{transform:translateY(1px) scale(.98,.94);filter:brightness(.78)}
+#mill-dialog #gh-mill-repair-button:active:not(:disabled) .gh-mr-cost{transform:translateY(1px) scale(.98,.94)}
+#mill-dialog #gh-mill-repair-button:disabled{filter:grayscale(1);cursor:not-allowed;opacity:.86}
+#mill-dialog #gh-mill-repair-button .gh-mr-cost{position:absolute;left:81%;right:5%;top:0;bottom:0;display:grid;place-items:center;white-space:nowrap;color:#fff3dd;font:900 var(--gh-mr-cost-size,18px)/1 system-ui,sans-serif;font-size:min(var(--gh-mr-cost-size,18px),5.5cqw);text-shadow:0 1px 2px #2c200a,1px 0 #2c200a,-1px 0 #2c200a;font-variant-numeric:tabular-nums;pointer-events:none;transition:transform 90ms ease}
+#mill-dialog #gh-mill-repair-close:active .gh-mr-close{transform:scale(.92);filter:brightness(.72)}
 #mill-dialog #gh-mill-repair-button:focus-visible,#mill-dialog #gh-mill-repair-close:focus-visible{outline:2px solid #f9d456;outline-offset:2px;border-radius:12px!important}
-#gh-mill-repair-feedback{font-size:11px;line-height:1.2;margin:-2px 0 0;color:#84321a}
+#gh-mill-repair-feedback{position:absolute;left:10%;right:10%;top:93.9%;margin:0;color:#84321a;font:700 clamp(8px,3cqw,11px)/1.1 system-ui,sans-serif;white-space:nowrap}
 #gh-mill-repair-feedback:empty{display:none}
-#gh-mill-repair-settings{display:none;width:100%;font-size:11px;text-align:left}
+#gh-mill-repair-settings{display:none;position:absolute;top:100%;left:8%;width:84%;box-sizing:border-box;padding:8px;border:1px solid #a87b42;border-radius:10px;background:#ffe8bb;color:#65401c;font-size:11px;text-align:left}
 body.gh-debug-visible #gh-mill-repair-settings{display:grid;gap:4px}
+body.gh-debug-visible #mill-dialog.gh-mill-needs-repair .mill-dialog-box{margin-bottom:128px}
 #gh-mill-repair-settings label{display:flex;align-items:center;justify-content:space-between;gap:6px}
 #gh-mill-repair-settings input{width:76px;padding:3px;border:1px solid #a87b42;border-radius:5px;font:600 16px system-ui}
-@media(max-width:340px){#mill-dialog.gh-mill-needs-repair .mill-dialog-box{padding:28px 22px 24px!important}#gh-mill-repair-pane{gap:6px}}
-@media(prefers-reduced-motion:reduce){#mill-dialog #gh-mill-repair-button,#mill-dialog #gh-mill-repair-close{transition:none}}
-</style>
-<style id="gh-mill-repair-v419">
-/* Higher-resolution artwork, same game sprites, and un-stretched frame corners. */
-#mill-dialog.gh-mill-needs-repair .mill-dialog-box{width:min(89vw,336px)!important;padding:33px 35px 32px!important}
-#gh-mill-repair-frame{display:block;isolation:isolate}
-#gh-mill-repair-frame .gh-mr-art{display:none}
-#gh-mill-repair-frame::before{content:"";position:absolute;inset:25px 23px 17px;border-radius:21px;background:radial-gradient(ellipse at 42% 22%,#fff5d8,#f9e2b4 77%,#edc98d);box-shadow:inset 0 0 10px #9a5b1738;z-index:0}
-#gh-mill-repair-frame::after{content:"";position:absolute;inset:0;border-style:solid;border-color:transparent;border-width:57px 72px 33px 82px;border-image:url("assets/gh349_frame.webp") 175 230 100 265 stretch;z-index:1}
-#gh-mill-repair-pane{gap:8px}
-#gh-mill-repair-pane .gh-mr-title{background-image:url("assets/gh-mill-repair-v419.avif");background-size:193.65079365079364% 535.483870967742%;background-position:0% 0%;}
-#gh-mill-repair-pane .gh-mr-status{background-image:url("assets/gh-mill-repair-v419.avif");background-size:100% 409.87654320987656%;background-position:0% 25.49800796812749%;}
-#gh-mill-repair-pane .gh-mr-xp{background-image:url("assets/gh-mill-repair-v419.avif");background-size:137.07865168539325% 360.8695652173913%;background-position:0% 61.25000000000001%;}
-#gh-mill-repair-pane .gh-mr-repair{background-image:url("assets/gh-mill-repair-v419.avif");background-size:100% 368.8888888888889%;background-position:0% 99.58677685950413%;}
-#gh-mill-repair-pane .gh-mr-title{width:54%;aspect-ratio:252/62;margin-top:-5px}
-#gh-mill-repair-pane .gh-mr-status{width:100%;aspect-ratio:488/81}
-#gh-mill-repair-pane .gh-mr-intro{gap:9px;padding:2px 0}
-#gh-mill-repair-pane .gh-mr-mill{width:44%;aspect-ratio:929/1055;background:url("assets/asset_012_5c41e414c7e04c35.webp") center/contain no-repeat}
-#gh-mill-repair-pane .gh-mr-description{font:750 clamp(12px,3.4vw,14px)/1.4 system-ui,sans-serif;background:transparent;border:0;box-shadow:none;padding:0 0 0 2px;text-align:center}
-#gh-mill-repair-pane .gh-mr-card{padding:5px 4px;gap:4px;border-color:#d2a269;border-radius:11px;box-shadow:inset 0 1px 0 #fff9e2,0 1px 1px #a36c3250;background:linear-gradient(#fff1cf,#f7d99e)}
-#gh-mill-repair-pane .gh-mr-wheat{background:url("assets/gh-warehouse-wheat-v296.webp") center/contain no-repeat}
-#gh-mill-repair-pane .gh-mr-flour{background-image:url("assets/gh-produce-v363.avif");background-size:200% 200%;background-position:100% 100%}
-#gh-mill-repair-pane .gh-mr-arrow{width:9%;aspect-ratio:1/1;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Cdefs%3E%3ClinearGradient id='a' x2='0' y2='1'%3E%3Cstop stop-color='%23c3ed71'/%3E%3Cstop offset='1' stop-color='%2356a313'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cpath d='M4 13h19V5l13 15-13 15v-8H4z' fill='url(%23a)' stroke='%233f710e' stroke-width='2.5' stroke-linejoin='round'/%3E%3Cpath d='M6 15h17' stroke='%23e5ffaf' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E") center/contain no-repeat}
-#gh-mill-repair-pane .gh-mr-number{height:25px;border-radius:10px;font-size:var(--gh-mr-number-size,18px);box-shadow:inset 0 1px 3px #42220e44}
-#gh-mill-repair-pane .gh-mr-xp{width:75%;aspect-ratio:356/92;margin:1px 0 0}
-#gh-mill-repair-pane .gh-mr-xp-value{left:50%;right:15%;font-size:var(--gh-mr-xp-size,23px)}
-#mill-dialog #gh-mill-repair-button{width:100%;aspect-ratio:488/90;margin-top:2px!important}
-#mill-dialog #gh-mill-repair-button:active:not(:disabled) .gh-mr-repair{background-image:url("assets/gh-mill-repair-v419.avif");background-size:100% 368.8888888888889%;background-position:0% 99.58677685950413%;filter:brightness(.79)}
-#mill-dialog #gh-mill-repair-button .gh-mr-cost{left:84%;right:4%;font-size:var(--gh-mr-cost-size,17px)}
-#mill-dialog #gh-mill-repair-close{width:40px;height:40px;right:-15px;top:-16px}
-#mill-dialog #gh-mill-repair-close .gh-mr-close,#mill-dialog #gh-mill-repair-close:active .gh-mr-close{background:url("assets/gh349_close.webp") center/contain no-repeat}
-#mill-dialog #gh-mill-repair-close:active .gh-mr-close{filter:brightness(.76)}
-@media(max-width:340px){#mill-dialog.gh-mill-needs-repair .mill-dialog-box{padding:30px 30px 30px!important}#gh-mill-repair-pane{gap:6px}}
+@media(prefers-reduced-motion:reduce){#mill-dialog #gh-mill-repair-button .gh-mr-art,#mill-dialog #gh-mill-repair-button .gh-mr-cost,#mill-dialog #gh-mill-repair-close .gh-mr-art{transition:none}}
 </style></head><body><main class="page"><section class="stage" id="stage" aria-label="Інтерактивний макет ферми">
 <button id="gh-cowshed-toggle" class="gh-cowshed-toggle" type="button" aria-pressed="false" title="Тест: спершу ремонт, потім окрема покупка корови">🛠 Відновити корівник</button>
 <button id="gh-cow-toggle" class="gh-cow-toggle" type="button" aria-pressed="true" title="Купити першу корову (лише тест, без оплати)" hidden>🐄 Купити корову</button>
@@ -1383,7 +1341,7 @@ body.gh-debug-visible #gh-mill-repair-settings{display:grid;gap:4px}
       <button id="gh-flour-test" type="button" hidden>⚡ Тест</button>
       <div id="gh-flour-feedback" role="status" aria-live="polite"></div>
     </section>
-    <div id="gh-mill-repair-frame" hidden aria-hidden="true"><span class="gh-mr-art gh-mr-frame0"></span><span class="gh-mr-art gh-mr-frame1"></span><span class="gh-mr-art gh-mr-frame2"></span><span class="gh-mr-art gh-mr-frame3"></span><span class="gh-mr-art gh-mr-frame4"></span><span class="gh-mr-art gh-mr-frame5"></span><span class="gh-mr-art gh-mr-frame6"></span><span class="gh-mr-art gh-mr-frame7"></span><span class="gh-mr-art gh-mr-frame8"></span></div>
+    <div id="gh-mill-repair-frame" hidden aria-hidden="true"></div>
 <div id="gh-mill-repair-pane" hidden>
  <span class="gh-mr-art gh-mr-title" role="img" aria-label="Млин"></span>
  <button type="button" id="gh-mill-repair-close" aria-label="Закрити"><span class="gh-mr-art gh-mr-close" aria-hidden="true"></span></button>
