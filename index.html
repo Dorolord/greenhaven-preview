@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="uk"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no"/>
-<title>GreenHaven — мобільна тестова версія v416</title>
+<title>GreenHaven — мобільна тестова версія v417</title>
 <style>
 *{box-sizing:border-box}html,body{margin:0;min-height:100%;background:#14221b;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;color:#fff}
 .page{min-height:100dvh;display:grid;place-items:center;padding:0 0 72px}.stage{position:relative;width:min(100vw,520px);height:min(100dvh,calc(min(100vw,520px)*1.91));max-height:1040px;min-height:min(780px,100dvh);overflow:hidden;isolation:isolate;background:#8ed92f;box-shadow:0 10px 35px #0005}
@@ -3861,6 +3861,9 @@ render();
  <div class="gh-ui-progress" aria-label="Прогрес досвіду: ${eb.xp} зі ${req}"><span style="width:${(eb.xp/req*100).toFixed(2)}%"></span></div><p class="gh-ui-muted">${eb.xp} / ${req} досвіду · локальний тест</p></div>
  <div class="gh-ui-panel"><h3>⚙️ Налаштування</h3><div class="gh-ui-setting-lines">
  <button class="gh-ui-row-action" type="button" id="gh-ui-editor-toggle"><span>🛠 Режим редактора ферми</span><span>${document.body.classList.contains('gh-debug-visible')?'Увімк.':'Вимк.'}</span></button>
+ ${document.body.classList.contains('gh-debug-visible') ? [
+ ['mill','Млин',millPurchased],['apiary','Пасіка',apiaryPurchased],['chicken','Курятник',ghCoopRepaired],['cow','Корівник',ghCowshedRepaired]
+ ].map(([id,name,active])=>'<button class="gh-ui-row-action" type="button" data-gh-building-test="'+id+'" aria-pressed="'+active+'"><span>'+name+'</span><span>'+ (active?'🟢 Робоча':'🔴 Поламана')+'</span></button>').join('') : ''}
  <button class="gh-ui-row-action" type="button" id="gh-ui-how-to"><span>❓ Як користуватися прототипом</span><span>›</span></button>
  </div>
  <h3 style="margin-top:18px">🧪 Тест економіки</h3>
@@ -4072,6 +4075,17 @@ render();
   }
   const category=e.target.closest('[data-gh-shop-cat]');
   if(category){marketCategory=category.dataset.ghShopCat;paint();return;}
+  const buildingTest=e.target.closest('[data-gh-building-test]');
+  if(buildingTest){
+   if(!document.body.classList.contains('gh-debug-visible'))return;
+   switch(buildingTest.dataset.ghBuildingTest){
+    case 'mill':document.getElementById('mill-action').click();break;
+    case 'apiary':toggleApiaryRepair();break;
+    case 'chicken':ghCoopRepaired=!ghCoopRepaired;ghOrangeHenEditMode=false;ghSaveCoopState();ghCoopEggsSync();render();break;
+    case 'cow':ghCowshedRepaired=!ghCowshedRepaired;ghSaveCowshedRepair();ghMilkSync();render();break;
+   }
+   paint();return;
+  }
   if(e.target.closest('#gh-ui-editor-toggle')){document.body.classList.toggle('gh-debug-visible');paint();return;}
   if(e.target.closest('#gh-ui-how-to')){window.alert('Ферма: натискай грядки та будівлі. Склад і Ринок — поки макети. Щоб побачити старі інструменти розташування, відкрий Профіль → Режим редактора ферми.');}
  });
