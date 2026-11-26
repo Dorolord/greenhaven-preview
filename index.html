@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="uk"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no"/>
-<title>GreenHaven — мобільна тестова версія v396</title>
+<title>GreenHaven — мобільна тестова версія v397</title>
 <style>
 *{box-sizing:border-box}html,body{margin:0;min-height:100%;background:#14221b;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;color:#fff}
 .page{min-height:100dvh;display:grid;place-items:center;padding:0 0 72px}.stage{position:relative;width:min(100vw,520px);height:min(100dvh,calc(min(100vw,520px)*1.91));max-height:1040px;min-height:min(780px,100dvh);overflow:hidden;isolation:isolate;background:#8ed92f;box-shadow:0 10px 35px #0005}
@@ -1101,7 +1101,33 @@ body :is(#gh-milk-dialog,#gh-coop-dialog,#apiary-dialog,#mill-dialog)[hidden] *{
  color:#65401c;font:800 clamp(11px,3.2vw,18px)/1.25 Georgia,serif;
 }
 </style>
-</head><body><main class="page"><section class="stage" id="stage" aria-label="Інтерактивний макет ферми">
+<style id="gh-mill-wheat-v397">
+#mill-dialog #gh-flour-start{
+ position:relative;display:block;width:min(224px,100%);height:auto;aspect-ratio:4/1;
+ margin:10px auto;padding:0;border:0;border-radius:999px;overflow:hidden;
+ background:transparent url("data:image/webp;base64,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") center/100% 100% no-repeat;
+ box-shadow:none;clip-path:inset(0 round 999px);touch-action:manipulation;
+ -webkit-tap-highlight-color:transparent;transition:transform 90ms ease,filter 90ms ease;
+ container-type:inline-size;
+}
+#mill-dialog #gh-flour-start:active,#mill-dialog #gh-flour-start.is-pressed{
+ transform:translateY(2px) scale(.965);filter:brightness(.82);
+}
+#mill-dialog #gh-flour-start[aria-disabled="true"]{filter:saturate(.7) brightness(.83);cursor:not-allowed}
+#mill-dialog #gh-flour-start:focus-visible{outline:2px solid #ffdf76;outline-offset:-4px}
+#gh-flour-wheat-count{position:absolute;left:74.5%;width:20%;top:50%;transform:translateY(-50%);text-align:center;
+ font:900 var(--gh-count-size,6cqw)/1 system-ui,sans-serif;color:#fff4c5;white-space:nowrap;
+ text-shadow:0 1px 1px #203c04;pointer-events:none;font-variant-numeric:tabular-nums}
+#gh-flour-start[aria-disabled="true"] #gh-flour-wheat-count{color:#ffd6a0}
+body:not(.gh-debug-visible) #mill-dialog.gh-player-timer #gh-flour-start:not([hidden]){
+ left:19%!important;right:19%!important;width:62%!important;height:auto!important;aspect-ratio:4/1;
+ bottom:9%!important;padding:0!important;max-width:none!important;margin:0!important;
+}
+body:not(.gh-debug-visible) #gh-mill-wheat-editor{display:none!important}
+#gh-mill-wheat-editor{position:relative;z-index:5;display:flex;align-items:center;gap:8px;margin:8px 0;font:700 12px system-ui;color:#75420d}
+#gh-mill-wheat-editor input{width:75px;font:inherit;font-size:16px;padding:5px;border-radius:6px}
+@media(prefers-reduced-motion:reduce){#mill-dialog #gh-flour-start{transition:none}}
+</style></head><body><main class="page"><section class="stage" id="stage" aria-label="Інтерактивний макет ферми">
 <button id="gh-cowshed-toggle" class="gh-cowshed-toggle" type="button" aria-pressed="false" title="Тест: спершу ремонт, потім окрема покупка корови">🛠 Відновити корівник</button>
 <button id="gh-cow-toggle" class="gh-cow-toggle" type="button" aria-pressed="true" title="Купити першу корову (лише тест, без оплати)" hidden>🐄 Купити корову</button>
 <img class="bg" src="assets/asset_002_6ab883b886fb387a.webp" alt="Чистий фон GreenHaven"/>
@@ -1220,7 +1246,8 @@ body :is(#gh-milk-dialog,#gh-coop-dialog,#apiary-dialog,#mill-dialog)[hidden] *{
       
       
       <button id="gh-flour-collect" type="button" hidden>🌾 Зібрати 1 мішок борошна</button>
-      <button id="gh-flour-start" type="button" hidden>▶ Запустити млин (тест)</button>
+      <button id="gh-flour-start" type="button" hidden aria-label="Запустити млин"><span id="gh-flour-wheat-count" aria-hidden="true">0/10</span></button>
+      <label id="gh-mill-wheat-editor">Пшениці на запуск <input id="gh-mill-wheat-cost" type="number" min="1" max="1000000000" step="1" value="10"></label>
       <button id="gh-flour-test" type="button" hidden>⚡ Тест</button>
       <div id="gh-flour-feedback" role="status" aria-live="polite"></div>
     </section>
@@ -1310,6 +1337,21 @@ try{millPurchased=localStorage.getItem(GH_MILL_KEY)==='yes'}catch(e){}
    Ready batches wait to be collected; timestamps persist across page reloads. */
 const GH_FLOUR_KEY='greenhaven-mill-flour-manual-v343';
 const GH_FLOUR_DURATION=60*1000; // v352 temporary 1-minute test; normal duration: 30*60*1000
+const GH_MILL_DEFAULT_WHEAT_COST=10;
+const GH_MILL_WHEAT_COST_KEY='greenhaven-mill-wheat-cost-v397';
+let ghMillWheatCost=GH_MILL_DEFAULT_WHEAT_COST,ghMillStartPending=false;
+try{
+ const n=Number(localStorage.getItem(GH_MILL_WHEAT_COST_KEY));
+ if(Number.isSafeInteger(n)&&n>=1&&n<=1000000000)ghMillWheatCost=n;
+}catch(e){}
+function ghMillWheatStock(){return window.GreenHavenInventory?.getState()?.wheat||0;}
+function ghMillSetWheatCost(n){
+ if(!Number.isSafeInteger(n)||n<1||n>1000000000)return false;
+ ghMillWheatCost=n;
+ try{localStorage.setItem(GH_MILL_WHEAT_COST_KEY,String(n));}catch(e){}
+ ghFlourUpdatePanel();return true;
+}
+window.GreenHavenMillSettings={getWheatCost:()=>ghMillWheatCost,setWheatCost:ghMillSetWheatCost};
 let ghFlourStartedAt=null;
 try{
  const saved=JSON.parse(localStorage.getItem(GH_FLOUR_KEY)||'null');
@@ -1371,7 +1413,16 @@ function ghFlourUpdatePanel(){
  document.getElementById('gh-flour-collect').textContent='🌾 Зібрати борошно · '+count+' шт.';
  document.getElementById('gh-flour-collect').hidden=!ready;
  document.getElementById('gh-flour-test').hidden=!running;
- document.getElementById('gh-flour-start').hidden=running||ready;
+ const start=document.getElementById('gh-flour-start');
+ const stock=ghMillWheatStock(),label=stock+'/'+ghMillWheatCost;
+ const counter=document.getElementById('gh-flour-wheat-count');
+ start.hidden=running||ready;
+ start.setAttribute('aria-disabled',String(stock<ghMillWheatCost));
+ start.setAttribute('aria-label','Запустити млин. Пшениця: '+stock+' з '+ghMillWheatCost);
+ counter.textContent=label;
+ counter.style.setProperty('--gh-count-size',Math.min(6,24/label.length)+'cqw');
+ const costInput=document.getElementById('gh-mill-wheat-cost');
+ if(document.activeElement!==costInput)costInput.value=String(ghMillWheatCost);
  document.getElementById('mill-status').textContent=running?'⚙️ Працює':ready?'✅ Борошно готове':'⏸ Очікує запуску';
 }
 ghFlourSync();
@@ -1388,11 +1439,24 @@ function ghCollect_flour(){
  return true;
 }
 document.getElementById('gh-flour-collect').addEventListener('click',ghCollect_flour);
-document.getElementById('gh-flour-start').addEventListener('click',()=>{
- if(!ghFlourOwned()||ghFlourStartedAt!==null)return;
- ghFlourStartedAt=Date.now();ghFlourSave();
- document.getElementById('gh-flour-feedback').textContent='';
- ghFlourRefreshReadyBadge();ghFlourUpdatePanel();
+document.getElementById('gh-mill-wheat-cost').addEventListener('change',e=>{
+ if(!document.body.classList.contains('gh-debug-visible'))return;
+ if(!ghMillSetWheatCost(Number(e.target.value)))e.target.value=String(ghMillWheatCost);
+});
+document.getElementById('gh-flour-start').addEventListener('click',e=>{
+ const btn=e.currentTarget;
+ if(!ghFlourOwned()||ghFlourStartedAt!==null||ghMillStartPending)return;
+ if(ghMillWheatStock()<ghMillWheatCost){ghFlourUpdatePanel();return;}
+ ghMillStartPending=true;
+ btn.classList.add('is-pressed');
+ setTimeout(()=>{
+  ghMillStartPending=false;btn.classList.remove('is-pressed');
+  if(!ghFlourOwned()||ghFlourStartedAt!==null||document.getElementById('mill-dialog').hidden)return;
+  if(!window.GreenHavenInventory?.remove('wheat',ghMillWheatCost)){ghFlourUpdatePanel();return;}
+  ghFlourStartedAt=Date.now();ghFlourSave();
+  document.getElementById('gh-flour-feedback').textContent='';
+  ghFlourRefreshReadyBadge();ghFlourUpdatePanel();
+ },window.matchMedia('(prefers-reduced-motion: reduce)').matches?0:125);
 });
 document.getElementById('gh-flour-test').addEventListener('click',()=>{
  if(!ghFlourRunning())return;
