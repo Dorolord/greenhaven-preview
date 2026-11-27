@@ -1849,7 +1849,32 @@ try {
   set('gh-chimney-smoke-position-v135',plan.smokePosition);
   set(GH_V267_PLAN_MARKER,'yes');
  }
-} catch(error) {console.warn('GreenHaven v267 plan migration failed',error);} 
+} catch(error) {console.warn('GreenHaven v267 plan migration failed',error);}
+
+/* Explicit recovery link: restore only the approved spatial layout, not progress. */
+try {
+ const url=new URL(location.href);
+ if(url.searchParams.get('restoreLayout')==='1'){
+  const plan=GH_V267_USER_PLAN;
+  const positions={
+   'gh-layout-20261114-layout5-dog-v132':plan.objects,
+   'gh-cow-position-recovered-v22':plan.cowPosition,
+   'gh-apiary-hive-positions-v128':plan.apiaryHivePositions,
+   'gh-apiary-hives-movable-stage-v128':plan.apiaryMapHives,
+   'gh-orange-hen-position-v95':plan.orangeHenPosition,
+   'gh-family-hen-position-v94':plan.familyHenPosition,
+   'gh-rooster-position-v99':plan.roosterPosition,
+   'gh-house-dog-position-v133':plan.dogPosition,
+   'gh-chimney-smoke-position-v135':plan.smokePosition
+  };
+  const backup=Object.fromEntries(Object.keys(positions).map(key=>[key,localStorage.getItem(key)]));
+  localStorage.setItem('gh-layout-recovery-backup-v430',JSON.stringify(backup));
+  for(const [key,value] of Object.entries(positions))localStorage.setItem(key,JSON.stringify(value));
+  url.searchParams.delete('restoreLayout');
+  history.replaceState(history.state,'',url.href);
+ }
+}catch(error){console.warn('GreenHaven layout recovery failed',error);}
+ 
 
 const svgs={"house": "<svg viewBox=\"0 0 120 100\" aria-hidden=\"true\"><ellipse cx=\"60\" cy=\"91\" rx=\"55\" ry=\"8\" fill=\"#38662c\" opacity=\".4\"/><rect x=\"26\" y=\"39\" width=\"69\" height=\"48\" rx=\"3\" fill=\"#ffe5a6\" stroke=\"#854c22\" stroke-width=\"3\"/><path d=\"M14 41 61 9l45 32-9 12-35-28-36 28Z\" fill=\"#ca3c21\" stroke=\"#863317\" stroke-width=\"3\"/><path d=\"M68 16V5h14v19\" fill=\"#d5c5a1\" stroke=\"#77452b\" stroke-width=\"3\"/><rect x=\"51\" y=\"57\" width=\"19\" height=\"30\" rx=\"2\" fill=\"#aa5c2d\" stroke=\"#6f3b1a\" stroke-width=\"2\"/><rect x=\"31\" y=\"52\" width=\"14\" height=\"14\" fill=\"#5fbbe7\" stroke=\"#b78536\" stroke-width=\"3\"/><rect x=\"77\" y=\"52\" width=\"13\" height=\"14\" fill=\"#5fbbe7\" stroke=\"#b78536\" stroke-width=\"3\"/></svg>", "mill": "<svg viewBox=\"0 0 120 110\" aria-hidden=\"true\"><ellipse cx=\"60\" cy=\"104\" rx=\"53\" ry=\"6\" fill=\"#38662c\" opacity=\".4\"/><path d=\"M39 35 83 35 89 99H30Z\" fill=\"#ead4a3\" stroke=\"#785129\" stroke-width=\"3\"/><path d=\"M25 37 60 9l34 28Z\" fill=\"#b54322\" stroke=\"#7f331e\" stroke-width=\"3\"/><rect x=\"53\" y=\"73\" width=\"18\" height=\"26\" fill=\"#a36a3b\" stroke=\"#683a25\" stroke-width=\"2\"/><g transform=\"translate(62 48)\" stroke=\"#643d1c\" stroke-width=\"3\"><g fill=\"#f5df9c\"><path d=\"M-5 -5 -12 -43 -3 -43 7 -3Z\"/><path d=\"M5 -5 43 -12 43 -3 3 7Z\"/><path d=\"M5 5 12 43 3 43 -7 3Z\"/><path d=\"M-5 5 -43 12 -43 3 -3 -7Z\"/></g><circle cx=\"0\" cy=\"0\" r=\"7\" fill=\"#c8872e\"/></g></svg>", "apiary": "<svg viewBox=\"0 0 120 100\" aria-hidden=\"true\"><ellipse cx=\"60\" cy=\"91\" rx=\"55\" ry=\"7\" fill=\"#38662c\" opacity=\".4\"/><path d=\"M11 46 60 18l49 28\" fill=\"none\" stroke=\"#9d5c27\" stroke-width=\"9\" stroke-linecap=\"round\"/><rect x=\"17\" y=\"45\" width=\"86\" height=\"44\" rx=\"4\" fill=\"#d29a52\" stroke=\"#74481e\" stroke-width=\"3\"/><rect x=\"29\" y=\"54\" width=\"21\" height=\"29\" rx=\"5\" fill=\"#f6c04c\" stroke=\"#9b6c27\" stroke-width=\"3\"/><rect x=\"58\" y=\"54\" width=\"21\" height=\"29\" rx=\"5\" fill=\"#f6c04c\" stroke=\"#9b6c27\" stroke-width=\"3\"/><path d=\"M29 63h21m-21 10h21m8-10h21m-21 10h21\" stroke=\"#ba8231\" stroke-width=\"3\"/><circle cx=\"86\" cy=\"53\" r=\"5\" fill=\"#d89d32\"/></svg>", "chicken": "<svg viewBox=\"0 0 120 100\" aria-hidden=\"true\"><ellipse cx=\"60\" cy=\"91\" rx=\"55\" ry=\"7\" fill=\"#38662c\" opacity=\".4\"/><path d=\"M12 45 60 21l48 24\" fill=\"#b95428\" stroke=\"#783b24\" stroke-width=\"6\"/><path d=\"M22 45h76v43H22Z\" fill=\"#deac6b\" stroke=\"#79491f\" stroke-width=\"3\"/><rect x=\"39\" y=\"60\" width=\"39\" height=\"28\" rx=\"3\" fill=\"#80502b\"/><text x=\"60\" y=\"82\" text-anchor=\"middle\" font-size=\"28\">🐔</text></svg>", "cow": "<svg viewBox=\"0 0 120 100\" aria-hidden=\"true\"><ellipse cx=\"60\" cy=\"91\" rx=\"55\" ry=\"7\" fill=\"#38662c\" opacity=\".4\"/><path d=\"M12 45 60 21l48 24\" fill=\"#b95428\" stroke=\"#783b24\" stroke-width=\"6\"/><path d=\"M22 45h76v43H22Z\" fill=\"#deac6b\" stroke=\"#79491f\" stroke-width=\"3\"/><rect x=\"39\" y=\"60\" width=\"39\" height=\"28\" rx=\"3\" fill=\"#80502b\"/><text x=\"60\" y=\"82\" text-anchor=\"middle\" font-size=\"28\">🐄</text></svg>", "pig": "<svg viewBox=\"0 0 120 100\" aria-hidden=\"true\"><ellipse cx=\"60\" cy=\"91\" rx=\"55\" ry=\"7\" fill=\"#38662c\" opacity=\".4\"/><path d=\"M12 45 60 21l48 24\" fill=\"#b95428\" stroke=\"#783b24\" stroke-width=\"6\"/><path d=\"M22 45h76v43H22Z\" fill=\"#deac6b\" stroke=\"#79491f\" stroke-width=\"3\"/><rect x=\"39\" y=\"60\" width=\"39\" height=\"28\" rx=\"3\" fill=\"#80502b\"/><text x=\"60\" y=\"82\" text-anchor=\"middle\" font-size=\"28\">🐖</text></svg>"};
 
