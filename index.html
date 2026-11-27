@@ -1280,6 +1280,44 @@ body.gh-debug-visible #mill-dialog.gh-mill-needs-repair .mill-dialog-box{margin-
 #gh-mill-repair-pane .gh-mr-xp{transform:scale(.95);transform-origin:center}
 #mill-dialog #gh-mill-repair-button{transform:scale(.91);transform-origin:center}
 #gh-mill-repair-feedback{display:none!important}
+</style>
+<style id="gh-cowshed-repair-v425">
+/* The broken cowshed has its own repair dialog. The repaired building and milk timer keep their original UI. */
+#gh-milk-dialog.gh-cowshed-needs-repair{overflow-y:auto;align-items:safe center;padding:12px!important;background:rgba(6,24,13,.54)}
+#gh-milk-dialog.gh-cowshed-needs-repair .gh-milk-box{position:relative!important;display:block!important;box-sizing:border-box!important;width:min(91vw,350px)!important;width:min(91vw,350px,calc(82dvh - 20px))!important;aspect-ratio:320/380!important;height:auto!important;min-height:0!important;max-height:none!important;padding:0!important;border:0!important;background:none!important;box-shadow:none!important;overflow:visible!important;isolation:isolate}
+#gh-milk-dialog.gh-cowshed-needs-repair .gh-milk-box::before,#gh-milk-dialog.gh-cowshed-needs-repair .gh-milk-box::after{content:none!important;display:none!important}
+#gh-milk-dialog.gh-cowshed-needs-repair :is(#gh-milk-title,#gh-milk-close,#gh-milk-description,#gh-milk-locked,#gh-milk-production){display:none!important}
+#gh-cowshed-repair-pane[hidden]{display:none!important}
+#gh-cowshed-repair-pane{position:absolute;inset:0;container-type:inline-size;color:#51290e;font:800 14px/1.2 system-ui,sans-serif}
+#gh-cowshed-repair-pane .gh-cr-frame{position:absolute;inset:0;background:url("assets/gh-mill-frame-v421.avif") center/100% 100% no-repeat;pointer-events:none}
+#gh-cowshed-repair-pane .gh-cr-title{position:absolute;left:24%;top:4.5%;width:57%;height:11%;display:grid;place-items:center;box-sizing:border-box;border:2px solid #963e0c;border-radius:999px;background:repeating-linear-gradient(174deg,transparent 0 9px,#b94a111c 10px 11px,transparent 12px 19px),linear-gradient(#ffb53a 0%,#f58a12 30%,#de6608 75%,#b34705 100%);box-shadow:inset 0 2px 0 #fff1a1,inset 0 -3px 0 #a34308,0 2px 2px #5427068c;color:#fff4d7;font:950 6.05cqw/1 system-ui,sans-serif;letter-spacing:-.035em;text-shadow:-1px -1px 0 #6b2909,1px -1px 0 #6b2909,-1px 1px 0 #6b2909,1px 1px 0 #6b2909,0 2px 0 #6b2909;white-space:nowrap;padding:0 4%}
+#gh-cowshed-repair-pane .gh-cr-title::before,#gh-cowshed-repair-pane .gh-cr-title::after{content:"";position:absolute;top:50%;width:3.7%;aspect-ratio:1;border-radius:50%;transform:translateY(-50%);background:radial-gradient(circle at 35% 30%,#ffdc79,#d77a13 55%,#83390b);box-shadow:0 0 0 1px #98410c}
+#gh-cowshed-repair-pane .gh-cr-title::before{left:3%}#gh-cowshed-repair-pane .gh-cr-title::after{right:3%}
+#gh-cowshed-repair-pane .gh-cr-status{position:absolute;left:12%;top:19%;width:76%;aspect-ratio:597/100;background-image:url("assets/gh-mill-ui-v421.avif");background-repeat:no-repeat;background-size:107.87269681742045% 446%;background-position:0% 33.52601156069364%;}
+#gh-cowshed-repair-pane .gh-cr-barn{position:absolute;left:7%;top:31%;width:47%;height:39%;object-fit:contain;pointer-events:none}
+#gh-cowshed-repair-pane .gh-cr-description{position:absolute;left:54.5%;top:35%;width:37%;height:31%;box-sizing:border-box;border:1.2px solid #c99c59;border-radius:4cqw;background:linear-gradient(145deg,#fff0cc,#f9d899);box-shadow:inset 0 1px 1px #fff9e8,0 1.5px 0 #b78443;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:3cqw;text-align:center;padding:2%;font:850 3.85cqw/1.23 system-ui,sans-serif}
+#gh-cowshed-repair-pane .gh-cr-cow-icon{width:45%;height:auto;aspect-ratio:140/110;fill:#754315;flex:none}
+#gh-cowshed-repair-pane .gh-cr-xp{position:absolute;left:30%;top:73%;width:40%;aspect-ratio:4/1;box-sizing:border-box;border:1.2px solid #d5a25b;border-radius:999px;background:linear-gradient(#ffeac0,#f8d18d);box-shadow:inset 0 1px 0 #fff8e7,0 1.5px 0 #b98442}
+#gh-cowshed-repair-pane .gh-cr-xp-star{position:absolute;left:13%;top:50%;width:26%;aspect-ratio:131/116;transform:translateY(-50%);background-image:url("assets/gh-mill-ui-v421.avif");background-repeat:no-repeat;background-size:491.6030534351145% 384.48275862068965%;background-position:0% 100%;}
+#gh-cowshed-repair-xp{position:absolute;left:45%;right:7%;inset-block:0;display:grid;place-items:center;font:900 min(6.3cqw,var(--gh-cr-xp-size,23px))/1 system-ui,sans-serif;white-space:nowrap;font-variant-numeric:tabular-nums}
+#gh-cowshed-repair-pane button{position:absolute;display:block;margin:0!important;padding:0!important;border:0!important;background:none!important;box-shadow:none!important;touch-action:manipulation;cursor:pointer;-webkit-tap-highlight-color:transparent}
+#gh-cowshed-repair-close{left:84.5%;top:4%;width:12%;aspect-ratio:1;z-index:5}
+#gh-cowshed-repair-button{left:11%;top:84%;width:78%;aspect-ratio:644/108;z-index:4}
+#gh-cowshed-repair-pane .gh-cr-close-art,#gh-cowshed-repair-pane .gh-cr-repair-art{position:absolute;inset:0;transition:transform 90ms ease,filter 90ms ease}
+#gh-cowshed-repair-pane .gh-cr-close-art{background:url("assets/gh349_close.webp") center/contain no-repeat}
+#gh-cowshed-repair-pane .gh-cr-repair-art{background-image:url("assets/gh-mill-ui-v421.avif");background-repeat:no-repeat;background-size:100% 412.962962962963%;background-position:0% 64.79289940828401%;}
+#gh-cowshed-repair-price{position:absolute;left:81%;right:5%;inset-block:0;display:grid;place-items:center;color:#fff3dd;font:900 min(5.5cqw,var(--gh-cr-price-size,18px))/1 system-ui,sans-serif;text-shadow:0 1px 2px #2c200a,1px 0 #2c200a,-1px 0 #2c200a;white-space:nowrap;pointer-events:none;transition:transform 90ms ease}
+#gh-cowshed-repair-close:active .gh-cr-close-art{transform:scale(.92);filter:brightness(.72)}
+#gh-cowshed-repair-button:active:not(:disabled) .gh-cr-repair-art{transform:translateY(1px) scale(.98,.94);filter:brightness(.78)}
+#gh-cowshed-repair-button:active:not(:disabled) #gh-cowshed-repair-price{transform:translateY(1px) scale(.98,.94)}
+#gh-cowshed-repair-button:disabled{filter:grayscale(1);opacity:.86;cursor:not-allowed}
+#gh-cowshed-repair-pane button:focus-visible{outline:2px solid #f9d456;outline-offset:2px;border-radius:12px}
+#gh-cowshed-repair-settings{display:none;position:absolute;top:100%;left:8%;width:84%;box-sizing:border-box;padding:8px;border:1px solid #a87b42;border-radius:10px;background:#ffe8bb;color:#65401c;font-size:11px;text-align:left}
+body.gh-debug-visible #gh-cowshed-repair-settings{display:grid;gap:4px}
+body.gh-debug-visible #gh-milk-dialog.gh-cowshed-needs-repair .gh-milk-box{margin-bottom:86px}
+#gh-cowshed-repair-settings label{display:flex;align-items:center;justify-content:space-between;gap:6px}
+#gh-cowshed-repair-settings input{width:76px;padding:3px;border:1px solid #a87b42;border-radius:5px;font:600 16px system-ui}
+@media(prefers-reduced-motion:reduce){#gh-cowshed-repair-pane *{transition:none!important}}
 </style></head><body><main class="page"><section class="stage" id="stage" aria-label="Інтерактивний макет ферми">
 <button id="gh-cowshed-toggle" class="gh-cowshed-toggle" type="button" aria-pressed="false" title="Тест: спершу ремонт, потім окрема покупка корови">🛠 Відновити корівник</button>
 <button id="gh-cow-toggle" class="gh-cow-toggle" type="button" aria-pressed="true" title="Купити першу корову (лише тест, без оплати)" hidden>🐄 Купити корову</button>
@@ -1456,6 +1494,17 @@ body.gh-debug-visible #mill-dialog.gh-mill-needs-repair .mill-dialog-box{margin-
  <section class="gh-milk-box" role="dialog" aria-modal="true" aria-labelledby="gh-milk-title">
    <button id="gh-milk-close" type="button" aria-label="Закрити">✕</button>
    <h3 id="gh-milk-title">🐄 Корівник</h3>
+ <div id="gh-cowshed-repair-pane" hidden>
+   <span class="gh-cr-frame" aria-hidden="true"></span>
+   <div class="gh-cr-title" id="gh-cowshed-repair-title">Коров’ятник</div>
+   <button type="button" id="gh-cowshed-repair-close" aria-label="Закрити"><span class="gh-cr-close-art" aria-hidden="true"></span></button>
+   <span class="gh-cr-status" role="img" aria-label="Потребує ремонту"></span>
+   <img class="gh-cr-barn" src="assets/asset_039_fea3fd50c83e23d5.webp" alt="Поламаний коров’ятник без корови" draggable="false">
+   <div class="gh-cr-description"><span>Після ремонту дає можливість купити корову.</span><svg class="gh-cr-cow-icon" viewBox="0 0 140 110" aria-hidden="true"><path d="M44 27C28 15 35 3 37 3c0 14 10 16 18 19 9-4 21-4 30 0 8-3 18-5 18-19 2 0 9 12-7 24 8 5 14 8 18 7 19-8 31-2 23 11-5 9-18 15-30 12-2 17-9 26-14 35-6 12-14 16-23 16s-17-4-23-16C42 83 35 74 33 57 21 60 8 54 3 45c-8-13 4-19 23-11 4 1 10-2 18-7Z"/><path d="M46 55c-4-9-11-9-9-2 1 5 7 10 9 14 3-1 3-6 0-12Zm48 0c4-9 11-9 9-2-1 5-7 10-9 14-3-1-3-6 0-12ZM58 88c-7-4-11 5-4 9 7 5 25 5 32 0 7-4 3-13-4-9-5 3-19 3-24 0Z" fill="#ffdfa2"/></svg></div>
+   <div class="gh-cr-xp"><span class="gh-cr-xp-star" aria-hidden="true"></span><span id="gh-cowshed-repair-xp">+50</span></div>
+   <button type="button" id="gh-cowshed-repair-button" aria-label="Відремонтувати за 25 діамантів"><span class="gh-cr-repair-art" aria-hidden="true"></span><span id="gh-cowshed-repair-price" aria-hidden="true">25</span></button>
+   <div id="gh-cowshed-repair-settings"><label>Досвід за ремонт <input id="gh-cowshed-repair-xp-input" type="number" min="0" max="100000" step="1" value="50"></label><label>Ціна в діамантах <input id="gh-cowshed-repair-price-input" type="number" min="1" max="100000" step="1" value="25"></label></div>
+ </div>
    <p id="gh-milk-description">Молоко виробляється, коли у корівнику є корова.</p>
    <p id="gh-milk-locked" hidden>Спочатку потрібно відремонтувати корівник і купити корову.</p>
    <section id="gh-milk-production" hidden aria-label="Виробництво молока"><div class="gh-timer-art347"><div class="gh-milk-header">
@@ -2599,6 +2648,36 @@ if(ghCowshedToggle){
  });
 }
 
+/* v425: independently configurable cowshed repair. */
+const GH_COWSHED_REPAIR_SETTINGS_KEY='gh-cowshed-repair-settings-v425';
+let ghCowshedRepairCost=25,ghCowshedRepairXP=50;
+try{const cfg=JSON.parse(localStorage.getItem(GH_COWSHED_REPAIR_SETTINGS_KEY)||'{}');if(Number.isSafeInteger(cfg.cost)&&cfg.cost>=1&&cfg.cost<=100000)ghCowshedRepairCost=cfg.cost;if(Number.isSafeInteger(cfg.xp)&&cfg.xp>=0&&cfg.xp<=100000)ghCowshedRepairXP=cfg.xp;}catch(e){}
+function ghCowshedRefreshRepair(){
+ const cover=document.getElementById('gh-milk-dialog'),pane=document.getElementById('gh-cowshed-repair-pane'),broken=!ghCowshedRepaired;
+ cover.classList.toggle('gh-cowshed-needs-repair',broken);pane.hidden=!broken;
+ cover.querySelector('.gh-milk-box').setAttribute('aria-labelledby',broken?'gh-cowshed-repair-title':'gh-milk-title');
+ if(!broken)return;
+ const xp=document.getElementById('gh-cowshed-repair-xp'),price=document.getElementById('gh-cowshed-repair-price'),btn=document.getElementById('gh-cowshed-repair-button');
+ const x='+'+ghCowshedRepairXP,p=String(ghCowshedRepairCost);
+ xp.textContent=x;xp.style.setProperty('--gh-cr-xp-size',Math.max(8,Math.min(23,99/x.length))+'px');
+ price.textContent=p;price.style.setProperty('--gh-cr-price-size',Math.max(7,Math.min(18,40/p.length))+'px');
+ btn.disabled=(window.GreenHavenEconomy?.getState()?.diamonds??0)<ghCowshedRepairCost;
+ btn.setAttribute('aria-label','Відремонтувати за '+p+' діамантів');
+ for(const [id,n] of [['gh-cowshed-repair-xp-input',ghCowshedRepairXP],['gh-cowshed-repair-price-input',ghCowshedRepairCost]]){const el=document.getElementById(id);if(document.activeElement!==el)el.value=String(n);}
+}
+function ghCowshedSetRepairSettings(cost,xp){
+ if(!Number.isSafeInteger(cost)||cost<1||cost>100000||!Number.isSafeInteger(xp)||xp<0||xp>100000)return false;
+ ghCowshedRepairCost=cost;ghCowshedRepairXP=xp;try{localStorage.setItem(GH_COWSHED_REPAIR_SETTINGS_KEY,JSON.stringify({cost,xp}));}catch(e){}ghCowshedRefreshRepair();return true;
+}
+document.getElementById('gh-cowshed-repair-xp-input').addEventListener('change',e=>{if(!document.body.classList.contains('gh-debug-visible')||!ghCowshedSetRepairSettings(ghCowshedRepairCost,Number(e.target.value)))e.target.value=String(ghCowshedRepairXP);});
+document.getElementById('gh-cowshed-repair-price-input').addEventListener('change',e=>{if(!document.body.classList.contains('gh-debug-visible')||!ghCowshedSetRepairSettings(Number(e.target.value),ghCowshedRepairXP))e.target.value=String(ghCowshedRepairCost);});
+document.getElementById('gh-cowshed-repair-close').addEventListener('click',e=>{e.stopPropagation();if(e.detail>0)e.currentTarget.blur();ghMilkCloseDialog();});
+document.getElementById('gh-cowshed-repair-button').addEventListener('click',()=>{
+ if(ghCowshedRepaired)return;
+ if(!window.GreenHavenEconomy?.repairCowshed(ghCowshedRepairCost,ghCowshedRepairXP)){ghCowshedRefreshRepair();return;}
+ ghCowshedRepaired=true;ghCowCount=0;ghSaveCowshedRepair();ghSaveCowPurchased();ghMilkSync();ghMilkCloseDialog();render();ghUpdateCowshedUI();ghCowshedRefreshRepair();
+});
+
 /* v324: Cow shed popup — a small production view matching the chicken coop. */
 function ghMilkUpdateDialog(){
  ghMilkSync();
@@ -2607,6 +2686,7 @@ function ghMilkUpdateDialog(){
  const locked=document.getElementById('gh-milk-locked');
  production.hidden=!owned;
  production.closest('[role="presentation"]')?.classList.toggle('gh-player-timer',owned);
+ ghCowshedRefreshRepair();
  locked.hidden=owned;
  document.getElementById('gh-milk-description').textContent=!ghCowshedRepaired
   ?'Корівник потребує ремонту.'
@@ -3595,6 +3675,7 @@ render();
    action,
    debitGold(amount){return Number.isSafeInteger(amount)&&amount>0&&amount<=100000&&change({gold:-amount});},
    repairMill(cost,xp){return Number.isSafeInteger(cost)&&cost>=1&&cost<=100000&&Number.isSafeInteger(xp)&&xp>=0&&xp<=100000&&change({diamonds:-cost,xp:xp});},
+   repairCowshed(cost,xp){return Number.isSafeInteger(cost)&&cost>=1&&cost<=100000&&Number.isSafeInteger(xp)&&xp>=0&&xp<=100000&&change({diamonds:-cost,xp:xp});},
    getMessage:()=>message,
    // Test-only gold settlement for selling inventory crops.
    creditGold(amount,waitForFlight=false){
